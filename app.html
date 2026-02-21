@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sloan Melia - College Application Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .tagline {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .welcome-text {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .app-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .app-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .app-button:active {
+            transform: translateY(0);
+        }
+        
+        .features {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .feature-item::before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sloan Melia</h1>
+        <p class="tagline">Your College Application Journey Starts Here</p>
+        
+        <p class="welcome-text">
+            We help students navigate the college application process with confidence. 
+            Let's build your perfect application together.
+        </p>
+        
+        <button class="app-button" onclick="launchApp()">Launch Sloan Melia</button>
+        
+        <div class="features">
+            <div class="feature-item">Step-by-step application guidance</div>
+            <div class="feature-item">Essay writing support</div>
+            <div class="feature-item">Deadline tracking</div>
+            <div class="feature-item">Document organization</div>
+        </div>
+    </div>
+    
+    <script>
+        function launchApp() {
+            // For now, redirect to the main application page
+            // Replace 'main-app.html' with your actual app entry point
+            alert('Welcome to Sloan Melia! The full application is launching...');
+            
+            // When you have your main app ready, uncomment this:
+            // window.location.href = 'main-app.html';
+            
+            // For now, this shows it's working
+            console.log('Launch button clicked successfully!');
+        }
+    </script>
+</body>
+</html>
