@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Cognitive Biases — Full Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #3a0a0a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #e88070; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #e88070; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #906060; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .cat-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #3a0a0a; }
+  .cat-header .cat-badge { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #3a0a0a; color: #f8f4ec; padding: 0.25rem 0.6rem; white-space: nowrap; }
+  .cat-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .cat-header .cat-desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .bias-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.8rem; }
+
+  .bias-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.1rem 1.2rem; }
+  .bias-card .bias-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .bias-card .bias-def { font-size: 0.85rem; color: #2a2218; margin-bottom: 0.5rem; line-height: 1.5; }
+  .bias-card .bias-example { font-size: 0.8rem; color: #3a3020; font-style: italic; background: #f8f4ec; padding: 0.35rem 0.6rem; border-left: 2px solid #c8922a; margin-bottom: 0.45rem; }
+  .bias-card .forensic-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.57rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.5rem; background: #fff0ee; color: #b5230f; border: 1px solid #e8c0b8; }
+
+  .page-footer { background: #3a0a0a; color: #7a4040; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #e88070; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Forensic Psychology Study Series · Poster 07 of 08</span>
+  <h1><em>Cognitive Biases</em> — Full Map<br>Testimony, Juries &amp; Investigations</h1>
+  <p class="subtitle">Cognitive biases are systematic errors in thinking that affect judgment and decision-making in everyone — including investigators, evaluators, attorneys, jurors, and witnesses. The forensic justice system is vulnerable to all of them. Knowing these biases is knowing where justice fails.</p>
+</div>
+
+<main>
+
+  <div class="cat-header">
+    <span class="cat-badge">Category 01</span>
+    <h2>Memory &amp; Perception Biases</h2>
+    <span class="cat-desc">How we remember — and misremember — what we witness</span>
+  </div>
+
+  <div class="bias-grid">
+    <div class="bias-card">
+      <div class="bias-name">Misinformation Effect</div>
+      <p class="bias-def">Post-event information contaminates and alters the original memory. Loftus's foundational research. Leading questions create false memories that witnesses report as genuine.</p>
+      <div class="bias-example">Asking "Did you see the broken headlight?" implants the memory of a headlight even if none existed.</div>
+      <span class="forensic-tag">Eyewitness · Interview Protocol · Expert Testimony</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Source Monitoring Error</div>
+      <p class="bias-def">Misattributing the origin of a memory — confusing whether something was actually experienced, imagined, seen on TV, or told to you by another person.</p>
+      <div class="bias-example">A child who was told about an event may later genuinely believe they witnessed it.</div>
+      <span class="forensic-tag">Child Testimony · False Memory · Suggestibility</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Weapon Focus Effect</div>
+      <p class="bias-def">The presence of a weapon narrows attention — witnesses focus on the weapon and have significantly reduced accuracy identifying the perpetrator's face, clothing, or other details.</p>
+      <div class="bias-example">Armed robbery witnesses accurately describe the gun but cannot reliably identify the shooter.</div>
+      <span class="forensic-tag">Eyewitness Reliability · Cross-Examination</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Cross-Race Effect</div>
+      <p class="bias-def">People are significantly more accurate at recognizing and distinguishing faces of their own racial group than those of other racial groups. Well-documented and robust finding.</p>
+      <div class="bias-example">A white witness to a crime involving Black perpetrators will have lower identification accuracy than for white perpetrators, all else equal.</div>
+      <span class="forensic-tag">Eyewitness Identification · Wrongful Convictions</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Confidence-Accuracy Dissociation</div>
+      <p class="bias-def">Eyewitness confidence is a poor predictor of eyewitness accuracy. High-confidence witnesses are often wrong. Jurors dramatically overweight witness confidence in their credibility assessments.</p>
+      <div class="bias-example">A witness who says "I am absolutely certain it was him" is not statistically more accurate than one who expresses uncertainty.</div>
+      <span class="forensic-tag">Jury Decision-Making · Expert Testimony</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Hindsight Bias</div>
+      <p class="bias-def">After learning an outcome, people believe they "knew it all along" and overestimate how predictable the outcome was beforehand. Retrospective probability distortion.</p>
+      <div class="bias-example">After a violent act, everyone concludes the person was "obviously" dangerous and that risk was "clear."</div>
+      <span class="forensic-tag">Criminal Responsibility · Risk Assessment · Expert Witness</span>
+    </div>
+  </div>
+
+  <div class="cat-header">
+    <span class="cat-badge">Category 02</span>
+    <h2>Investigative &amp; Evaluator Biases</h2>
+    <span class="cat-desc">How investigators and evaluators contaminate their own conclusions</span>
+  </div>
+
+  <div class="bias-grid">
+    <div class="bias-card">
+      <div class="bias-name">Confirmation Bias</div>
+      <p class="bias-def">Seeking, interpreting, and remembering information in a way that confirms pre-existing beliefs. The single most dangerous bias in forensic investigation and evaluation.</p>
+      <div class="bias-example">An investigator who suspects a specific person as guilty focuses on evidence against them and discounts or ignores exculpatory evidence.</div>
+      <span class="forensic-tag">Investigation · Profiling · Wrongful Conviction</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Anchoring Bias</div>
+      <p class="bias-def">Over-relying on the first piece of information encountered (the "anchor") when making subsequent judgments. Adjustments from the anchor are typically insufficient.</p>
+      <div class="bias-example">A forensic evaluator told upfront that a defendant "is a psychopath" will interpret all subsequent data through that lens.</div>
+      <span class="forensic-tag">Forensic Evaluation · Blind Assessment Protocol</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Tunnel Vision</div>
+      <p class="bias-def">Focusing narrowly on a single hypothesis or suspect while failing to adequately consider alternatives. A specific combination of confirmation bias plus anchoring in investigative contexts.</p>
+      <div class="bias-example">DC Sniper case — investigators focused on a single white male suspect profile while actual perpetrators drove through checkpoints.</div>
+      <span class="forensic-tag">Investigation · Profiling · Missing Suspect</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Outcome Bias</div>
+      <p class="bias-def">Judging a past decision by its outcome rather than by the quality of the decision at the time it was made. A specific form of hindsight bias applied to professional conduct.</p>
+      <div class="bias-example">A parole board that releases an offender who later reoffends is criticized, even if the release decision was statistically sound at the time.</div>
+      <span class="forensic-tag">Risk Assessment · Parole · Expert Testimony</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Expectation Bias</div>
+      <p class="bias-def">An evaluator's prior expectations influence their observation, interpretation, and documentation of data. Even experienced clinicians are susceptible to finding what they expect to find.</p>
+      <div class="bias-example">A forensic evaluator referred a case by the prosecution unconsciously frames ambiguous data in ways consistent with guilt.</div>
+      <span class="forensic-tag">Forensic Evaluation Ethics · Blind Assessment</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Role Effect / Adversarial Allegiance</div>
+      <p class="bias-def">Forensic experts systematically reach conclusions favorable to the side that retained them — even when using the same data. Research demonstrates this bias is robust and largely unconscious.</p>
+      <div class="bias-example">Defense-retained and prosecution-retained experts reading identical records reach different PCL-R scores at statistically significant rates.</div>
+      <span class="forensic-tag">Expert Testimony · Ethics · Daubert</span>
+    </div>
+  </div>
+
+  <div class="cat-header">
+    <span class="cat-badge">Category 03</span>
+    <h2>Jury &amp; Decision-Making Biases</h2>
+    <span class="cat-desc">How jurors decide — and what actually drives verdicts</span>
+  </div>
+
+  <div class="bias-grid">
+    <div class="bias-card">
+      <div class="bias-name">Halo Effect</div>
+      <p class="bias-def">One positive (or negative) attribute of a person influences judgments about their other, unrelated attributes. Attractiveness, articulateness, and race all trigger halo effects in jurors.</p>
+      <div class="bias-example">Attractive defendants receive lighter sentences on average. Well-dressed defendants are perceived as more credible.</div>
+      <span class="forensic-tag">Jury Research · Sentencing Disparity</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Attribution Error (FAE)</div>
+      <p class="bias-def">Overattributing behavior to dispositional (internal, character) factors while underestimating situational factors. Jurors over-attribute criminal behavior to character and underweight circumstances.</p>
+      <div class="bias-example">"He did it because he's a bad person" — ignoring poverty, abuse history, mental illness, or coercion.</div>
+      <span class="forensic-tag">Jury Deliberation · Mitigation · Sentencing</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Just World Belief</div>
+      <p class="bias-def">The tendency to believe the world is fundamentally fair — that people get what they deserve. Victims are subtly blamed to maintain this belief. Produces blame-the-victim thinking in sexual assault cases.</p>
+      <div class="bias-example">"She must have done something to provoke it" — preserving the belief that bad things don't happen to good people.</div>
+      <span class="forensic-tag">Sexual Assault Cases · Victim Credibility · Jury Bias</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Implicit Association / Racial Bias</div>
+      <p class="bias-def">Unconscious associations linking race with criminality, danger, or culpability. Demonstrated through IAT research. Operates below conscious awareness in jurors, investigators, and evaluators.</p>
+      <div class="bias-example">Black defendants receive harsher sentences than white defendants for equivalent crimes across jurisdictions and controlling for criminal history.</div>
+      <span class="forensic-tag">Sentencing Disparity · Jury Selection · Death Penalty</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Story Model of Juror Decision-Making</div>
+      <p class="bias-def">Jurors don't weigh evidence atomically — they construct a narrative story of what happened and then evaluate evidence for how well it fits that story. The most coherent story wins, not the most evidence.</p>
+      <div class="bias-example">The prosecution's narrative "he planned it and executed it coldly" beats scattered defense evidence if the story is more coherent.</div>
+      <span class="forensic-tag">Trial Strategy · Expert Communication · Jury Research</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">CSI Effect</div>
+      <p class="bias-def">Jurors raised on forensic TV expect scientific evidence in every case. Cases without DNA, fingerprints, or forensic lab results are perceived as weak — regardless of the strength of non-scientific evidence.</p>
+      <div class="bias-example">Jurors acquit despite strong circumstantial evidence because "there was no DNA." Or convict based on forensic evidence that's actually contested science.</div>
+      <span class="forensic-tag">Jury Expectations · Expert Testimony · Forensic Evidence</span>
+    </div>
+  </div>
+
+  <div class="cat-header">
+    <span class="cat-badge">Category 04</span>
+    <h2>Reasoning &amp; Judgment Biases</h2>
+    <span class="cat-desc">How all humans — including experts — reason poorly under uncertainty</span>
+  </div>
+
+  <div class="bias-grid">
+    <div class="bias-card">
+      <div class="bias-name">Availability Heuristic</div>
+      <p class="bias-def">Judging the probability of an event based on how easily an example comes to mind. Vivid, recent, or emotionally salient examples are overweighted.</p>
+      <div class="bias-example">After a high-profile mass shooting, public perception of mass shooting frequency dramatically increases — regardless of actual statistical rate.</div>
+      <span class="forensic-tag">Risk Perception · Media Influence · Policy</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Representativeness Heuristic</div>
+      <p class="bias-def">Judging probability based on how closely something resembles a prototype. Ignores base rates in favor of stereotypical matching. Underlies criminal profiling errors.</p>
+      <div class="bias-example">Assuming someone matches the "type" of perpetrator without base rate analysis — exactly the DC Sniper error.</div>
+      <span class="forensic-tag">Profiling · Base Rate Neglect · Investigation</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Base Rate Neglect</div>
+      <p class="bias-def">Ignoring prior probability (base rate) when evaluating new information. The most statistically significant error in forensic decision-making. Profiles without base rate grounding are guesswork.</p>
+      <div class="bias-example">If a risk tool identifies someone as "high risk" with 70% accuracy, but only 5% of people commit violent crimes, most high-risk designations are still false positives.</div>
+      <span class="forensic-tag">Risk Assessment · Profiling · Expert Testimony</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Overconfidence Effect</div>
+      <p class="bias-def">People's confidence in their judgments consistently exceeds the accuracy of those judgments. Experts are often more overconfident than novices in their domains of expertise.</p>
+      <div class="bias-example">Clinical predictions of violence by experienced clinicians are no more accurate than actuarial tools — yet clinicians are more confident in their predictions.</div>
+      <span class="forensic-tag">Clinical Judgment · Actuarial vs. Clinical · Expert Credibility</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Framing Effect</div>
+      <p class="bias-def">How information is presented changes how it is evaluated — even when the underlying data is identical. "90% survival rate" and "10% mortality rate" are equivalent but produce different responses.</p>
+      <div class="bias-example">"This defendant reoffends 30% of the time" vs. "This defendant does not reoffend 70% of the time" — same fact, different jury impact.</div>
+      <span class="forensic-tag">Expert Communication · Risk Communication · Attorney Strategy</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Illusory Correlation</div>
+      <p class="bias-def">Perceiving a relationship between variables when no statistically significant relationship exists. Particularly dangerous when built on memorable but non-representative cases.</p>
+      <div class="bias-example">Believing mental illness causes violence because violent mentally ill individuals receive more media coverage than the much larger population of non-violent mentally ill individuals.</div>
+      <span class="forensic-tag">Mental Illness Stigma · Risk Research · Public Policy</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">Sunk Cost Fallacy</div>
+      <p class="bias-def">Continuing to invest in a course of action because of prior investment — even when current evidence suggests it is no longer the best choice. Irrational continuation driven by loss aversion.</p>
+      <div class="bias-example">Prosecutors continuing to pursue a weak case because of the time and resources already invested, rather than dismissing it in the interest of justice.</div>
+      <span class="forensic-tag">Prosecutorial Decision-Making · Wrongful Conviction Risk</span>
+    </div>
+    <div class="bias-card">
+      <div class="bias-name">In-Group Bias</div>
+      <p class="bias-def">Favoring members of one's own group over members of out-groups. Operates automatically and unconsciously. Affects jurors, law enforcement, evaluators, and judges alike.</p>
+      <div class="bias-example">Jurors show greater leniency for defendants who share their race, religion, or social background — a robust and well-documented effect across cultures.</div>
+      <span class="forensic-tag">Jury Selection · Voir Dire · Sentencing Disparity</span>
+    </div>
+  </div>
+
+</main>
+
+<div class="page-footer">
+  <span>COGNITIVE BIASES FULL MAP</span>
+  <span>Poster 07 of 08 · Sloan's Study Kit</span>
+  <span>Memory · Investigation · Jury · Reasoning</span>
+</div>
+</body>
+</html>

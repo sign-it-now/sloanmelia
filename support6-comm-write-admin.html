@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Communication, Writing & Administration — Forensic Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  /* POSTER SEPARATOR */
+  .poster-break { border: none; border-top: 6px double #0e0c09; margin: 4rem 0 0; }
+
+  /* COMMUNICATION HEADER */
+  .header-comm { background: #0a2a1a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .header-comm .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #70e8a8; display: block; margin-bottom: 0.6rem; }
+  .header-comm h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.1; }
+  .header-comm h1 em { color: #70e8a8; font-style: italic; }
+  .header-comm .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #508060; max-width: 600px; }
+
+  /* WRITING HEADER */
+  .header-write { background: #2a1a0a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .header-write .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #f0c870; display: block; margin-bottom: 0.6rem; }
+  .header-write h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.1; }
+  .header-write h1 em { color: #f0c870; font-style: italic; }
+  .header-write .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #806040; max-width: 600px; }
+
+  /* ADMIN HEADER */
+  .header-admin { background: #0a1a2a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .header-admin .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #70b8e8; display: block; margin-bottom: 0.6rem; }
+  .header-admin h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.1; }
+  .header-admin h1 em { color: #70b8e8; font-style: italic; }
+  .header-admin .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #406080; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #0e0c09; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #0e0c09; color: #f8f4ec; padding: 0.25rem 0.5rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; border-top: 4px solid #0e0c09; }
+  .card .label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7e6e; display: block; margin-bottom: 0.3rem; }
+  .card .title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card .body { font-size: 0.87rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; }
+  .card .tip { background: #f8f4ec; border-left: 3px solid #c8922a; padding: 0.5rem 0.8rem; font-size: 0.82rem; color: #3a2a10; }
+  .card .tip::before { content: 'Key Skill: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.1rem; }
+
+  .report-section { background: #fff; border: 1px solid #ddd8cc; padding: 1.5rem; margin-bottom: 1rem; }
+  .report-section .rs-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #b5230f; display: block; margin-bottom: 0.3rem; }
+  .report-section .rs-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .report-section p { font-size: 0.87rem; color: #2a2218; line-height: 1.55; }
+
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .ref-table th { background: #0e0c09; color: #f8f4ec; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .ref-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; color: #0e0c09; font-size: 0.87rem; line-height: 1.5; }
+  .ref-table tr:nth-child(even) td { background: #f5f0e5; }
+  .ref-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; }
+
+  .page-footer { background: #0e0c09; color: #5a5040; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #c8922a; }
+</style>
+</head>
+<body>
+
+<!-- ══ POSTER 14: COMMUNICATION ══ -->
+<div class="header-comm">
+  <span class="eyebrow">Supporting Courses Series · Poster 14 of 16</span>
+  <h1><em>Communication &amp; Public Speaking</em> —<br>The Skill That Makes or Breaks Expert Testimony</h1>
+  <p class="subtitle">You can be the most scientifically rigorous forensic psychologist in the country. If you cannot explain your findings clearly to twelve people who have never taken a psychology class, none of it matters in court. Communication is not soft — it is the mechanism through which science reaches justice.</p>
+</div>
+
+<main>
+  <div class="section-header"><span class="num">01</span><h2>Expert Witness Communication — The Core Skills</h2><span class="desc">What separates effective expert witnesses from brilliant scientists who can't testify</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <span class="label">Clarity</span>
+      <div class="title">The Plain Language Rule</div>
+      <p class="body">Every technical term you use without explaining it is a point of connection you lost with the jury. The best forensic experts explain their findings as if talking to a smart friend who knows nothing about psychology — and the explanation still holds up scientifically.</p>
+      <div class="tip">Practice translating every concept into a one-sentence plain-language definition. If you can't, you don't understand it well enough to testify about it yet.</div>
+    </div>
+    <div class="card">
+      <span class="label">Cross-Examination</span>
+      <div class="title">Staying Anchored Under Pressure</div>
+      <p class="body">Cross-examination is designed to rattle, confuse, and discredit. Effective witnesses slow down, answer only what is asked, correct mischaracterizations calmly, and never argue with the attorney. Composure is itself evidence of credibility.</p>
+      <div class="tip">When an attorney misrepresents your findings, do not get defensive. Simply say "That's not quite what I said. What I said was..." and restate your opinion clearly. Let the jury see the contrast.</div>
+    </div>
+    <div class="card">
+      <span class="label">Analogy</span>
+      <div class="title">Making the Abstract Concrete</div>
+      <p class="body">Juries understand stories and analogies far better than statistical abstractions. A PCL-R score of 28 means nothing to a juror. "His capacity for empathy was measured to be in the lowest 10% of incarcerated populations" begins to mean something. A good analogy closes the gap entirely.</p>
+      <div class="tip">Develop a library of tested analogies for your most common concepts. The "chain of custody for data" analogy for statistics. The "gas and brake pedal" for prefrontal-limbic balance. These take time to develop — start now.</div>
+    </div>
+    <div class="card">
+      <span class="label">Active Listening</span>
+      <div class="title">Hear the Actual Question</div>
+      <p class="body">Expert witnesses often answer the question they expected rather than the one asked. Careful listening catches embedded assumptions, false premises, and trick phrasings before they become traps. Pause before answering — it signals confidence, not uncertainty.</p>
+      <div class="tip">It is always acceptable — and often wise — to say "Could you rephrase that?" or "I want to make sure I understand the question before I answer." Attorneys cannot penalize you for requesting clarity.</div>
+    </div>
+    <div class="card">
+      <span class="label">Uncertainty</span>
+      <div class="title">Owning the Limits of Your Opinion</div>
+      <p class="body">The most credible expert witnesses are those who clearly articulate what their findings do and do not support. Overclaiming certainty invites devastating cross-examination. Appropriate epistemic humility is not weakness — it is scientific integrity visible to the jury.</p>
+      <div class="tip">"My opinion is X, based on Y evidence. I cannot rule out Z with complete certainty." This is stronger than false certainty because it cannot be cross-examined into collapse. The attorney who tries to catch you admitting uncertainty has nothing — you already admitted it.</div>
+    </div>
+    <div class="card">
+      <span class="label">Presence</span>
+      <div class="title">Nonverbal Communication in the Courtroom</div>
+      <p class="body">Eye contact, posture, pace of speech, and vocal tone all signal credibility before a single word of testimony lands. Jurors make credibility judgments within seconds. Research shows nonverbal signals can outweigh verbal content in jury decision-making.</p>
+      <div class="tip">Theater, debate, and Toastmasters are not extracurriculars — they are professional development for anyone who will testify. Take a public speaking course. It will serve you more than another seminar on assessment tools.</div>
+    </div>
+  </div>
+</main>
+
+<hr class="poster-break">
+
+<!-- ══ POSTER 15: FORENSIC WRITING ══ -->
+<div class="header-write">
+  <span class="eyebrow">Supporting Courses Series · Poster 15 of 16</span>
+  <h1><em>Forensic Report Writing</em> —<br>The Document That Goes Into Court</h1>
+  <p class="subtitle">A forensic psychological evaluation report is a legal document. It may be read by attorneys, judges, jurors, appellate courts, and other experts. It must be clear, well-organized, scientifically defensible, and written in a way that a non-psychologist can understand — without sacrificing precision. Writing is not a soft skill here. It is a technical skill.</p>
+</div>
+
+<main>
+  <div class="section-header"><span class="num">01</span><h2>Standard Sections of a Forensic Psychological Evaluation Report</h2><span class="desc">Every forensic report follows this basic architecture</span></div>
+
+  <div class="report-section">
+    <span class="rs-label">Section 01</span>
+    <div class="rs-name">Referral Information &amp; Reason for Evaluation</div>
+    <p>Who referred the case, who retained the evaluator, what legal question is being addressed, and when the evaluation was conducted. This section establishes the evaluator's role (defense, prosecution, court-appointed) — which is critical for transparency about potential allegiance.</p>
+  </div>
+  <div class="report-section">
+    <span class="rs-label">Section 02</span>
+    <div class="rs-name">Notification of Purpose</div>
+    <p>Documents that the examinee was informed of the nature and purpose of the evaluation, who would receive the report, and that the evaluation is not confidential. This section is required for APA ethics compliance and legal admissibility. Without it, the evaluation is ethically deficient.</p>
+  </div>
+  <div class="report-section">
+    <span class="rs-label">Section 03</span>
+    <div class="rs-name">Sources of Information</div>
+    <p>Exhaustive list of everything reviewed: clinical interview, collateral interviews (family, prior treaters, witnesses), records reviewed (medical, criminal, school, military), and all tests administered with dates. Thoroughness of sources directly affects weight given to opinions.</p>
+  </div>
+  <div class="report-section">
+    <span class="rs-label">Section 04</span>
+    <div class="rs-name">Relevant Background History</div>
+    <p>Comprehensive social history: developmental history, family background, educational history, employment, medical and psychiatric history, substance use history, trauma history, relationship history, and criminal history. This section contextualizes all subsequent findings and is often where mitigation evidence lives.</p>
+  </div>
+  <div class="report-section">
+    <span class="rs-label">Section 05</span>
+    <div class="rs-name">Mental Status Examination</div>
+    <p>Systematic observation of: appearance and behavior, speech, mood and affect, thought process, thought content (delusions, hallucinations, suicidal/homicidal ideation), cognition (orientation, memory, attention, concentration), insight, and judgment. Documents the clinical presentation at time of evaluation.</p>
+  </div>
+  <div class="report-section">
+    <span class="rs-label">Section 06</span>
+    <div class="rs-name">Psychological Testing Results</div>
+    <p>Results of all standardized assessment instruments administered, with scores, validity indicators, and plain-language interpretation. Validity scale results must be reported first — if the protocol is invalid, all subsequent scores must be interpreted with that caveat prominently stated.</p>
+  </div>
+  <div class="report-section">
+    <span class="rs-label">Section 07</span>
+    <div class="rs-name">Diagnostic Impressions</div>
+    <p>DSM-5 diagnoses with full specifiers, presented with supporting evidence and differential diagnosis discussion. This section must justify each diagnosis with specific data from the evaluation — not assertion. "The defendant meets criteria for PTSD because..." followed by specific symptom documentation.</p>
+  </div>
+  <div class="report-section">
+    <span class="rs-label">Section 08</span>
+    <div class="rs-name">Opinions — The Psycholegal Question</div>
+    <p>Directly addresses the referral question using the relevant legal standard. This is the section attorneys and courts care most about. Must be written in language that clearly connects psychological findings to legal criteria. Does not opine on the ultimate legal question — provides psychological data for the court to apply the legal standard.</p>
+  </div>
+
+  <div class="section-header"><span class="num">02</span><h2>Forensic Report Writing Rules</h2><span class="desc">The standards your report will be held to in court</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <span class="label">Golden Rule</span>
+      <div class="title">Write for the Skeptical Reader</div>
+      <p class="body">Assume the opposing attorney will read every line looking for overstatement, internal inconsistency, unsupported conclusions, and logical gaps. Every opinion must be traceable to specific data in the report. If you cannot point to the supporting data in the report, remove the opinion.</p>
+      <div class="tip">After drafting, read your report as if you are the opposing expert being asked to critique it. Every weakness you find is one the opposing counsel will find too.</div>
+    </div>
+    <div class="card">
+      <span class="label">Precision</span>
+      <div class="title">Say Exactly What You Mean</div>
+      <p class="body">Vague language is a trap. "The defendant appeared anxious" is weak. "The defendant exhibited trembling hands, avoidance of eye contact, and reported intrusive memories during the interview, consistent with PTSD hyperarousal criteria" is defensible. Specific behavioral observations beat general impressions every time.</p>
+      <div class="tip">Replace all adjectives with observable behavioral data. Don't say "seemed depressed." Say what you observed that supports that inference — then it becomes evidence rather than opinion.</div>
+    </div>
+    <div class="card">
+      <span class="label">APA Style</span>
+      <div class="title">The Publication Manual is Your Bible</div>
+      <p class="body">APA 7th Edition governs all psychological writing — report format, citation style, statistical reporting, table construction, bias-free language guidelines. Every paper, every report, every publication in your career will follow these guidelines. Learn them once, use them forever.</p>
+      <div class="tip">The APA bias-free language guidelines are particularly important in forensic contexts — person-first language, accurate racial and ethnic terminology, and avoiding deficit-framing all have both ethical and practical credibility implications in court.</div>
+    </div>
+  </div>
+</main>
+
+<hr class="poster-break">
+
+<!-- ══ POSTER 16: ADMINISTRATION ══ -->
+<div class="header-admin">
+  <span class="eyebrow">Supporting Courses Series · Poster 16 of 16</span>
+  <h1><em>Administration &amp; Organizational Psychology</em> —<br>Making Your Work Actually Happen</h1>
+  <p class="subtitle">Most forensic psychologists spend their careers inside institutions — correctional facilities, forensic hospitals, courts, and government agencies. Understanding how organizations work, how bureaucracies make decisions, and how to navigate institutional systems determines whether your clinical recommendations get implemented or filed and forgotten.</p>
+</div>
+
+<main>
+  <div class="section-header"><span class="num">01</span><h2>Forensic Practice Settings — What You Need to Know About Each</h2><span class="desc">Every setting has its own culture, hierarchy, and constraints</span></div>
+  <table class="ref-table">
+    <thead><tr><th>Setting</th><th>Primary Role</th><th>Who You Report To</th><th>Key Organizational Skill</th><th>Career Path</th></tr></thead>
+    <tbody>
+      <tr><td>Correctional Facility</td><td>Risk assessment, treatment, crisis evaluation, competency screening</td><td>Facility administrator, not clinical supervisor — creates tension</td><td>Navigating security culture vs. clinical needs; documentation that meets both security and clinical standards</td><td>Psychologist I → II → Chief Psychologist → Director of Treatment</td></tr>
+      <tr><td>Forensic Psychiatric Hospital</td><td>Competency restoration treatment, ongoing risk evaluation, treatment planning</td><td>Medical director or clinical director with hospital administration above</td><td>Interdisciplinary team collaboration (psychiatry, social work, nursing, OT); treatment team communication</td><td>Staff Psychologist → Senior → Program Director → Superintendent</td></tr>
+      <tr><td>Court Clinic</td><td>Court-ordered evaluations (competency, criminal responsibility, risk assessment)</td><td>Court clinic director, judiciary oversight</td><td>Turnaround efficiency; clear report writing under deadline; managing high case volume</td><td>Forensic Evaluator → Senior Evaluator → Clinical Director</td></tr>
+      <tr><td>Independent Practice</td><td>Retained forensic evaluations for attorneys (defense and prosecution), expert testimony</td><td>Yourself — requires strong business acumen</td><td>Marketing professional services, fee management, case selection, expert witness reputation management</td><td>Associates → Solo Practice → Group Practice → Recognized Expert</td></tr>
+      <tr><td>Government Agency (FBI, BOP)</td><td>Threat assessment, operational consulting, training, policy development</td><td>Agency hierarchy — significant bureaucratic structure</td><td>Navigating federal bureaucracy; security clearance requirements; inter-agency collaboration</td><td>GS-12 Psychologist → GS-13/14 Senior → Supervisory Psychologist → Executive</td></tr>
+      <tr><td>Academia</td><td>Teaching, research, clinical training supervision, expert testimony</td><td>Department chair, Dean, research committee</td><td>Grant writing, publication productivity, committee work, tenure requirements</td><td>Postdoc → Assistant Professor → Associate → Full Professor → Endowed Chair</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-header"><span class="num">02</span><h2>Organizational Psychology Concepts That Directly Apply to Forensic Settings</h2><span class="desc">What organizational psych teaches you about the institutions you'll work in</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <span class="label">Organizational Behavior</span>
+      <div class="title">Institutional Culture and Change</div>
+      <p class="body">Every institution has a culture — shared values, norms, and assumptions that govern behavior. Correctional culture (security-first) often conflicts with treatment culture (client-centered). Understanding this tension is essential for effectiveness in any forensic institutional role.</p>
+      <div class="tip">New forensic psychologists who try to change institutional culture head-on usually fail. Those who learn the culture first, build relationships, and introduce changes incrementally and collaboratively are the ones who eventually move the needle.</div>
+    </div>
+    <div class="card">
+      <span class="label">Leadership</span>
+      <div class="title">Evidence-Based Leadership in Clinical Settings</div>
+      <p class="body">As you advance to supervisory and administrative roles, leadership psychology becomes directly applicable. Transformational leadership, servant leadership, and distributed leadership models all have research support for clinical program effectiveness. Leaders who understand motivation, group dynamics, and organizational change drive better treatment outcomes.</p>
+      <div class="tip">The best clinical administrators are those who protect their staff's ability to do good clinical work. Understanding organizational systems allows you to create the conditions under which quality forensic practice can actually happen.</div>
+    </div>
+    <div class="card">
+      <span class="label">Policy</span>
+      <div class="title">How Policy Decisions Get Made in Forensic Systems</div>
+      <p class="body">Criminal justice policy is made at the intersection of research evidence, political considerations, public opinion, budget constraints, and institutional inertia. Forensic psychologists who understand this landscape can contribute their research and clinical expertise to policy in ways that purely academic researchers cannot.</p>
+      <div class="tip">The psychologists who have the greatest systemic impact are not always the best clinicians — they are the ones who learned to communicate research findings to legislators, administrators, and the public in terms those audiences can act on.</div>
+    </div>
+    <div class="card">
+      <span class="label">Ethics in Institutions</span>
+      <div class="title">When Institutional Pressure Conflicts with Professional Ethics</div>
+      <p class="body">Institutions sometimes pressure psychologists to do things that conflict with professional ethics — write reports a certain way, deny treatment to cut costs, adjust findings to serve administrative goals. Understanding how organizational systems create these pressures prepares you to recognize and resist them.</p>
+      <div class="tip">Your professional license is your protection and your constraint. When institutional pressure pushes you toward an ethics violation, your license gives you standing to say no — and your ethics code gives you the framework for why. Know both before you walk into your first institutional role.</div>
+    </div>
+    <div class="card">
+      <span class="label">Grant Writing</span>
+      <div class="title">How Forensic Research Gets Funded</div>
+      <p class="body">Federal forensic psychology research is funded primarily through NIJ (National Institute of Justice), NIMH, and SAMHSA. Grant writing is a learnable skill — and a necessary one for forensic psychologists who want to conduct research that shapes the field. Understanding the funding landscape shapes which research questions get asked and answered.</p>
+      <div class="tip">Take a grant writing workshop in graduate school. One successful NIJ or NIMH grant can fund multiple years of research and significantly advance your academic career. It is far more impactful than publishing another review paper.</div>
+    </div>
+    <div class="card">
+      <span class="label">Career Planning</span>
+      <div class="title">The Doctoral Timeline — Know the Road</div>
+      <p class="body">Forensic psychology doctorate: 4–6 years PhD or PsyD program → 1–2 year APA-accredited internship → 1–2 year postdoctoral fellowship (often required for forensic specialization) → licensure → board certification (ABPP in Forensic Psychology). Board certification is the gold standard credential for expert witnesses.</p>
+      <div class="tip">ABPP (American Board of Professional Psychology) board certification in Forensic Psychology is worth the investment. It is the credential that distinguishes you as a specialist when your qualifications are challenged in Daubert hearings. Plan for it from the beginning of your doctoral training.</div>
+    </div>
+  </div>
+</main>
+
+<div class="page-footer">
+  <span>COMMUNICATION · WRITING · ADMINISTRATION</span>
+  <span>Posters 14–16 of 16 · Sloan's Study Kit</span>
+  <span>Complete Academic Roadmap Series</span>
+</div>
+</body>
+</html>

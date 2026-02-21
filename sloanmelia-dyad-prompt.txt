@@ -1,0 +1,560 @@
+SLOANMELIA.COM — MASTER DYAD BUILD PROMPT
+==========================================
+CUT EVERYTHING BELOW THIS LINE AND PASTE INTO DYAD CHAT
+==========================================
+
+Build a full-stack React web application called SloanMelia for a high school senior named Sloan Smith. This is her private college application platform and AI coaching dashboard. She is applying to college to pursue a PhD in Forensic Psychology. The app runs with Supabase for auth, database, and file storage. Use React with Tailwind CSS core utilities only.
+
+=== DESIGN SYSTEM — USE EXACTLY THESE VALUES ===
+
+Colors:
+- Background: #faf7f2 (warm cream — force this on html and body, override dark mode)
+- Primary ink: #0e0c09 (near black)
+- Gold accent: #c8922a
+- Teal: #1a4a45
+- Dim text: #7a7060
+- Faint borders: #e5ddd0
+- White cards: #ffffff
+
+Fonts (load from Google Fonts):
+- Headings: Playfair Display (serif, 700/900)
+- Labels/mono: DM Mono (monospace, 400/500)
+- Body: Jost (sans-serif, 400/500/600)
+
+Force light mode always. Add this to the top of your CSS:
+  :root { color-scheme: light only; }
+  html, body { background: #faf7f2 !important; color: #0e0c09 !important; }
+
+=== SLOAN'S PROFILE DATA — HARDCODE THIS THROUGHOUT ===
+
+Name: Sloan Smith
+School: Alton High School, Alton, Illinois
+Graduating: May 2026
+GPA: 3.684
+Email: sloan@sloanmelia.com
+Target Degree: PhD in Forensic Psychology
+Career Goal: Licensed forensic psychologist conducting psychological evaluations and expert testimony
+
+Senior Year Courses (2025-2026):
+- AP Psychology
+- AP Statistics
+- College Prep English 4 (H) AP
+- Human Body Systems PLTW 2
+- Biomedical Internship
+- Sociology
+- Environmental Science
+- Spanish 2A and 2B
+
+Achievements (pre-load these into the achievements table on first login):
+1. Patient Enrichment Program | Founder & Program Director | volunteer | Self-designed annual program collecting enrichment items (games, puzzles, books, art supplies) for hospital patients experiencing mental health crises or cognitive decline. Unaffiliated with any hospital. Community-funded. Extended from August to September due to response. Now an ongoing annual program entering year 2. | Impact: Annual program serving multiple hospitals
+2. Mu Alpha Theta | Member | organization | National mathematics honor society for high school students. Membership reflects demonstrated excellence in mathematics. | Impact: National academic recognition
+3. Link Crew | Peer Mentor | organization | Selected and trained peer mentorship program guiding incoming freshmen through high school transition throughout their first year. | Impact: Direct mentorship for new students
+4. Salvation Army Meal Service | Volunteer | volunteer | Regular service preparing and serving meals to community members in need. | Impact: Consistent direct community service
+5. Church Nursery | Volunteer Caregiver | volunteer | Consistent volunteer childcare in faith community nursery. | Impact: Reliable caregiving support
+6. Mathematics Tutoring | Peer Tutor | volunteer | Volunteer math tutoring for students needing additional academic support. | Impact: Peer academic support
+
+=== APP STRUCTURE ===
+
+The app has two main areas:
+1. PUBLIC: Login/signup page (unauthenticated users see this)
+2. PRIVATE DASHBOARD: Everything else (requires login)
+
+=== PAGE 1: LOGIN / SIGNUP ===
+
+Design:
+- Split screen layout: left side = dark ink background with Sloan's name and tagline, right side = login form on cream background
+- Left side text: "SloanMelia" in Playfair Display italic gold, tagline "From Senior Year to Dr. Smith"
+- Right side: Email/password login form + "Create account" toggle
+- Use Supabase Auth for email/password authentication
+- After login, redirect to Dashboard Home
+
+=== PAGE 2: DASHBOARD LAYOUT ===
+
+Persistent sidebar (left side, dark ink background):
+- Logo at top: "SM" monogram in gold, "SloanMelia" text in white
+- Navigation links with icons:
+  · Home (house icon)
+  · Study Library (book icon)
+  · Document Vault (folder icon)
+  · College Tracker (graduation cap icon)
+  · Achievements (star icon)
+  · Financial Aid (dollar icon)
+  · Coach (robot/chat icon) — highlight this in gold, it is the star feature
+- At bottom: user email + Sign Out button
+- On mobile: sidebar collapses to hamburger menu
+
+=== MODULE 1: DASHBOARD HOME ===
+
+Header: "Welcome back, Sloan" in Playfair Display
+Subheader: "Class of 2026 · Alton High School · GPA 3.684"
+
+Four stat cards in a row:
+- Documents Uploaded (count from documents table)
+- Schools Tracked (count from college_applications table)
+- Achievements Logged (count from achievements table)
+- Days Until Graduation (calculate from May 15, 2026)
+
+Below stats: Three quick-action cards:
+1. "Fill a Form" → opens Coach module on Form Filler tab
+2. "Upload Document" → opens Document Vault
+3. "Ask Coach" → opens Coach module on Chat tab
+
+Below quick actions: "Upcoming Deadlines" — list the next 3 college application deadlines from college_applications table sorted by deadline date ascending, showing school name and days remaining.
+
+=== MODULE 2: STUDY LIBRARY ===
+
+Grid of study topic cards. Each card has a title, category badge, and "Study" button.
+
+Pre-populate with these 16 topics (store in a local array, not database):
+
+Core Forensic Psychology:
+1. Brain & Neuroscience | The biological foundation of behavior and criminal mind
+2. DSM-5 Diagnostic Reference | Mental disorder classification used in forensic evaluations  
+3. Theorists Timeline | From Freud to modern forensic psychology pioneers
+4. Research Methods & Statistics | Scientific foundation of psychological research
+5. Defense Mechanisms | Psychological defenses relevant to criminal behavior
+6. Human Development | Lifespan development from Erikson, Piaget, Vygotsky
+7. Cognitive Biases | How thinking errors affect judgment and perception
+8. APA Ethics Code | Professional ethical obligations for psychologists
+
+Supporting Courses:
+9. Biology & Physiology | Body systems supporting psychological function
+10. Sociology & Social Theory | Social forces shaping criminal behavior
+11. Philosophy of Mind | Consciousness, free will, moral responsibility
+12. Pharmacology Basics | Psychoactive substances and their behavioral effects
+13. Law & Psychology Interface | How psych science enters the legal system
+14. Communication & Testimony | Expert witness skills and report writing
+15. Academic Writing | Research paper and report standards
+16. Program Administration | Clinical and forensic program management
+
+Each card opens a modal with:
+- Topic title and description
+- Key concepts bullet list (generate 5-6 relevant key concepts for each topic)
+- "Ask Coach about this topic" button that opens Coach chat pre-loaded with that topic as context
+
+Search bar at top to filter cards by title.
+
+=== MODULE 3: DOCUMENT VAULT ===
+
+Supabase Storage bucket: "documents"
+Supabase table: documents (id, user_id, name, category, file_path, file_size, created_at)
+
+Features:
+- Drag-and-drop upload area at top (dashed border, gold accent)
+- Category selector before upload: Transcript | Recommendation Letter | Resume | Test Scores | Certificate | Financial Aid | Other
+- File list below showing: file icon, file name, category badge, upload date, file size, delete button
+- Empty state: "No documents yet. Upload your first document above." with upload icon
+- On upload: store file in Supabase Storage under user_id/filename path, record in documents table
+- File size limit display: "Max 10MB per file"
+- Show total storage used
+
+Categories display as colored badges:
+- Transcript: dark teal
+- Recommendation Letter: gold
+- Resume: dark ink
+- Test Scores: purple
+- Certificate: green
+- Financial Aid: blue
+- Other: gray
+
+=== MODULE 4: COLLEGE APPLICATION TRACKER ===
+
+Supabase table: college_applications (id, user_id, school_name, deadline, status, portal_url, notes, created_at)
+
+Pre-populate with these schools on first load if table is empty for this user:
+1. Southern Illinois University Edwardsville (SIUE) | Psychology Department | https://www.siue.edu
+2. University of Illinois Springfield | Psychology | https://www.uis.edu
+3. Missouri Baptist University | Psychology | https://www.mobap.edu
+4. Saint Louis University | Psychology | https://www.slu.edu
+
+Status values (show as pipeline stages with colored dots):
+- researching (gray)
+- in-progress (yellow)  
+- submitted (blue)
+- accepted (green)
+- waitlisted (orange)
+- rejected (red)
+
+For each school show:
+- School name (large, Playfair Display)
+- Status badge
+- Deadline with countdown: "47 days remaining" — red if under 14 days
+- Notes field (editable inline)
+- Portal URL link
+- Document checklist: [ ] Transcript [ ] Recommendation Letters [ ] Personal Essay [ ] Application Fee [ ] Test Scores
+
+"Add School" button opens a form: school name, deadline date picker, portal URL, notes.
+
+Top of module: visual pipeline showing how many schools are in each status stage.
+
+=== MODULE 5: ACHIEVEMENTS LOG ===
+
+Supabase table: achievements (id, user_id, title, category, description, role, start_date, end_date, hours, impact, created_at)
+
+On first load for this user, pre-populate with Sloan's 6 achievements listed above in the profile data section.
+
+Display as cards with:
+- Achievement title (Playfair Display bold)
+- Category badge (volunteer=green, organization=blue, internship=purple, award=gold)
+- Role/position (DM Mono, small, gold)
+- Description text
+- Impact line in italic
+- Edit and Delete buttons
+
+"Add Achievement" button opens form with all fields.
+
+"Generate Common App Activities Section" button:
+- Calls the Coach Edge Function (see Coach module below)
+- Sends all achievements as context
+- Asks Coach to format them as Common App Activities section (10 activities, 150 character descriptions, role/organization/time commitment format)
+- Displays result in a modal with "Copy All" button
+- Each formatted activity has its own copy button
+
+=== MODULE 6: FINANCIAL AID HUB ===
+
+Three tabs: FAFSA Guide | 529 Tracker | Scholarships
+
+--- TAB: FAFSA GUIDE ---
+
+Accordion sections (click to expand):
+
+Section 1: BEFORE YOU START
+What to gather: prior year tax returns for parents and student, W-2 forms, bank account balances, investment account balances, Social Security numbers for student and parents, FSA ID (create at studentaid.gov), Sloan's driver's license if she has one.
+
+Section 2: KEY FAFSA FACTS
+- Opens October 1 each year for the following academic year
+- Illinois priority deadline: typically late January — check isac.org each year
+- Student Aid Index (SAI) replaces Expected Family Contribution (EFC) starting 2024-2025
+- Lower SAI = more aid eligible
+- Most schools use FAFSA for ALL financial aid including scholarships
+
+Section 3: WHAT COUNTS AS ASSETS
+- Parent assets counted at max 5.64% toward SAI (low impact)
+- Student assets counted at 20% toward SAI (higher impact)
+- Parent-owned 529 plan: only 5.64% counts toward SAI — very favorable
+- Primary home equity: does NOT count on FAFSA
+- Retirement accounts: do NOT count on FAFSA
+
+Section 4: ILLINOIS-SPECIFIC AID
+- MAP Grant (Monetary Award Program): up to $5,968/year for IL residents with financial need — requires FAFSA by state deadline
+- Check isac.org for current year deadlines and amounts
+
+Section 5: AFTER YOU SUBMIT
+- Schools receive your SAI and build aid packages
+- You receive award letters — compare them carefully
+- Award letters may mix grants (free), loans (repay), and work-study
+- Net price = total cost minus grants only (not loans)
+
+Each section has: "Ask Coach" button that opens Coach chat with that FAFSA topic pre-loaded.
+
+--- TAB: 529 TRACKER ---
+
+Header info box (gold border):
+Illinois Bright Start 529 Plan Key Facts:
+• State tax deduction: $10,000/year (single filers) or $20,000/year (joint filers) on IL state taxes
+• Federal taxes: contributions NOT deductible; earnings grow tax-FREE; qualified withdrawals 100% tax-free
+• FAFSA impact: parent-owned 529 counts as only 5.64% toward SAI — minimal impact on aid
+• SECURE 2.0 (2024): unused funds can roll to Roth IRA — up to $35,000 lifetime, account must be 15+ years old
+• Link: brightstartsavings.com
+
+Tracker fields (stored in Supabase table: fafsa_tracker with user_id):
+- Current 529 balance (number input, dollar formatted)
+- Target school annual cost (number input)
+- Years until enrollment (auto-calculated from graduation year 2026)
+- Projected balance at enrollment (calculate with 6% annual growth)
+- Coverage percentage (projected balance ÷ total 4-year cost)
+
+Show visual progress bar: "Your 529 covers X% of projected 4-year costs at [school name]"
+
+Contribution log: add entries with date and amount, show running total for current tax year with note "IL state deduction limit: $10,000 remaining this year"
+
+"Ask Coach about 529" button.
+
+--- TAB: SCHOLARSHIPS ---
+
+Supabase table: scholarships (id, user_id, name, amount_min, amount_max, deadline, status, url, requirements, notes)
+
+Pre-populate with these scholarships:
+1. Illinois MAP Grant | $0 | $5968 | Ongoing | https://www.isac.org | Illinois resident, financial need, FAFSA required | researching
+2. APA Psychology Undergraduate Scholarship | $1000 | $1000 | Varies | https://www.apa.org | Psychology major, sophomore+ standing (apply after starting college) | researching
+3. American Psychology-Law Society | $500 | $2000 | Varies | https://www.apadivisions.org/division-41 | Interest in forensic psychology / psychology and law | researching
+4. Jack Kent Cooke Foundation | $0 | $55000 | October annually | https://www.jkcf.org | High-achieving students with financial need | researching
+5. Alton Community Foundation | $500 | $5000 | Spring annually | https://www.altoncommunityfoundation.org | Alton/Madison County IL resident | researching
+6. Phi Kappa Phi Scholarship | $0 | $8500 | February annually | https://www.phikappaphi.org | First-year college student, chapter sponsorship | researching
+7. Women in STEM Scholarships | $500 | $5000 | Varies | https://www.fastweb.com | Female student in STEM or social science | researching
+
+Status values: researching | drafting | submitted | awarded | not-selected
+
+Display as cards showing: name, amount range, deadline countdown, status badge, requirements summary, link button, notes.
+
+"Total Potential Aid" counter at top: sum of max amounts for all scholarships in "submitted" status.
+
+"Ask Coach to Draft My Essay" button on each card: opens Coach with that scholarship's requirements pre-loaded.
+
+=== MODULE 7: THE COACH (STAR FEATURE) ===
+
+The Coach is powered by a Supabase Edge Function that calls the Anthropic Claude API.
+
+Edge Function URL: stored in environment variable VITE_COACH_URL
+(User will create this Edge Function separately — show a setup notice if the URL is not configured)
+
+Three tabs inside the Coach module:
+
+--- COACH TAB 1: CHAT ---
+
+Chat interface:
+- Message history displayed as bubbles (user = right side gold, coach = left side white with dark border)
+- Input bar at bottom with send button (enter key also sends)
+- "Clear Chat" button top right
+- Typing indicator (animated dots) while waiting for response
+
+Before each message is sent, the frontend:
+1. Queries Supabase for user's documents list (name + category)
+2. Queries Supabase for user's achievements list (title + role + impact)
+3. Formats both into a vaultContext string
+4. Sends to the Edge Function: { messages: conversationHistory, vaultContext: vaultContext }
+
+Show this welcome message on load:
+"Hi Sloan! I'm your Coach. I know your full profile, GPA, courses, activities, and everything in your Document Vault. Ask me anything — I can fill out application forms, help with essays, explain financial aid, quiz you on forensic psychology, or tell you what documents you still need. What do you need today?"
+
+--- COACH TAB 2: FORM FILLER ---
+
+Layout:
+- Large textarea at top: placeholder "Paste any college application form, FAFSA section, or scholarship question here..."
+- "Analyze Form" button (gold, full width)
+- Results section below showing formatted output
+
+Output format for each detected field:
+[FIELD NAME]
+Answer: [generated answer using Sloan's real data]
+Character count: XX / limit XX
+[individual Copy button]
+
+Below all fields: "Copy All Answers" button that copies entire output to clipboard.
+
+Warning banner above results: "Review all answers carefully before pasting. Verify school-specific requirements and dates."
+
+Loading state: show animated progress bar with text "Coach is reading your form and building your answers..."
+
+--- COACH TAB 3: ESSAY COACH ---
+
+Prompt type selector (dropdown):
+- Common App Personal Statement (650 words)
+- Why This School Essay (250-650 words)
+- Scholarship Essay (varies)
+- Extracurricular Activity Description (150 chars)
+- Short Answer (100-250 words)
+
+Fields:
+- Essay prompt text (textarea): "Paste the essay prompt here"
+- Word/character limit (number input)
+- Draft text (textarea, optional): "Paste your draft here for feedback"
+
+Two buttons:
+- "Get Outline" — Coach returns a structured outline using Sloan's real background (Patient Enrichment Program, forensic psych goal, Mu Alpha Theta, Link Crew, etc.)
+- "Review My Draft" — Coach returns specific, actionable feedback on the pasted draft
+
+All responses reference her actual activities and goals — the Edge Function system prompt ensures this.
+
+=== SUPABASE DATABASE SCHEMA ===
+
+Create these tables with Row Level Security enabled (users only see their own data):
+
+```sql
+-- Documents
+create table documents (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade,
+  name text not null,
+  category text,
+  file_path text,
+  file_size bigint,
+  created_at timestamp with time zone default now()
+);
+alter table documents enable row level security;
+create policy "Users see own docs" on documents for all using (auth.uid() = user_id);
+
+-- Achievements
+create table achievements (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade,
+  title text not null,
+  category text,
+  description text,
+  role text,
+  start_date date,
+  end_date date,
+  hours integer,
+  impact text,
+  created_at timestamp with time zone default now()
+);
+alter table achievements enable row level security;
+create policy "Users see own achievements" on achievements for all using (auth.uid() = user_id);
+
+-- College Applications
+create table college_applications (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade,
+  school_name text not null,
+  deadline date,
+  status text default 'researching',
+  portal_url text,
+  notes text,
+  created_at timestamp with time zone default now()
+);
+alter table college_applications enable row level security;
+create policy "Users see own applications" on college_applications for all using (auth.uid() = user_id);
+
+-- Scholarships
+create table scholarships (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade,
+  name text not null,
+  amount_min integer,
+  amount_max integer,
+  deadline date,
+  status text default 'researching',
+  url text,
+  requirements text,
+  notes text,
+  created_at timestamp with time zone default now()
+);
+alter table scholarships enable row level security;
+create policy "Users see own scholarships" on scholarships for all using (auth.uid() = user_id);
+
+-- FAFSA / 529 Tracker
+create table fafsa_tracker (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade unique,
+  balance_529 numeric,
+  target_school text,
+  target_annual_cost numeric,
+  updated_at timestamp with time zone default now()
+);
+alter table fafsa_tracker enable row level security;
+create policy "Users see own tracker" on fafsa_tracker for all using (auth.uid() = user_id);
+```
+
+=== SUPABASE EDGE FUNCTION (COACH BACKEND) ===
+
+Create a Supabase Edge Function named "coach" with this code. The user will deploy it separately.
+
+Show this code in a setup panel inside the Coach module with a copy button:
+
+```typescript
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+
+const ANTHROPIC_KEY = Deno.env.get('ANTHROPIC_API_KEY')
+
+serve(async (req) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, content-type',
+    'Content-Type': 'application/json'
+  }
+
+  if (req.method === 'OPTIONS') return new Response('ok', { headers })
+
+  const { messages, vaultContext } = await req.json()
+
+  const systemPrompt = `You are Sloan Smith's personal college application and academic coach. You are embedded in her private dashboard at sloanmelia.com.
+
+SLOAN'S PROFILE:
+- Full Name: Sloan Smith
+- School: Alton High School, Alton, Illinois
+- Graduating: May 2026
+- GPA: 3.684
+- Email: sloan@sloanmelia.com
+- Target: PhD in Forensic Psychology
+- Career goal: Licensed forensic psychologist conducting evaluations and expert testimony
+
+SENIOR YEAR COURSES: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Environmental Science, Spanish 2
+
+KEY ACTIVITIES:
+- Patient Enrichment Program: FOUNDER. Self-designed annual hospital donation drive collecting enrichment items for patients in mental health crisis or cognitive decline. Ongoing annual program, year 2. This is her signature achievement.
+- Mu Alpha Theta: National mathematics honor society member
+- Link Crew: Peer mentor for incoming freshmen
+- Salvation Army: Regular volunteer meal service
+- Church Nursery: Volunteer caregiver
+- Math Tutoring: Peer tutor
+
+DOCUMENT VAULT (what she has uploaded):
+${vaultContext || 'No documents uploaded yet. Remind her to upload her transcript, recommendation letters, and resume.'}
+
+YOUR CAPABILITIES:
+1. Analyze college application forms — paste form text and generate field-by-field answers using her real data
+2. Format her activities for Common App (150 char descriptions, 10 activities max)
+3. Help write and improve essays — always reference the Patient Enrichment Program as her centerpiece story
+4. Answer forensic psychology questions and quiz her on DSM-5, theorists, research methods
+5. Explain FAFSA, 529 plans, and scholarship eligibility in plain English
+6. Tell her what documents she still needs for specific applications
+7. Compare financial aid award letters
+
+RULES:
+- Always use her real data — never invent facts about her
+- When filling forms, format as: FIELD NAME: [answer] on separate lines
+- For essays, always offer to build from the Patient Enrichment Program angle — it is her strongest story
+- Be direct, specific, and encouraging — she is capable and driven
+- Keep responses clear and well-organized with headers when helpful`
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': ANTHROPIC_KEY,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2048,
+      system: systemPrompt,
+      messages: messages
+    })
+  })
+
+  const data = await response.json()
+  return new Response(JSON.stringify(data), { headers })
+})
+```
+
+=== ENVIRONMENT VARIABLES ===
+
+The app needs these environment variables (user sets these in Dyad or a .env file):
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_COACH_URL=https://your-project.supabase.co/functions/v1/coach
+
+=== ADDITIONAL UI REQUIREMENTS ===
+
+Loading states: every data fetch shows a skeleton loader or spinner in gold color.
+
+Empty states: every module has a friendly empty state message with an action button.
+
+Toast notifications: show success/error toasts (green/red, top right) for:
+- File uploaded successfully
+- Document deleted
+- Achievement saved
+- School added
+- Coach Edge Function not configured (amber warning, with setup instructions link)
+
+Mobile responsive: sidebar collapses on screens under 768px to a hamburger menu that slides in from the left.
+
+Header bar: visible on all pages (desktop and mobile) showing the app logo, current page name, and user avatar/initials in a circle.
+
+All buttons: use DM Mono font, uppercase, letter-spacing 0.12em. Primary buttons = dark ink background with cream text. Secondary = cream with dark ink border.
+
+=== WHAT TO BUILD FIRST ===
+
+Build in this order:
+1. App shell: routing, sidebar, login/logout
+2. Dashboard Home with stats
+3. Document Vault with upload and file list
+4. Achievements Log with pre-populated data
+5. College Tracker with pre-populated schools
+6. Study Library with 16 topic cards
+7. Financial Aid Hub with all three tabs
+8. Coach module with all three tabs and Edge Function setup panel
+
+==========================================
+END OF DYAD PROMPT — PASTE EVERYTHING ABOVE INTO DYAD CHAT
+==========================================

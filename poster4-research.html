@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Research Methods Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #3a2a0a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #e8c870; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #e8c870; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #a08050; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #3a2a0a; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #3a2a0a; color: #f8f4ec; padding: 0.25rem 0.5rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .method-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+
+  .method-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; border-left: 5px solid #3a2a0a; }
+  .method-card.experimental { border-left-color: #1e3a1e; }
+  .method-card.quasi { border-left-color: #1a3a4a; }
+  .method-card.correlational { border-left-color: #c8922a; }
+  .method-card.descriptive { border-left-color: #5a2a7a; }
+  .method-card.qualitative { border-left-color: #b5230f; }
+
+  .method-card .method-type { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7e6e; display: block; margin-bottom: 0.25rem; }
+  .method-card .method-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .method-card .method-desc { font-size: 0.87rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; }
+  .method-card .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.7rem; }
+  .method-card .pros, .method-card .cons { padding: 0.5rem 0.7rem; font-size: 0.8rem; }
+  .method-card .pros { background: #f0f8f0; }
+  .method-card .cons { background: #fff5f5; }
+  .method-card .pros .label { font-family: 'DM Mono', monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: #2a6e2a; display: block; margin-bottom: 0.2rem; }
+  .method-card .cons .label { font-family: 'DM Mono', monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: #b5230f; display: block; margin-bottom: 0.2rem; }
+  .method-card .example { background: #f5f0e5; border-left: 3px solid #c8922a; padding: 0.45rem 0.7rem; font-size: 0.82rem; color: #3a2a10; font-style: italic; }
+  .method-card .example::before { content: 'Example: '; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: #c8922a; display: block; margin-bottom: 0.1rem; }
+
+  .validity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; background: #ddd8cc; border: 1px solid #ddd8cc; }
+  .validity-cell { background: #fff; padding: 1rem 1.2rem; }
+  .validity-cell .v-type { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: #3a2a0a; display: block; margin-bottom: 0.25rem; }
+  .validity-cell .v-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .validity-cell p { font-size: 0.84rem; color: #2a2218; line-height: 1.5; }
+  .validity-cell .threat { margin-top: 0.5rem; font-size: 0.78rem; color: #b5230f; font-style: italic; }
+
+  .ethics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+  .ethics-card { border: 1px solid #ddd8cc; padding: 1rem 1.2rem; background: #fff; }
+  .ethics-card .principle { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .ethics-card .e-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.4rem; }
+  .ethics-card p { font-size: 0.84rem; color: #2a2218; line-height: 1.5; }
+  .ethics-card .forensic-note { margin-top: 0.5rem; font-size: 0.78rem; color: #3a2a0a; font-style: italic; border-top: 1px dashed #ddd8cc; padding-top: 0.4rem; }
+
+  .stats-strip { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: #ddd8cc; border: 1px solid #ddd8cc; }
+  .stats-cell { background: #fff; padding: 0.9rem 1.1rem; }
+  .stats-cell .s-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #b5230f; display: block; margin-bottom: 0.2rem; }
+  .stats-cell .s-name { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .stats-cell .s-when { font-size: 0.8rem; color: #2a2218; line-height: 1.45; }
+
+  .page-footer { background: #3a2a0a; color: #7a6030; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #e8c870; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Forensic Psychology Study Series · Poster 04 of 08</span>
+  <h1><em>Research Methods</em> —<br>Study Designs, Validity &amp; Ethics</h1>
+  <p class="subtitle">Every claim in psychology — including every forensic expert opinion — rests on research. Understanding how that research was designed tells you how much to trust the conclusion.</p>
+</div>
+
+<main>
+
+  <div class="section-header">
+    <span class="num">01</span>
+    <h2>Research Design Types</h2>
+    <span class="desc">The architecture of every study you will read</span>
+  </div>
+
+  <div class="method-grid">
+
+    <div class="method-card experimental">
+      <span class="method-type">Strongest Causal Evidence</span>
+      <div class="method-name">True Experiment (RCT)</div>
+      <p class="method-desc">Participants randomly assigned to conditions. Experimenter controls the independent variable. Gold standard for establishing cause-and-effect. Random assignment eliminates most confounds.</p>
+      <div class="pros-cons">
+        <div class="pros"><span class="label">Strengths</span>Establishes causation. Controls for confounds. Replicable.</div>
+        <div class="cons"><span class="label">Weaknesses</span>Often impossible ethically. Low ecological validity. Expensive.</div>
+      </div>
+      <div class="example">Randomly assign offenders to CBT vs. no treatment; measure recidivism rates at 2 years.</div>
+    </div>
+
+    <div class="method-card quasi">
+      <span class="method-type">Moderate Causal Evidence</span>
+      <div class="method-name">Quasi-Experiment</div>
+      <p class="method-desc">Resembles an experiment but lacks true random assignment. Uses pre-existing groups or natural circumstances to compare conditions. Common in forensic research where randomization is impossible.</p>
+      <div class="pros-cons">
+        <div class="pros"><span class="label">Strengths</span>More feasible. Higher external validity than lab experiments.</div>
+        <div class="cons"><span class="label">Weaknesses</span>Cannot fully rule out confounds. Selection bias risk.</div>
+      </div>
+      <div class="example">Compare recidivism rates between inmates who voluntarily enrolled in treatment vs. those who did not.</div>
+    </div>
+
+    <div class="method-card correlational">
+      <span class="method-type">Association — No Causation</span>
+      <div class="method-name">Correlational Study</div>
+      <p class="method-desc">Measures the relationship between two or more variables without manipulating either. Establishes that variables co-vary, not that one causes the other. Generates hypotheses for experimental testing.</p>
+      <div class="pros-cons">
+        <div class="pros"><span class="label">Strengths</span>Easy to conduct. Large samples. Naturalistic. Generates hypotheses.</div>
+        <div class="cons"><span class="label">Weaknesses</span>Cannot establish causation. Third variable problem.</div>
+      </div>
+      <div class="example">PCL-R scores and violent recidivism rates correlate at r = 0.27 across studies — meaningful but not deterministic.</div>
+    </div>
+
+    <div class="method-card descriptive">
+      <span class="method-type">Observation Only</span>
+      <div class="method-name">Case Study</div>
+      <p class="method-desc">In-depth analysis of a single individual or small group. Rich, detailed data. Cannot establish causation or generalize findings. Historically important in psychology (Phineas Gage, Henry Molaison).</p>
+      <div class="pros-cons">
+        <div class="pros"><span class="label">Strengths</span>Extreme depth. Rare phenomena. Hypothesis generation.</div>
+        <div class="cons"><span class="label">Weaknesses</span>No generalizability. No causation. Researcher bias risk.</div>
+      </div>
+      <div class="example">Detailed forensic case study of John Wayne Gacy to understand organized serial killer personality structure.</div>
+    </div>
+
+    <div class="method-card descriptive">
+      <span class="method-type">Population Snapshot</span>
+      <div class="method-name">Survey / Longitudinal Study</div>
+      <p class="method-desc">Surveys measure variables at one point in time. Longitudinal studies follow the same participants over time — years or decades — to track development. Best for developmental and risk factor research.</p>
+      <div class="pros-cons">
+        <div class="pros"><span class="label">Strengths</span>Tracks change over time. Establishes temporal sequence. Large samples.</div>
+        <div class="cons"><span class="label">Weaknesses</span>Expensive. Attrition. Cannot establish causation alone.</div>
+      </div>
+      <div class="example">The Cambridge Study in Delinquent Development — followed 411 London boys from age 8 to 50 to identify risk factors for persistent offending.</div>
+    </div>
+
+    <div class="method-card qualitative">
+      <span class="method-type">Lived Experience</span>
+      <div class="method-name">Qualitative Research</div>
+      <p class="method-desc">Non-numerical data — interviews, observations, focus groups, document analysis. Captures meaning, experience, and context that numbers miss. Often used to develop theory or understand new phenomena.</p>
+      <div class="pros-cons">
+        <div class="pros"><span class="label">Strengths</span>Rich depth. Captures subjective experience. Theory generation.</div>
+        <div class="cons"><span class="label">Weaknesses</span>Not generalizable. Researcher bias. Not quantifiable.</div>
+      </div>
+      <div class="example">In-depth interviews with exonerated individuals about their interrogation experience to understand coerced confession dynamics.</div>
+    </div>
+
+  </div>
+
+  <div class="section-header">
+    <span class="num">02</span>
+    <h2>Validity — The Four Types Every Researcher Must Know</h2>
+    <span class="desc">What makes a study trustworthy?</span>
+  </div>
+
+  <div class="validity-grid">
+    <div class="validity-cell">
+      <span class="v-type">Internal Validity</span>
+      <div class="v-name">Causal Confidence</div>
+      <p>Does the study actually measure the effect of the independent variable — or is something else causing the result? High internal validity = confident causation claim.</p>
+      <p class="threat">Threats: Selection bias, history effects, maturation, instrumentation changes, demand characteristics.</p>
+    </div>
+    <div class="validity-cell">
+      <span class="v-type">External Validity</span>
+      <div class="v-name">Generalizability</div>
+      <p>Can findings be applied beyond the sample to other people, settings, and times? Lab studies often sacrifice external validity for internal validity.</p>
+      <p class="threat">Threats: Volunteer bias, artificial settings, WEIRD samples (Western, Educated, Industrialized, Rich, Democratic).</p>
+    </div>
+    <div class="validity-cell">
+      <span class="v-type">Construct Validity</span>
+      <div class="v-name">Measuring What You Claim</div>
+      <p>Does your measure actually measure the construct it claims to? A "violence risk" scale must actually predict violence — not just antisocial attitudes.</p>
+      <p class="threat">Threats: Poor operationalization, measuring proxies instead of the actual construct, criterion contamination.</p>
+    </div>
+    <div class="validity-cell">
+      <span class="v-type">Statistical Conclusion Validity</span>
+      <div class="v-name">Math Integrity</div>
+      <p>Were the correct statistical tests used? Was the sample large enough? Are the conclusions proportionate to the data? P-values alone don't tell the whole story.</p>
+      <p class="threat">Threats: Insufficient power, violated assumptions, p-hacking, multiple comparisons without correction.</p>
+    </div>
+    <div class="validity-cell">
+      <span class="v-type">Test Validity Types</span>
+      <div class="v-name">Content Validity</div>
+      <p>Does the test cover all relevant aspects of the construct? A psychopathy measure that only assesses behavior lacks the interpersonal/affective content validity to measure the full construct.</p>
+      <p class="threat">Assessed by expert panel review. Essential for forensic tool admissibility under Daubert standard.</p>
+    </div>
+    <div class="validity-cell">
+      <span class="v-type">Test Validity Types</span>
+      <div class="v-name">Predictive Validity</div>
+      <p>Does the test predict what it claims to predict? The PCL-R has predictive validity if high scores actually correlate with violent recidivism in follow-up studies.</p>
+      <p class="threat">Assessed by correlating test scores with criterion outcomes at a later time point. AUC is the key statistic.</p>
+    </div>
+    <div class="validity-cell">
+      <span class="v-type">Reliability</span>
+      <div class="v-name">Inter-Rater Reliability</div>
+      <p>Do two independent raters arrive at the same score? Critical for tools like the PCL-R where scoring depends on clinical judgment. Measured by Cohen's Kappa (≥0.70 required).</p>
+      <p class="threat">Low inter-rater reliability undermines admissibility in court. Training and structured administration protocols improve reliability.</p>
+    </div>
+    <div class="validity-cell">
+      <span class="v-type">Reliability</span>
+      <div class="v-name">Test-Retest Reliability</div>
+      <p>Does the same person score similarly if tested twice over time? Important for stable traits. Risk tools measuring dynamic factors expect some score change — that's the point.</p>
+      <p class="threat">Time interval, learning effects, and genuine trait change all affect test-retest reliability interpretation.</p>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="num">03</span>
+    <h2>Research Ethics — The Non-Negotiables</h2>
+    <span class="desc">The APA code and IRB requirements every researcher must know</span>
+  </div>
+
+  <div class="ethics-grid">
+    <div class="ethics-card">
+      <span class="e-label">Belmont Report Principle</span>
+      <div class="principle">Informed Consent</div>
+      <p>Participants must be fully informed of risks, benefits, and their right to withdraw at any time without penalty — before they agree to participate.</p>
+      <div class="forensic-note">Incarcerated populations are considered vulnerable — additional protections required. Consent obtained under coercion is not valid consent.</div>
+    </div>
+    <div class="ethics-card">
+      <span class="e-label">Belmont Report Principle</span>
+      <div class="principle">Beneficence / Non-Maleficence</div>
+      <p>Research must maximize potential benefits and minimize potential harms. Researchers have an obligation to protect participants from harm.</p>
+      <div class="forensic-note">Forensic evaluations involve unique tension: the evaluator serves the court, not the defendant. This creates role conflict that must be disclosed.</div>
+    </div>
+    <div class="ethics-card">
+      <span class="e-label">Belmont Report Principle</span>
+      <div class="principle">Justice / Equity</div>
+      <p>Benefits and burdens of research must be distributed fairly across society. Historically disadvantaged groups must not bear disproportionate research risk.</p>
+      <div class="forensic-note">Historical abuses (Tuskegee, prison experiments) led to current protections. IRB oversight is mandatory for all human subjects research.</div>
+    </div>
+    <div class="ethics-card">
+      <span class="e-label">Research Practice</span>
+      <div class="principle">Confidentiality / Limits</div>
+      <p>Research data must be kept confidential. In forensic contexts, confidentiality has legal limits — duty to warn (Tarasoff) and mandatory reporting obligations override confidentiality.</p>
+      <div class="forensic-note">Forensic evaluees must be told upfront that the evaluation is not confidential and will be shared with the court. This fundamentally changes the evaluative relationship.</div>
+    </div>
+    <div class="ethics-card">
+      <span class="e-label">Research Practice</span>
+      <div class="principle">Deception &amp; Debriefing</div>
+      <p>Deception is sometimes permitted in research if: the study cannot be done otherwise, risks are minimal, and participants are debriefed fully afterward.</p>
+      <div class="forensic-note">Classic studies (Milgram, Zimbardo) would not pass modern IRB review. The field's ethical standards have evolved significantly since the 1960s–70s.</div>
+    </div>
+    <div class="ethics-card">
+      <span class="e-label">Publication Ethics</span>
+      <div class="principle">Replication Crisis</div>
+      <p>Many classic psychology findings (ego depletion, power poses, priming effects) have failed to replicate. Forensic testimony based on non-replicated findings is ethically problematic.</p>
+      <div class="forensic-note">Expert witnesses have an obligation to represent the state of the science accurately — including its limitations. Overclaiming findings is an ethical violation under APA guidelines.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="num">04</span>
+    <h2>When to Use Which Statistical Test</h2>
+    <span class="desc">The researcher's quick decision guide</span>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stats-cell">
+      <span class="s-label">Compare 2 Group Means</span>
+      <div class="s-name">Independent t-test</div>
+      <p class="s-when">Use when: Comparing means of two separate groups on a continuous variable. E.g., Do high-PCL-R scorers recidivate faster than low scorers?</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Compare 3+ Group Means</span>
+      <div class="s-name">ANOVA</div>
+      <p class="s-when">Use when: Comparing means across three or more groups. E.g., Do low, medium, and high-risk groups differ in recidivism rates?</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Categorical Data</span>
+      <div class="s-name">Chi-Square Test</div>
+      <p class="s-when">Use when: Comparing frequencies or proportions. E.g., Is the proportion of white male offenders greater than expected from population demographics?</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Two Continuous Variables</span>
+      <div class="s-name">Pearson Correlation</div>
+      <p class="s-when">Use when: Measuring the linear relationship between two continuous variables. E.g., Does PCL-R score correlate with number of prior convictions?</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Predict from Variables</span>
+      <div class="s-name">Regression Analysis</div>
+      <p class="s-when">Use when: Predicting an outcome from one or more predictor variables. E.g., Which factors best predict violent recidivism in a parole sample?</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Predict Binary Outcome</span>
+      <div class="s-name">Logistic Regression</div>
+      <p class="s-when">Use when: Predicting a yes/no outcome. E.g., What factors predict whether an individual will reoffend (yes/no) within 5 years?</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Diagnostic Accuracy</span>
+      <div class="s-name">ROC / AUC Analysis</div>
+      <p class="s-when">Use when: Evaluating how well a tool distinguishes between two groups (recidivists vs. non-recidivists). Standard for forensic risk tool validation research.</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Rater Agreement</span>
+      <div class="s-name">Cohen's Kappa</div>
+      <p class="s-when">Use when: Measuring agreement between two raters beyond what chance predicts. Required to establish reliability of clinical rating tools like PCL-R for court use.</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Synthesize Many Studies</span>
+      <div class="s-name">Meta-Analysis</div>
+      <p class="s-when">Use when: Combining results across many studies to estimate the overall effect size. The strongest form of evidence in evidence-based practice and Daubert admissibility arguments.</p>
+    </div>
+    <div class="stats-cell">
+      <span class="s-label">Time to Event</span>
+      <div class="s-name">Survival Analysis</div>
+      <p class="s-when">Use when: Measuring how long until an event occurs (e.g., time to first reoffense after release). Accounts for participants who haven't yet experienced the event at study end.</p>
+    </div>
+  </div>
+
+</main>
+
+<div class="page-footer">
+  <span>RESEARCH METHODS CHEAT SHEET</span>
+  <span>Poster 04 of 08 · Sloan's Study Kit</span>
+  <span>Design · Validity · Ethics · Statistics</span>
+</div>
+</body>
+</html>

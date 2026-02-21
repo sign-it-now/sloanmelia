@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>SloanMelia.com — Complete Build Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #faf7f2 !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #faf7f2 !important; }
+  body { background: #faf7f2 !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.75; max-width: 860px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+  /* ── HEADER ── */
+  .doc-header { border-bottom: 3px solid #0e0c09; padding: 3rem 0 2rem; margin-bottom: 3rem; }
+  .doc-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.8rem; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.05; margin-bottom: 0.8rem; }
+  .doc-header h1 em { font-style: italic; color: #c8922a; }
+  .doc-header .sub { font-size: 1rem; color: #6a5e4e; max-width: 580px; line-height: 1.65; }
+  .meta-row { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5ddd0; }
+  .meta-item { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; }
+  .meta-item .ml { text-transform: uppercase; color: #9a9080; display: block; margin-bottom: 0.2rem; }
+  .meta-item .mv { color: #0e0c09; font-weight: 500; }
+
+  /* ── TOC ── */
+  .toc { background: #f0ead8; border-left: 4px solid #c8922a; padding: 1.5rem 2rem; margin-bottom: 3rem; }
+  .toc-title { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 1rem; }
+  .toc ol { list-style: decimal; padding-left: 1.5rem; }
+  .toc li { font-size: 0.9rem; color: #3a3020; margin-bottom: 0.3rem; }
+  .toc a { color: #1a4a45; text-decoration: none; font-weight: 500; }
+  .toc a:hover { text-decoration: underline; }
+  .toc .toc-sub { list-style: none; padding-left: 1rem; margin-top: 0.2rem; }
+  .toc .toc-sub li { font-size: 0.82rem; color: #7a7060; margin-bottom: 0.15rem; }
+  .toc .toc-sub li::before { content: '→ '; color: #c8922a; }
+
+  /* ── PHASE DIVIDERS ── */
+  .phase-header { margin: 3.5rem 0 2rem; padding: 1.5rem 2rem; position: relative; }
+  .phase-header.p1 { background: #0e1a1a; color: #f0fafa; }
+  .phase-header.p2 { background: #1a1a0e; color: #fafaf0; }
+  .phase-header.p3 { background: #1a0e0e; color: #faf0f0; }
+  .phase-header.p4 { background: #0e0e1a; color: #f0f0fa; }
+  .phase-header.p5 { background: #1a0e1a; color: #faf0fa; }
+  .phase-header .ph-num { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; display: block; margin-bottom: 0.4rem; opacity: 0.6; }
+  .phase-header h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+  .phase-header h2 em { font-style: italic; opacity: 0.75; }
+  .phase-header .ph-time { font-family: 'DM Mono', monospace; font-size: 0.6rem; margin-top: 0.5rem; display: block; opacity: 0.55; letter-spacing: 0.1em; }
+  .phase-header .ph-goal { margin-top: 0.8rem; font-size: 0.9rem; opacity: 0.8; line-height: 1.55; }
+
+  /* ── STEPS ── */
+  .step { margin-bottom: 2.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid #e5ddd0; }
+  .step:last-child { border-bottom: none; }
+  .step-num { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.3rem; }
+  .step h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.7rem; color: #0e0c09; }
+  .step p { font-size: 0.92rem; color: #2a2218; line-height: 1.7; margin-bottom: 0.8rem; }
+  .step ul, .step ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+  .step li { font-size: 0.9rem; color: #2a2218; margin-bottom: 0.4rem; line-height: 1.6; }
+
+  /* ── CODE BLOCKS ── */
+  .code-block { background: #0e0c09; color: #e8e0d0; font-family: 'DM Mono', monospace; font-size: 0.78rem; line-height: 1.65; padding: 1.2rem 1.5rem; margin: 0.8rem 0 1rem; overflow-x: auto; border-radius: 0; }
+  .code-block .comment { color: #706050; }
+  .code-block .key { color: #7ec8c8; }
+  .code-block .val { color: #90e090; }
+  .code-block .str { color: #e8b870; }
+  .code-block .kw { color: #c890e8; }
+  .code-block .url { color: #7ec8c8; text-decoration: underline; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout { padding: 1rem 1.3rem; margin: 1rem 0; font-size: 0.88rem; line-height: 1.65; }
+  .callout.action { background: #f0faf0; border-left: 4px solid #2a6a2a; }
+  .callout.action::before { content: '▶  ACTION: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: #2a6a2a; display: block; margin-bottom: 0.3rem; }
+  .callout.warn { background: #faf5e8; border-left: 4px solid #c8922a; }
+  .callout.warn::before { content: '⚠  IMPORTANT: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.3rem; }
+  .callout.info { background: #f0f0fa; border-left: 4px solid #3a3a9a; }
+  .callout.info::before { content: 'ℹ  NOTE: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: #3a3a9a; display: block; margin-bottom: 0.3rem; }
+  .callout.coach { background: #faf0ff; border-left: 4px solid #8a2ab5; }
+  .callout.coach::before { content: '🤖  COACH (CLAUDE API): '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8a2ab5; display: block; margin-bottom: 0.3rem; }
+
+  /* ── LINK TABLE ── */
+  .link-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; margin: 1rem 0; }
+  .link-table th { background: #0e0c09; color: #f0ead8; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.6rem 1rem; text-align: left; }
+  .link-table td { padding: 0.6rem 1rem; border-bottom: 1px solid #e5ddd0; vertical-align: top; font-size: 0.87rem; }
+  .link-table tr:nth-child(even) td { background: #f5f0e5; }
+  .link-table td a { color: #1a4a45; font-weight: 600; }
+  .link-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; white-space: nowrap; }
+  .link-table td.cost { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: #2a6a2a; font-weight: 500; }
+
+  /* ── SECTION RULE ── */
+  .section-rule { border: none; border-top: 2px solid #0e0c09; margin: 3rem 0 2rem; }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { display: flex; gap: 0.8rem; align-items: flex-start; padding: 0.5rem 0; border-bottom: 1px dashed #e5ddd0; font-size: 0.9rem; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before { content: '☐'; font-size: 1.1rem; color: #c8922a; flex-shrink: 0; margin-top: 0.1rem; }
+
+  /* ── FOOTER ── */
+  .doc-footer { border-top: 2px solid #0e0c09; padding: 1.5rem 0; margin-top: 4rem; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; color: #9a9080; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="doc-header">
+  <span class="eyebrow">SloanMelia.com · Complete Build Guide · All 5 Phases</span>
+  <h1>Build <em>SloanMelia.com</em><br>Step by Step</h1>
+  <p class="sub">A complete technical walkthrough from domain registration through a fully deployed AI-powered college application platform with the Claude coach embedded throughout. Follow in order — each phase builds on the last.</p>
+  <div class="meta-row">
+    <div class="meta-item"><span class="ml">Total Build Time</span><span class="mv">8–15 sessions with Claude</span></div>
+    <div class="meta-item"><span class="ml">Monthly Cost at Completion</span><span class="mv">~$15/mo (mostly Claude API)</span></div>
+    <div class="meta-item"><span class="ml">Domain Registration</span><span class="mv">~$12/year</span></div>
+    <div class="meta-item"><span class="ml">Skill Level Required</span><span class="mv">Beginner–friendly with Claude</span></div>
+  </div>
+</div>
+
+<!-- ── TOC ── -->
+<div class="toc">
+  <span class="toc-title">Table of Contents</span>
+  <ol>
+    <li><a href="#prereq">Before You Start — Accounts to Create</a></li>
+    <li><a href="#phase1">Phase 1 — Domain, Hosting &amp; Public Profile Page</a>
+      <ul class="toc-sub">
+        <li>Register sloanmelia.com</li>
+        <li>Set up Netlify hosting</li>
+        <li>Deploy the profile page</li>
+        <li>Connect domain to Netlify</li>
+        <li>Set up professional email</li>
+      </ul>
+    </li>
+    <li><a href="#phase2">Phase 2 — Dashboard, Login &amp; Document Vault</a>
+      <ul class="toc-sub">
+        <li>Create Supabase project</li>
+        <li>Build login system</li>
+        <li>Build Document Vault</li>
+        <li>Build Study Library with the 16 posters</li>
+      </ul>
+    </li>
+    <li><a href="#phase3">Phase 3 — AI Coach + College Application Tools</a>
+      <ul class="toc-sub">
+        <li>Get Claude API key</li>
+        <li>Build the Coach interface</li>
+        <li>Build Form Analyzer &amp; Copy-Paste Generator</li>
+        <li>Build Achievements Log</li>
+        <li>Build College Tracker</li>
+      </ul>
+    </li>
+    <li><a href="#phase4">Phase 4 — Financial Aid Hub</a>
+      <ul class="toc-sub">
+        <li>FAFSA walkthrough module</li>
+        <li>Illinois Bright Start 529 tracker</li>
+        <li>Scholarship database &amp; tracker</li>
+      </ul>
+    </li>
+    <li><a href="#phase5">Phase 5 — Profile Builder &amp; Lifetime Features</a></li>
+    <li><a href="#coach-system">The Coach System — Full Implementation Guide</a></li>
+    <li><a href="#checklist">Master Checklist</a></li>
+  </ol>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PREREQUISITES
+═══════════════════════════════════════════════════ -->
+<hr class="section-rule" id="prereq">
+<h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;margin-bottom:1.5rem;">Before You Start — Create These Accounts First</h2>
+<p style="font-size:0.92rem;color:#3a3020;margin-bottom:1.5rem;">All free. All necessary. Do these before any build session so you're not stopping mid-build to sign up for things.</p>
+
+<table class="link-table">
+  <thead><tr><th>Service</th><th>URL</th><th>What It's For</th><th>Cost</th></tr></thead>
+  <tbody>
+    <tr><td>Namecheap</td><td><a href="https://namecheap.com">namecheap.com</a></td><td>Domain registration — sloanmelia.com</td><td class="cost">~$12/yr</td></tr>
+    <tr><td>GitHub</td><td><a href="https://github.com">github.com</a></td><td>Stores all app code, enables auto-deploy</td><td class="cost">Free</td></tr>
+    <tr><td>Netlify</td><td><a href="https://netlify.com">netlify.com</a></td><td>Hosts the website publicly — sign in WITH your GitHub account</td><td class="cost">Free tier</td></tr>
+    <tr><td>Supabase</td><td><a href="https://supabase.com">supabase.com</a></td><td>Database, authentication, file storage — sign in WITH GitHub</td><td class="cost">Free tier</td></tr>
+    <tr><td>Anthropic Console</td><td><a href="https://console.anthropic.com">console.anthropic.com</a></td><td>Get Claude API key for the AI coach — add $10 credit to start</td><td class="cost">Pay as you go</td></tr>
+    <tr><td>Zoho Mail</td><td><a href="https://zoho.com/mail">zoho.com/mail</a></td><td>sloan@sloanmelia.com professional email — free 1 mailbox</td><td class="cost">Free</td></tr>
+  </tbody>
+</table>
+
+<div class="callout warn">Sign up for GitHub first, then use "Sign in with GitHub" on both Netlify AND Supabase. This connects all three together and makes deployment automatic — you push code to GitHub and it goes live on Netlify within seconds.</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PHASE 1
+═══════════════════════════════════════════════════ -->
+<div class="phase-header p1" id="phase1">
+  <span class="ph-num">Phase 01 of 05</span>
+  <h2>Domain, Hosting &amp; <em>Public Profile Page</em></h2>
+  <span class="ph-time">Estimated time: 1–2 sessions · Result: sloanmelia.com is live</span>
+  <p class="ph-goal">By the end of this phase, Sloan has a real, publicly accessible URL she can hand to anyone. The profile page we already built gets deployed here.</p>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 1.1</span>
+  <h3>Register sloanmelia.com at Namecheap</h3>
+  <ol>
+    <li>Go to <strong>namecheap.com</strong> and search for <code>sloanmelia.com</code></li>
+    <li>Add to cart — it should be ~$12 for the first year</li>
+    <li>At checkout, turn OFF auto-renew for now (you can turn it back on later), turn OFF private registration (it's a fee, and a public profile site doesn't need it)</li>
+    <li>Complete purchase — you now own the domain</li>
+    <li>Go to your Namecheap Dashboard → Manage → Advanced DNS — leave this tab open, you'll come back to it in Step 1.5</li>
+  </ol>
+  <div class="callout warn">sloanmelia.com is the goal. If it's taken (unlikely), try sloan-melia.com or sloanmsmith.com. Do not use a .net or .org — .com is the only one that looks professional on a college application.</div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 1.2</span>
+  <h3>Set Up Your GitHub Repository</h3>
+  <ol>
+    <li>Log into <strong>github.com</strong></li>
+    <li>Click the green <strong>New</strong> button to create a new repository</li>
+    <li>Name it: <code>sloanmelia-site</code></li>
+    <li>Set it to <strong>Private</strong> (nobody needs to read her source code)</li>
+    <li>Check "Add a README file"</li>
+    <li>Click <strong>Create repository</strong></li>
+    <li>Click <strong>Add file → Upload files</strong></li>
+    <li>Upload the <code>sloan-profile.html</code> file we built — rename it <code>index.html</code> before uploading</li>
+    <li>Commit the file — click <strong>Commit changes</strong></li>
+  </ol>
+  <div class="callout info">Rename the file to index.html before uploading. That's the standard name web servers look for as the homepage. If it stays named sloan-profile.html, the URL would be sloanmelia.com/sloan-profile.html instead of just sloanmelia.com.</div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 1.3</span>
+  <h3>Deploy to Netlify</h3>
+  <ol>
+    <li>Log into <strong>netlify.com</strong> (with your GitHub account)</li>
+    <li>Click <strong>Add new site → Import an existing project</strong></li>
+    <li>Choose <strong>GitHub</strong> as the source</li>
+    <li>Find and select <code>sloanmelia-site</code></li>
+    <li>Leave all settings as-is — click <strong>Deploy site</strong></li>
+    <li>Netlify will give you a random URL like <code>quirky-panda-abc123.netlify.app</code> — this is your staging URL, the site is already live here</li>
+  </ol>
+  <div class="callout action">Visit the Netlify URL right now to confirm the site loads correctly before doing anything else. If it shows a blank page, the file name issue from Step 1.2 is the likely cause — make sure the file is named index.html.</div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 1.4</span>
+  <h3>Connect Your Custom Domain</h3>
+  <ol>
+    <li>In Netlify, go to <strong>Site settings → Domain management → Add custom domain</strong></li>
+    <li>Type <code>sloanmelia.com</code> and click Verify</li>
+    <li>Netlify will show you DNS records to add — specifically two values: a <strong>CNAME record</strong> and an <strong>A record</strong></li>
+    <li>Go back to your Namecheap tab (Advanced DNS) and add those records exactly as Netlify shows them</li>
+    <li>DNS propagation takes 5–30 minutes — go get coffee</li>
+    <li>Come back and Netlify will show a green checkmark and enable HTTPS automatically (free SSL certificate)</li>
+  </ol>
+  <div class="callout info">After DNS propagates, sloanmelia.com will serve her profile page over HTTPS. The little padlock icon in browsers means it's secure. Netlify handles this automatically — you don't need to do anything for it.</div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 1.5</span>
+  <h3>Set Up Professional Email — sloan@sloanmelia.com</h3>
+  <ol>
+    <li>Go to <strong>zoho.com/mail</strong> and click <strong>Sign Up For Free</strong></li>
+    <li>Choose the <strong>Forever Free plan</strong> (1 user, 5GB)</li>
+    <li>Enter <code>sloanmelia.com</code> as the domain</li>
+    <li>Zoho will give you MX records to add to Namecheap DNS — add them the same way you added the Netlify records</li>
+    <li>Create the mailbox: <code>sloan@sloanmelia.com</code></li>
+    <li>Verify the domain — Zoho walks you through it step by step</li>
+    <li>Update the email address in <code>index.html</code> from Gmail to <code>sloan@sloanmelia.com</code></li>
+    <li>Re-upload the updated index.html to GitHub — Netlify auto-deploys within seconds</li>
+  </ol>
+</div>
+
+<div class="callout action">Phase 1 complete. sloanmelia.com is live with HTTPS. She has a professional email. Share the URL — it's ready for college applications right now. Come back to Claude and paste "ready for Phase 2" when you want to continue.</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PHASE 2
+═══════════════════════════════════════════════════ -->
+<div class="phase-header p2" id="phase2">
+  <span class="ph-num">Phase 02 of 05</span>
+  <h2>Dashboard, Login &amp; <em>Document Vault</em></h2>
+  <span class="ph-time">Estimated time: 3–4 sessions · Result: Private dashboard with login, file storage, and all 16 study posters accessible</span>
+  <p class="ph-goal">This phase transforms the single-page profile into a full application with a private backend. Sloan logs in, uploads documents, and can access all her study materials in one place.</p>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 2.1</span>
+  <h3>Create Your Supabase Project</h3>
+  <ol>
+    <li>Go to <strong>supabase.com</strong> and sign in with GitHub</li>
+    <li>Click <strong>New Project</strong></li>
+    <li>Name it: <code>sloanmelia</code></li>
+    <li>Choose a strong database password — save it somewhere safe</li>
+    <li>Select region: <strong>US East</strong></li>
+    <li>Click <strong>Create new project</strong> — takes about 2 minutes to spin up</li>
+    <li>Once ready, go to <strong>Project Settings → API</strong></li>
+    <li>Copy and save: <strong>Project URL</strong> and <strong>anon public key</strong> — you'll need these in every build session</li>
+  </ol>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 2.2</span>
+  <h3>Set Up the Database Tables in Supabase</h3>
+  <p>Go to Supabase → <strong>Table Editor → New Table</strong> and create these three tables:</p>
+
+  <p><strong>Table 1: documents</strong></p>
+  <div class="code-block">
+<span class="comment">-- Run this in Supabase SQL Editor (Dashboard → SQL Editor → New query)</span>
+
+<span class="kw">CREATE TABLE</span> documents (
+  id          uuid <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  user_id     uuid <span class="kw">REFERENCES</span> auth.users(<span class="key">id</span>) <span class="kw">ON DELETE CASCADE</span>,
+  name        text <span class="kw">NOT NULL</span>,
+  category    text,   <span class="comment">-- 'transcript', 'recommendation', 'resume', 'certificate', 'other'</span>
+  file_path   text,
+  file_size   bigint,
+  created_at  timestamp <span class="kw">WITH TIME ZONE DEFAULT</span> now()
+);
+
+<span class="comment">-- Enable Row Level Security (users can only see their own docs)</span>
+<span class="kw">ALTER TABLE</span> documents <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">CREATE POLICY</span> <span class="str">"Users see own documents"</span> <span class="kw">ON</span> documents
+  <span class="kw">FOR ALL USING</span> (auth.uid() = user_id);
+  </div>
+
+  <p><strong>Table 2: achievements</strong></p>
+  <div class="code-block">
+<span class="kw">CREATE TABLE</span> achievements (
+  id          uuid <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  user_id     uuid <span class="kw">REFERENCES</span> auth.users(<span class="key">id</span>) <span class="kw">ON DELETE CASCADE</span>,
+  title       text <span class="kw">NOT NULL</span>,
+  category    text,   <span class="comment">-- 'organization', 'volunteer', 'award', 'internship', 'other'</span>
+  description text,
+  start_date  date,
+  end_date    date,
+  hours       integer,
+  role        text,   <span class="comment">-- their position/role if applicable</span>
+  impact      text,   <span class="comment">-- one sentence impact statement</span>
+  created_at  timestamp <span class="kw">WITH TIME ZONE DEFAULT</span> now()
+);
+
+<span class="kw">ALTER TABLE</span> achievements <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">CREATE POLICY</span> <span class="str">"Users see own achievements"</span> <span class="kw">ON</span> achievements
+  <span class="kw">FOR ALL USING</span> (auth.uid() = user_id);
+  </div>
+
+  <p><strong>Table 3: college_applications</strong></p>
+  <div class="code-block">
+<span class="kw">CREATE TABLE</span> college_applications (
+  id           uuid <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  user_id      uuid <span class="kw">REFERENCES</span> auth.users(<span class="key">id</span>) <span class="kw">ON DELETE CASCADE</span>,
+  school_name  text <span class="kw">NOT NULL</span>,
+  deadline     date,
+  status       text <span class="kw">DEFAULT</span> <span class="str">'researching'</span>,  <span class="comment">-- researching, in-progress, submitted, accepted, waitlisted, rejected</span>
+  notes        text,
+  portal_url   text,
+  created_at   timestamp <span class="kw">WITH TIME ZONE DEFAULT</span> now()
+);
+
+<span class="kw">ALTER TABLE</span> college_applications <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">CREATE POLICY</span> <span class="str">"Users see own applications"</span> <span class="kw">ON</span> college_applications
+  <span class="kw">FOR ALL USING</span> (auth.uid() = user_id);
+  </div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 2.3</span>
+  <h3>Create Supabase Storage Bucket for File Uploads</h3>
+  <ol>
+    <li>In Supabase, go to <strong>Storage → Create a new bucket</strong></li>
+    <li>Name: <code>documents</code></li>
+    <li>Set to <strong>Private</strong> (not public)</li>
+    <li>Click Create</li>
+    <li>Go to <strong>Storage → Policies → New Policy</strong> and add: Users can upload and read their own files only</li>
+  </ol>
+  <div class="code-block">
+<span class="comment">-- Run in SQL Editor to set storage policies</span>
+<span class="kw">CREATE POLICY</span> <span class="str">"User uploads"</span> <span class="kw">ON</span> storage.objects
+  <span class="kw">FOR INSERT WITH CHECK</span> (auth.uid()::text = (<span class="key">storage</span>.foldername(name))[1]);
+
+<span class="kw">CREATE POLICY</span> <span class="str">"User reads own files"</span> <span class="kw">ON</span> storage.objects
+  <span class="kw">FOR SELECT USING</span> (auth.uid()::text = (<span class="key">storage</span>.foldername(name))[1]);
+  </div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 2.4</span>
+  <h3>Build the Dashboard App — Bring This Prompt to Claude</h3>
+  <p>Start a new Claude conversation and paste this exact prompt. Claude will build the entire Phase 2 dashboard for you:</p>
+  <div class="code-block" style="white-space:pre-wrap;">
+Build a React single-page app for sloanmelia.com. This is a private dashboard for a high school senior named Sloan Smith who is applying to colleges to pursue a forensic psychology PhD.
+
+SUPABASE CREDENTIALS (replace with yours):
+- Project URL: YOUR_SUPABASE_URL
+- Anon Key: YOUR_SUPABASE_ANON_KEY
+
+The app needs these pages/views:
+
+1. LOGIN PAGE
+- Email + password login using Supabase Auth
+- "Sign in with Google" button
+- Clean, professional design matching: dark ink (#0e0c09), cream (#faf7f2), gold accent (#c8922a)
+- Fonts: Playfair Display (headings), DM Mono (labels), Crimson Pro (body)
+
+2. DASHBOARD HOME (after login)
+- Navigation sidebar with: Home, Study Library, Document Vault, College Tracker, Achievements, Financial Aid, Coach
+- Welcome header showing Sloan's name
+- Quick stats: number of documents uploaded, schools tracked, achievements logged
+
+3. DOCUMENT VAULT
+- File upload area (drag and drop + click)
+- Category selector: Transcript, Recommendation Letter, Resume, Certificate, Test Scores, Other
+- File list showing uploaded documents with name, category, upload date, file size
+- Delete button per file
+- Uses Supabase Storage bucket named "documents"
+- Uses "documents" database table
+
+4. STUDY LIBRARY
+- Grid of cards for 16 study poster categories
+- Each card links to an embedded HTML viewer
+- Categories: Brain & Neuroscience, DSM-5 Reference, Theorists Timeline, Research Methods, Defense Mechanisms, Development, Cognitive Biases, APA Ethics, Biology, Sociology, Philosophy, Pharmacology, Law & Psychology, Communication, Writing, Administration
+- Search bar to filter cards
+- "Upload new resource" button (uploads PDF to Supabase storage)
+
+Use React with hooks, Tailwind CSS core utilities only, and the Supabase JS client library loaded via CDN. Make it a single HTML file with embedded React (via CDN, no build step needed). Force light mode.
+  </div>
+  <div class="callout coach">This prompt is pre-loaded with everything the Coach needs to know about Sloan's design system. When Claude builds this, it will already have the color palette, fonts, and structure matching the public profile page.</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PHASE 3
+═══════════════════════════════════════════════════ -->
+<div class="phase-header p3" id="phase3">
+  <span class="ph-num">Phase 03 of 05</span>
+  <h2>The AI Coach + <em>College Application Tools</em></h2>
+  <span class="ph-time">Estimated time: 4–5 sessions · Result: Working AI coach that reads her vault and fills forms</span>
+  <p class="ph-goal">This is the heart of the platform. The Claude API powers a coach that knows everything in Sloan's Document Vault and can analyze any college application form, matching fields to her real data.</p>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 3.1</span>
+  <h3>Get Your Claude API Key</h3>
+  <ol>
+    <li>Go to <strong>console.anthropic.com</strong></li>
+    <li>Create an account or sign in</li>
+    <li>Go to <strong>Settings → API Keys → Create Key</strong></li>
+    <li>Name it: <code>sloanmelia-coach</code></li>
+    <li>Copy the key immediately — it only shows once</li>
+    <li>Go to <strong>Billing → Add Payment Method</strong> and add $10 credit to start</li>
+    <li>Set a usage limit of $20/month so there are no surprise charges</li>
+  </ol>
+  <div class="callout warn">NEVER put the API key directly in frontend code that gets uploaded to GitHub. It will be exposed. In Phase 3, we'll store it in a Supabase Edge Function so it stays server-side and private.</div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 3.2</span>
+  <h3>Create a Supabase Edge Function (Keeps API Key Safe)</h3>
+  <p>An Edge Function is server-side code that runs on Supabase's servers. The Claude API key lives here — the browser never sees it.</p>
+  <ol>
+    <li>Install Supabase CLI: <code>npm install -g supabase</code></li>
+    <li>In your terminal, run: <code>supabase login</code></li>
+    <li>Create the function: <code>supabase functions new coach</code></li>
+    <li>Edit the function file at <code>supabase/functions/coach/index.ts</code> with this code:</li>
+  </ol>
+  <div class="code-block">
+<span class="kw">import</span> { serve } <span class="kw">from</span> <span class="str">"https://deno.land/std@0.168.0/http/server.ts"</span>
+
+<span class="kw">const</span> <span class="key">ANTHROPIC_API_KEY</span> = Deno.env.get(<span class="str">'ANTHROPIC_API_KEY'</span>)
+
+serve(<span class="kw">async</span> (req) => {
+  <span class="comment">// Allow CORS from your site</span>
+  <span class="kw">const</span> headers = {
+    <span class="str">'Access-Control-Allow-Origin'</span>: <span class="str">'https://sloanmelia.com'</span>,
+    <span class="str">'Access-Control-Allow-Headers'</span>: <span class="str">'authorization, content-type'</span>,
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+  }
+
+  <span class="kw">if</span> (req.method === <span class="str">'OPTIONS'</span>) <span class="kw">return new</span> Response(<span class="str">'ok'</span>, { headers })
+
+  <span class="kw">const</span> { messages, system, vaultContext } = <span class="kw">await</span> req.json()
+
+  <span class="comment">// Build system prompt with Sloan's data from vault</span>
+  <span class="kw">const</span> systemPrompt = <span class="str">`You are Sloan's personal college application coach.
+You are embedded in her private dashboard at sloanmelia.com.
+You know everything about her from her Document Vault.
+
+SLOAN'S PROFILE:
+- Full Name: Sloan Smith
+- School: Alton High School, Alton, Illinois
+- Graduating: May 2026
+- GPA: 3.684
+- Target Degree: PhD in Forensic Psychology
+- Email: sloan@sloanmelia.com
+
+VAULT CONTEXT (what she has uploaded):
+${vaultContext || 'No documents uploaded yet.'}
+
+Your capabilities:
+1. Analyze college application forms (paste the form text and you fill it out using her real data)
+2. Generate copy-paste ready answers for any application field
+3. Answer questions about her study materials (forensic psychology, DSM-5, etc.)
+4. Help with college essays and personal statements
+5. Explain financial aid concepts (FAFSA, 529 plans, scholarships)
+6. Flag what documents are missing for specific applications
+
+Always be direct, specific, and use her actual data. Never make up facts about her.
+When filling forms, format output as: FIELD NAME: [answer] on separate lines.`</span>
+
+  <span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="str">'https://api.anthropic.com/v1/messages'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'x-api-key'</span>: ANTHROPIC_API_KEY,
+      <span class="str">'anthropic-version'</span>: <span class="str">'2023-06-01'</span>,
+      <span class="str">'content-type'</span>: <span class="str">'application/json'</span>
+    },
+    body: JSON.stringify({
+      model: <span class="str">'claude-sonnet-4-6'</span>,
+      max_tokens: <span class="val">2048</span>,
+      system: systemPrompt,
+      messages: messages
+    })
+  })
+
+  <span class="kw">const</span> data = <span class="kw">await</span> response.json()
+  <span class="kw">return new</span> Response(JSON.stringify(data), { headers })
+})
+  </div>
+  <ol start="5">
+    <li>Deploy the function: <code>supabase functions deploy coach --no-verify-jwt</code></li>
+    <li>Add the secret API key: <code>supabase secrets set ANTHROPIC_API_KEY=sk-ant-YOUR-KEY-HERE</code></li>
+  </ol>
+  <div class="callout action">The Edge Function is now live at: https://YOUR-PROJECT-REF.supabase.co/functions/v1/coach — the frontend calls THIS URL, not Anthropic directly. The API key never leaves the server.</div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 3.3</span>
+  <h3>Build the Coach Interface — Prompt for Claude</h3>
+  <p>Bring this to a new Claude conversation to build the Coach chat UI module:</p>
+  <div class="code-block" style="white-space:pre-wrap;">
+Add a "Coach" module to the sloanmelia.com React dashboard.
+
+The Coach is powered by a Supabase Edge Function at:
+https://YOUR-PROJECT-REF.supabase.co/functions/v1/coach
+
+The Coach module has three tabs:
+
+TAB 1: CHAT
+- Chat interface (message bubbles, input box, send button)
+- Before sending each message, fetch the user's documents list from Supabase and send it as "vaultContext" to the edge function
+- Show typing indicator while waiting for response
+- Messages persist in component state during the session
+- "Clear chat" button
+
+TAB 2: FORM FILLER
+- Large textarea: "Paste any college application form or FAFSA section here"
+- "Analyze Form" button
+- Results appear as a formatted list: FIELD: [Answer] for each detected field
+- "Copy All" button that copies the entire output to clipboard
+- Individual copy buttons per field
+- Warning label: "Review all answers before pasting — always verify dates and specific requirements"
+
+TAB 3: ESSAY COACH
+- Dropdown: Select essay prompt type (Common App, school-specific, scholarship)
+- Text area for the prompt text
+- Word limit input
+- "Get Outline" button → returns structured essay outline using her real background
+- "Review Draft" button → paste draft, get specific feedback
+- All responses reference her actual Patient Enrichment Program, Mu Alpha Theta, forensic psych goals
+
+Style to match the rest of the app: dark ink, cream background, gold accents, Playfair Display headings.
+  </div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 3.4</span>
+  <h3>Build the Achievements Log Module</h3>
+  <p>Bring this to Claude to build the Achievements module:</p>
+  <div class="code-block" style="white-space:pre-wrap;">
+Build an "Achievements Log" module for the sloanmelia.com dashboard.
+
+Uses the Supabase "achievements" table with fields:
+title, category, description, start_date, end_date, hours, role, impact
+
+Pre-populate with these entries for Sloan:
+1. Title: "Patient Enrichment Program" | Category: volunteer | Role: Founder & Program Director | 
+   Description: Designed and launched independent annual program collecting enrichment items (games, puzzles, books, art supplies) for hospital patients experiencing mental health crises and cognitive decline. Unaffiliated with any hospital — community-funded and personally championed. | Impact: Ongoing annual program entering second year.
+
+2. Title: "Mu Alpha Theta" | Category: organization | Role: Member | 
+   Description: National mathematics honor society. Membership reflects demonstrated excellence in mathematics coursework. | Impact: Recognition of academic achievement in mathematics.
+
+3. Title: "Link Crew" | Category: organization | Role: Peer Mentor | 
+   Description: School leadership program providing peer mentorship and orientation support to incoming freshmen throughout their transition year. | Impact: Direct mentorship and community-building for new students.
+
+4. Title: "Salvation Army Meal Service" | Category: volunteer | Role: Volunteer | 
+   Description: Regular volunteer service preparing and serving meals to community members in need. | Impact: Consistent direct community service.
+
+5. Title: "Church Nursery" | Category: volunteer | Role: Volunteer Caregiver | 
+   Description: Consistent volunteer childcare and engagement service in faith community nursery. | Impact: Reliable caregiving support for faith community.
+
+6. Title: "Mathematics Tutoring" | Category: volunteer | Role: Peer Tutor | 
+   Description: Volunteer mathematics tutoring for students needing additional academic support. | Impact: Peer academic support.
+
+Features:
+- Table view of all achievements with edit/delete
+- "Add New Achievement" form
+- "Generate Application Activities Section" button — calls the Coach edge function to format all achievements into a standard college application Activities section (150 chars per activity max, Common App format)
+- Export to clipboard button
+  </div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 3.5</span>
+  <h3>Build the College Application Tracker</h3>
+  <div class="code-block" style="white-space:pre-wrap;">
+Build a "College Tracker" module for the sloanmelia.com dashboard.
+
+Uses Supabase "college_applications" table.
+
+Features:
+- Add school: name, application deadline, portal URL, status
+- Status pipeline visual: Researching → In Progress → Submitted → Decision Received
+- Color coding: green=accepted, yellow=in-progress, red=deadline approaching (within 14 days)
+- Per-school view showing:
+  - Deadline countdown ("23 days remaining")
+  - Document checklist (transcript, recommendations, essay, test scores, financial aid)
+  - "Fill Application" button — opens Form Filler tab pre-loaded with that school's portal URL note
+  - Notes field
+
+Pre-load these example schools for Sloan to edit:
+- Southern Illinois University Edwardsville (SIUE)
+- University of Illinois Springfield  
+- Missouri Baptist University
+- St. Louis University
+
+Deadline calendar view showing all deadlines on a visual calendar.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PHASE 4
+═══════════════════════════════════════════════════ -->
+<div class="phase-header p4" id="phase4">
+  <span class="ph-num">Phase 04 of 05</span>
+  <h2>Financial Aid Hub — <em>FAFSA, 529 &amp; Scholarships</em></h2>
+  <span class="ph-time">Estimated time: 3–4 sessions · Result: Complete financial aid command center</span>
+  <p class="ph-goal">Every funding source in one place — federally, through Illinois, and from private scholarships. The Coach can answer FAFSA questions in plain English and help Sloan understand her award letters.</p>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 4.1</span>
+  <h3>Build the FAFSA Walkthrough Module</h3>
+  <div class="code-block" style="white-space:pre-wrap;">
+Build a "FAFSA Guide" section inside the Financial Aid module of sloanmelia.com.
+
+This is NOT a form submission tool — it's a field-by-field GUIDE that explains what FAFSA wants 
+and where to find that information.
+
+Structure it as an accordion with these sections:
+1. BEFORE YOU START — What to gather (tax returns, bank statements, SSN, FSA ID)
+2. STUDENT INFORMATION — Explain each personal info field
+3. SCHOOL SELECTION — How to add schools, what happens when you do
+4. DEPENDENCY STATUS — How to determine it, what it means for aid
+5. PARENT FINANCIAL INFO — What counts as income, assets, how it's calculated
+6. STUDENT FINANCIAL INFO — Savings, checking, investments
+7. SIGN & SUBMIT — What happens next, expected timeline
+8. UNDERSTANDING YOUR SAI — What the Student Aid Index means, how it affects aid packages
+
+Each section has a "Ask Coach" button that opens the Coach chat with that section 
+pre-loaded as context so the Coach can answer specific questions about it.
+
+Key facts to embed:
+- FAFSA opens October 1 each year for the following academic year
+- Priority deadline varies by school — generally December–February
+- Parent-owned 529 accounts count as only 5.64% toward Expected Family Contribution (now SAI)
+- Scholarship money may need to be reported on FAFSA
+- Illinois MAP Grant requires FAFSA completion by specific state deadline
+  </div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 4.2</span>
+  <h3>Build the Illinois Bright Start 529 Tracker</h3>
+  <div class="code-block" style="white-space:pre-wrap;">
+Build an "Illinois 529 Tracker" inside the Financial Aid module.
+
+Illinois Bright Start 529 Plan key facts to display:
+- State tax deduction: $10,000/year single filers, $20,000/year joint filers (IL state taxes only)
+- Federal tax treatment: contributions NOT deductible federally; earnings grow tax-free; 
+  qualified withdrawals completely tax-free federally
+- Qualified expenses: tuition & fees, books & supplies, room & board (half-time+), 
+  required technology, special needs services, K-12 tuition up to $10,000/year, 
+  apprenticeship programs, student loan repayment up to $10,000 lifetime
+- SECURE 2.0 Act 2024: unused funds can roll to Roth IRA — up to $35,000 lifetime, 
+  subject to annual IRA contribution limits, account must be 15+ years old
+- FAFSA impact: parent-owned 529 = 5.64% of balance counts toward SAI (minimal impact)
+  
+Tracker features:
+- Current balance input field
+- Projected expenses calculator: select school, enter expected costs, see if balance covers it
+- Contribution tracker: log contributions with date (to track annual tax deduction limit)
+- Eligible expense checker: input expense, get yes/no on whether 529 covers it
+- Link to Bright Start portal: https://www.brightstartsavings.com
+- "Ask Coach about 529" button
+  </div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 4.3</span>
+  <h3>Build the Scholarship Database &amp; Tracker</h3>
+  <div class="code-block" style="white-space:pre-wrap;">
+Build a "Scholarships" section inside the Financial Aid module.
+
+Pre-load these scholarships relevant to Sloan (forensic psych, Illinois resident, high school senior):
+
+1. Illinois Student Assistance Commission (ISAC) — Monetary Award Program (MAP Grant)
+   Amount: Up to $5,968/yr | Requirement: Illinois resident, financial need, FAFSA by state deadline
+   URL: https://www.isac.org/students/during-college/types-of-financial-aid/isac-programs/monetary-award-program/
+
+2. APA Psychology Undergraduate Scholarship
+   Amount: $1,000 | Requirement: Psychology major, sophomore+ standing
+   URL: https://www.apa.org/about/awards/undergraduate-scholarship
+
+3. American Psychology-Law Society Scholarships
+   Amount: Varies | Requirement: Interest in psychology and law (forensic psych pathway)
+   URL: https://www.apadivisions.org/division-41
+
+4. Phi Kappa Phi Scholarship
+   Amount: Up to $8,500 | Requirement: First-year college student, chapter sponsorship
+   URL: https://www.phikappaphi.org/awards-grants/scholarships/love-of-learning
+
+5. Jack Kent Cooke Foundation Scholarship
+   Amount: Up to $55,000 | Requirement: High-achieving students with financial need
+   URL: https://www.jkcf.org/our-scholarships/
+
+6. Alton Community Foundation Local Scholarships
+   Amount: Varies | Requirement: Alton/Madison County IL resident
+   URL: https://www.altoncommunityfoundation.org
+
+7. Women in STEM Scholarship — various providers
+   Amount: $500–$5,000 | Requirement: Female student pursuing STEM or social science
+   
+Tracker features per scholarship:
+- Status: Researching / Drafting / Submitted / Awarded / Not Selected
+- Deadline date with countdown
+- Required materials checklist
+- Notes field
+- "Ask Coach to draft my essay for this scholarship" button — sends scholarship description to Coach
+- Total potential award amount displayed as a running total of "Submitted" applications
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PHASE 5
+═══════════════════════════════════════════════════ -->
+<div class="phase-header p5" id="phase5">
+  <span class="ph-num">Phase 05 of 05</span>
+  <h2>Profile Builder &amp; <em>Lifetime Features</em></h2>
+  <span class="ph-time">Estimated time: 2–3 sessions · Ongoing additions forever</span>
+  <p class="ph-goal">The dashboard controls the public profile page. From here forward, Sloan never touches code — she edits her profile from inside her app and it updates sloanmelia.com automatically.</p>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 5.1</span>
+  <h3>Build the Profile Editor Module</h3>
+  <div class="code-block" style="white-space:pre-wrap;">
+Build a "Profile Editor" module inside the sloanmelia.com dashboard.
+
+This module lets Sloan edit what appears on her public profile page (sloanmelia.com/index.html)
+by storing her profile data in Supabase and generating updated HTML on save.
+
+Fields to edit:
+- Hero bio text (multi-line textarea)
+- Current tagline
+- Photo upload (replaces the current embedded base64 photo)
+- Email address shown publicly
+- LinkedIn URL (optional)
+- Any additional social links
+
+The saved data gets written to a Supabase table called "profile" (one row per user).
+
+When she clicks "Publish Changes":
+1. Generate updated index.html with new data substituted in
+2. Trigger a Netlify deploy hook (webhook URL from Netlify → Site Settings → Build & Deploy → Build hooks)
+3. Show "Your page is updating... will be live in ~30 seconds"
+
+Also include:
+- Resume export: pull from profile + achievements + academics → generate downloadable PDF resume
+- "What Coach sees" view — shows exactly what data the Coach has access to about her
+  </div>
+</div>
+
+<div class="step">
+  <span class="step-num">Step 5.2</span>
+  <h3>Future Features to Add Over Time</h3>
+  <p>These are Phase 5 additions to build as Sloan progresses through college and graduate school. Just describe what you want to Claude and it will build each one as a new module.</p>
+  <ul>
+    <li><strong>Publication Tracker</strong> — Log academic papers, research presentations, posters for grad school applications</li>
+    <li><strong>CV Builder</strong> — Academic CV format (different from resume), grows through grad school</li>
+    <li><strong>Graduate Program Tracker</strong> — Same as college tracker but for PhD programs, GRE scores, faculty contacts</li>
+    <li><strong>Mentor & Reference Network</strong> — Store contact info, relationship history, notes for each professor/advisor</li>
+    <li><strong>Clinical Hours Log</strong> — Track supervised clinical hours required for licensure (mandatory for PhD programs)</li>
+    <li><strong>Conference & Networking Log</strong> — Track professional development events, networking contacts</li>
+    <li><strong>Study Planner</strong> — Connect the 16 forensic psych posters to a spaced-repetition study schedule</li>
+  </ul>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     COACH SYSTEM DEEP DIVE
+═══════════════════════════════════════════════════ -->
+<hr class="section-rule" id="coach-system">
+<h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;margin-bottom:0.5rem;">The Coach System — <em>Full Implementation Guide</em></h2>
+<p style="font-size:0.92rem;color:#3a3020;margin-bottom:2rem;">The Coach is the most important feature. Here's exactly how it works end-to-end so you can troubleshoot, extend, and explain it.</p>
+
+<div class="step">
+  <span class="step-num">How It Works</span>
+  <h3>The Data Flow — What Happens When Sloan Types a Message</h3>
+  <ol>
+    <li><strong>Sloan types a message</strong> in the Coach chat tab</li>
+    <li><strong>The frontend queries Supabase</strong> to get her documents list and achievements list</li>
+    <li><strong>Both are formatted into a "vault context" string</strong> — something like "Uploaded documents: High School Transcript (uploaded Jan 2026), Recommendation Letter from Kelly Paige (uploaded Jan 2026)..."</li>
+    <li><strong>The frontend sends a POST request</strong> to the Supabase Edge Function with: the message, conversation history, and vault context</li>
+    <li><strong>The Edge Function builds a system prompt</strong> that includes Sloan's full profile + vault context, then calls the Claude API</li>
+    <li><strong>Claude responds</strong> with full knowledge of who she is and what she has</li>
+    <li><strong>Response streams back</strong> to the chat UI</li>
+  </ol>
+</div>
+
+<div class="step">
+  <span class="step-num">Coach Context</span>
+  <h3>What the Coach Already Knows (Hardcoded in the System Prompt)</h3>
+  <div class="code-block" style="white-space:pre-wrap;">
+The Coach system prompt includes all of this by default — no uploads needed:
+
+PERSONAL:
+- Full name: Sloan Smith
+- School: Alton High School, Alton, IL
+- Graduating: May 2026
+- GPA: 3.684
+- Email: sloan@sloanmelia.com
+- Goal: PhD in Forensic Psychology
+
+SENIOR YEAR COURSES:
+AP Psychology, AP Statistics, College Prep English 4 (H) AP,
+Human Body Systems PLTW 2, Biomedical Internship, Sociology,
+Environmental Science, Spanish 2A & 2B
+
+ACHIEVEMENTS (pre-loaded):
+- Patient Enrichment Program (Founder — ongoing annual program)
+- Mu Alpha Theta (National Math Honor Society)
+- Link Crew (Peer Mentor)
+- Salvation Army (Volunteer)
+- Church Nursery (Volunteer)
+- Math Tutoring (Peer Tutor)
+
+FORENSIC PSYCH KNOWLEDGE:
+The Coach also has access to all 16 study posters built in this 
+conversation — it knows the DSM-5 reference, theorists, 
+research methods, ethics code, and supporting courses.
+  </div>
+</div>
+
+<div class="step">
+  <span class="step-num">Coach Prompts</span>
+  <h3>Example Prompts to Test the Coach After Building It</h3>
+  <ul>
+    <li>"Fill out the Activities section of the Common App for me — 10 activities, 150 characters each"</li>
+    <li>"I'm applying to SIUE's psychology program. What are the strongest points in my application?"</li>
+    <li>"Here is the FAFSA Dependency Status section — tell me how I should answer each question: [paste]"</li>
+    <li>"Help me write a 650-word Common App essay about the Patient Enrichment Program"</li>
+    <li>"What scholarships should I apply to first based on my profile and deadlines?"</li>
+    <li>"Explain what an SAI score of 8000 means for my financial aid at a school with $30,000 annual cost"</li>
+    <li>"Quiz me on the DSM-5 personality disorder criteria"</li>
+    <li>"What additional documents should I upload to my vault before application season ends?"</li>
+  </ul>
+</div>
+
+<div class="step">
+  <span class="step-num">Extending the Coach</span>
+  <h3>How to Make the Coach Smarter Over Time</h3>
+  <p>Every document Sloan uploads to the vault makes the Coach smarter about her. Here's how to extend it as she adds more:</p>
+  <ul>
+    <li><strong>When she uploads her official transcript:</strong> Add a step that extracts text from the PDF and stores it in Supabase — the Coach can then reference her exact course list and grades</li>
+    <li><strong>When she uploads a college's requirements page:</strong> The Coach can diff her profile against their requirements and tell her exactly what she's missing</li>
+    <li><strong>When she gets an acceptance or rejection:</strong> Log it and the Coach can help analyze patterns — what is she getting in vs. what is she getting rejected from, and why</li>
+    <li><strong>When she starts college:</strong> Update the system prompt with her new school, program, and advisor — the Coach transitions from admissions coach to academic career coach</li>
+  </ul>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     MASTER CHECKLIST
+═══════════════════════════════════════════════════ -->
+<hr class="section-rule" id="checklist">
+<h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;margin-bottom:1.5rem;">Master Checklist — Track Your Progress</h2>
+
+<p style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#c8922a;margin-bottom:0.8rem;">Phase 1 — Domain &amp; Live Profile</p>
+<ul class="checklist">
+  <li>Create GitHub account</li>
+  <li>Create Netlify account (via GitHub)</li>
+  <li>Create Supabase account (via GitHub)</li>
+  <li>Create Anthropic Console account</li>
+  <li>Register sloanmelia.com at Namecheap</li>
+  <li>Upload index.html to GitHub repo</li>
+  <li>Deploy to Netlify — get staging URL</li>
+  <li>Confirm staging URL loads correctly</li>
+  <li>Connect custom domain in Netlify</li>
+  <li>Add DNS records in Namecheap</li>
+  <li>Confirm sloanmelia.com loads with HTTPS padlock</li>
+  <li>Set up Zoho Mail — sloan@sloanmelia.com</li>
+  <li>Update email in index.html and redeploy</li>
+</ul>
+
+<p style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#c8922a;margin-bottom:0.8rem;margin-top:1.5rem;">Phase 2 — Dashboard &amp; Vault</p>
+<ul class="checklist">
+  <li>Create Supabase project "sloanmelia"</li>
+  <li>Run SQL to create documents table</li>
+  <li>Run SQL to create achievements table</li>
+  <li>Run SQL to create college_applications table</li>
+  <li>Create Supabase Storage bucket "documents"</li>
+  <li>Set storage RLS policies</li>
+  <li>Build dashboard app with Claude (use Step 2.4 prompt)</li>
+  <li>Test login with email/password</li>
+  <li>Test file upload in Document Vault</li>
+  <li>Confirm all 16 study posters visible in Study Library</li>
+  <li>Deploy dashboard to Netlify</li>
+</ul>
+
+<p style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#c8922a;margin-bottom:0.8rem;margin-top:1.5rem;">Phase 3 — Coach &amp; Application Tools</p>
+<ul class="checklist">
+  <li>Get Claude API key from console.anthropic.com</li>
+  <li>Add $10 credit and set $20 usage limit</li>
+  <li>Install Supabase CLI</li>
+  <li>Create and deploy Edge Function "coach"</li>
+  <li>Set ANTHROPIC_API_KEY secret in Supabase</li>
+  <li>Build Coach chat UI (use Step 3.3 prompt)</li>
+  <li>Test Coach with sample messages</li>
+  <li>Build Form Filler tab — test with a real form</li>
+  <li>Build Essay Coach tab</li>
+  <li>Build Achievements Log with pre-loaded entries</li>
+  <li>Build College Application Tracker with pre-loaded schools</li>
+  <li>Test "Generate Activities Section" button</li>
+</ul>
+
+<p style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#c8922a;margin-bottom:0.8rem;margin-top:1.5rem;">Phase 4 — Financial Aid</p>
+<ul class="checklist">
+  <li>Build FAFSA walkthrough (use Step 4.1 prompt)</li>
+  <li>Build 529 Tracker (use Step 4.2 prompt)</li>
+  <li>Build Scholarship Database pre-loaded with 7 scholarships</li>
+  <li>Test "Ask Coach" buttons in each financial module</li>
+</ul>
+
+<p style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#c8922a;margin-bottom:0.8rem;margin-top:1.5rem;">Phase 5 — Profile Builder &amp; Polish</p>
+<ul class="checklist">
+  <li>Build Profile Editor with live preview</li>
+  <li>Set up Netlify deploy hook for auto-publish</li>
+  <li>Test photo upload updating the public page</li>
+  <li>Build resume PDF export</li>
+  <li>Review complete app end-to-end as Sloan</li>
+  <li>Share final URL — sloanmelia.com — with Sloan</li>
+</ul>
+
+<div class="callout action" style="margin-top:2rem;">When you're ready to start building, open a new Claude conversation and paste: "I'm building sloanmelia.com. I have the build guide. I've completed Phase 1 prerequisites. Let's start Phase 2 — build me the dashboard app with Supabase auth and Document Vault." Then paste your Supabase URL and anon key and Claude will write all the code.</div>
+
+<div class="doc-footer">
+  <span>SLOANMELIA.COM · COMPLETE BUILD GUIDE · ALL 5 PHASES</span>
+  <span>Built with Claude · February 2026</span>
+  <span>From Senior Year to Dr. Smith</span>
+</div>
+
+</body>
+</html>

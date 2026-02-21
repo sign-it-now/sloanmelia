@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Psychological Theorists Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #1e3a1e; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #90d090; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #90d090; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #80a880; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .era-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #1e3a1e; }
+  .era-header .era-badge { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #1e3a1e; color: #f8f4ec; padding: 0.25rem 0.6rem; white-space: nowrap; }
+  .era-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .era-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .theorist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1rem; }
+
+  .theorist-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; position: relative; }
+  .theorist-card .year-badge { position: absolute; top: 1.2rem; right: 1.2rem; font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #f5f0e5; color: #6a5e4e; padding: 0.2rem 0.5rem; border: 1px solid #ddd8cc; }
+  .theorist-card .school { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7e6e; display: block; margin-bottom: 0.3rem; }
+  .theorist-card .name { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .theorist-card .dates { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: #b5230f; display: block; margin-bottom: 0.6rem; }
+  .theorist-card .contribution { font-size: 0.86rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; }
+  .theorist-card .key-concept { background: #f5f0e5; border-left: 3px solid #1e3a1e; padding: 0.45rem 0.8rem; margin-bottom: 0.6rem; }
+  .theorist-card .key-concept .kc-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #1e3a1e; display: block; margin-bottom: 0.1rem; }
+  .theorist-card .key-concept .kc-text { font-size: 0.84rem; font-style: italic; color: #2a3020; }
+  .theorist-card .forensic-link { background: #f0f8f0; border-left: 3px solid #2a6e2a; padding: 0.45rem 0.8rem; font-size: 0.82rem; color: #1a3a1a; }
+  .theorist-card .forensic-link::before { content: 'Forensic Link: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #2a6e2a; display: block; margin-bottom: 0.1rem; }
+
+  .page-footer { background: #1e3a1e; color: #507050; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #90d090; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Forensic Psychology Study Series · Poster 03 of 08</span>
+  <h1>Psychological <em>Theorists</em><br>Timeline — Freud to Now</h1>
+  <p class="subtitle">Every major theory in psychology has roots in a specific thinker at a specific moment in history. Knowing who built what — and why — is the foundation of every undergraduate psych degree.</p>
+</div>
+
+<main>
+
+  <div class="era-header">
+    <span class="era-badge">1856–1930s</span>
+    <h2>The Founders — Psychoanalytic &amp; Early Experimental</h2>
+    <span class="desc">Building the field from scratch</span>
+  </div>
+
+  <div class="theorist-grid">
+
+    <div class="theorist-card">
+      <span class="year-badge">1856–1939</span>
+      <span class="school">Psychoanalysis</span>
+      <div class="name">Sigmund Freud</div>
+      <span class="dates">Austrian neurologist · Father of Psychoanalysis</span>
+      <p class="contribution">Proposed the unconscious mind as the primary driver of behavior. Developed the id, ego, and superego model. Introduced defense mechanisms, free association, and the talking cure.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Unconscious conflicts rooted in early development drive adult behavior. Bringing them to conscious awareness produces healing.</span></div>
+      <div class="forensic-link">Defense mechanisms (repression, projection, rationalization) appear in forensic reports to explain why individuals deny or minimize criminal behavior. Psychodynamic understanding of early trauma informs treatment planning.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1875–1961</span>
+      <span class="school">Analytical Psychology</span>
+      <div class="name">Carl Jung</div>
+      <span class="dates">Swiss psychiatrist · Freud's student-turned-rival</span>
+      <p class="contribution">Expanded unconscious to include the collective unconscious and archetypes. Introduced the concepts of introversion and extroversion, and the psychological shadow.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">The shadow contains the parts of ourselves we reject — unacknowledged, they project outward and drive destructive behavior.</span></div>
+      <div class="forensic-link">The shadow concept is used clinically in understanding how criminals externalize blame. Introversion/extroversion framework influenced personality assessment tools used in forensic evaluation.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1870–1937</span>
+      <span class="school">Individual Psychology</span>
+      <div class="name">Alfred Adler</div>
+      <span class="dates">Austrian psychiatrist · Freud's student-turned-rival</span>
+      <p class="contribution">Introduced the inferiority complex and compensatory striving for superiority. Focused on social interest and birth order as drivers of personality and behavior.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">People are primarily motivated by social belonging and a desire to overcome feelings of inferiority. Unhealthy striving produces destructive behavior.</span></div>
+      <div class="forensic-link">Inferiority → compensatory aggression is a common clinical framework for understanding violence motivated by perceived humiliation or disrespect. Relevant in gang violence and domestic violence research.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1849–1936</span>
+      <span class="school">Classical Conditioning</span>
+      <div class="name">Ivan Pavlov</div>
+      <span class="dates">Russian physiologist · Nobel Prize 1904</span>
+      <p class="contribution">Discovered classical conditioning through his famous dog experiments. Showed that neutral stimuli could be paired with natural stimuli to produce conditioned responses.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Behavior is learned through association. A neutral stimulus paired repeatedly with an unconditioned stimulus comes to produce the same response.</span></div>
+      <div class="forensic-link">Foundation for understanding how trauma triggers are formed (PTSD). Used in treatment of phobias, sex offender treatment programs, and understanding conditioned fear responses in abuse victims.</div>
+    </div>
+
+  </div>
+
+  <div class="era-header">
+    <span class="era-badge">1900s–1960s</span>
+    <h2>Behaviorism &amp; Humanistic Psychology</h2>
+    <span class="desc">Reaction against psychoanalysis — two different directions</span>
+  </div>
+
+  <div class="theorist-grid">
+
+    <div class="theorist-card">
+      <span class="year-badge">1878–1958</span>
+      <span class="school">Behaviorism</span>
+      <div class="name">John B. Watson</div>
+      <span class="dates">American psychologist · Father of Behaviorism</span>
+      <p class="contribution">Argued psychology should only study observable behavior — not the mind. Famous for the "Little Albert" experiment demonstrating conditioned emotional responses in humans.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Give me a dozen healthy infants and I can train any one of them to become any type of specialist — doctor, lawyer, thief. Environment determines behavior.</span></div>
+      <div class="forensic-link">Nature vs. nurture debate central to criminal responsibility arguments. Watson's extreme environmentalism influenced early rehabilitation-focused corrections philosophy.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1904–1990</span>
+      <span class="school">Operant Conditioning</span>
+      <div class="name">B.F. Skinner</div>
+      <span class="dates">American psychologist · Radical Behaviorist</span>
+      <p class="contribution">Developed operant conditioning through reinforcement and punishment schedules. Introduced the Skinner box. Argued free will is an illusion — all behavior is shaped by consequences.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Behavior is a function of its consequences. Reinforce a behavior and it increases. Punish it and it decreases. This is all the explanation you need.</span></div>
+      <div class="forensic-link">Token economy systems in prisons and psychiatric hospitals. Behavior modification in sex offender treatment. The deterrence theory of criminal justice is grounded in Skinnerian punishment principles.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1908–1970</span>
+      <span class="school">Humanistic Psychology</span>
+      <div class="name">Abraham Maslow</div>
+      <span class="dates">American psychologist · Hierarchy of Needs</span>
+      <p class="contribution">Proposed the hierarchy of needs — a five-tier pyramid from physiological needs at the base to self-actualization at the top. Argued humans are inherently motivated toward growth.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">People cannot pursue higher-level psychological needs (belonging, esteem, self-actualization) when lower-level survival needs are unmet.</span></div>
+      <div class="forensic-link">Explains criminogenic environments — poverty, homelessness, and physical insecurity prevent self-regulatory development. Maslow's framework underlies many rehabilitation and reentry program designs.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1902–1987</span>
+      <span class="school">Person-Centered Therapy</span>
+      <div class="name">Carl Rogers</div>
+      <span class="dates">American psychologist · Humanistic therapy pioneer</span>
+      <p class="contribution">Developed person-centered (client-centered) therapy. Core conditions: unconditional positive regard, empathy, and genuineness. Believed all people have an innate drive toward growth.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Given the right relational conditions, people will naturally move toward health, growth, and self-understanding. The therapist creates the conditions; the client does the work.</span></div>
+      <div class="forensic-link">Therapeutic alliance principles foundational to forensic treatment settings. Motivational Interviewing (used heavily in corrections) is directly descended from Rogerian principles.</div>
+    </div>
+
+  </div>
+
+  <div class="era-header">
+    <span class="era-badge">1960s–1990s</span>
+    <h2>Cognitive Revolution &amp; Social Learning</h2>
+    <span class="desc">The mind comes back to psychology</span>
+  </div>
+
+  <div class="theorist-grid">
+
+    <div class="theorist-card">
+      <span class="year-badge">1925–present</span>
+      <span class="school">Social Learning Theory</span>
+      <div class="name">Albert Bandura</div>
+      <span class="dates">Canadian-American psychologist · Stanford University</span>
+      <p class="contribution">Demonstrated observational learning through the Bobo doll experiments. Showed children imitate aggressive behavior they observe. Introduced self-efficacy as a core motivational concept.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">People learn by observing others. Behavior is influenced by what we observe being reinforced or punished in others — not only in ourselves.</span></div>
+      <div class="forensic-link">Foundational to understanding how children learn violence in abusive households. Media violence research draws on Bandura. Self-efficacy is central to recidivism reduction programs and correctional treatment.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1924–1997</span>
+      <span class="school">Cognitive Psychology</span>
+      <div class="name">Aaron Beck</div>
+      <span class="dates">American psychiatrist · Father of CBT</span>
+      <p class="contribution">Developed Cognitive Behavioral Therapy (CBT) originally for depression. Identified automatic thoughts, cognitive distortions, and schemas as core drivers of psychological distress.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">It is not events themselves that disturb us, but our interpretations of them. Change the thinking; change the emotional and behavioral response.</span></div>
+      <div class="forensic-link">CBT is the most evidence-based treatment for offender populations. Cognitive distortions (minimization, victim blaming, entitlement thinking) are specifically targeted in sex offender and domestic violence treatment programs.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1896–1980</span>
+      <span class="school">Cognitive Development</span>
+      <div class="name">Jean Piaget</div>
+      <span class="dates">Swiss psychologist · Father of developmental psychology</span>
+      <p class="contribution">Mapped cognitive development through four stages: Sensorimotor, Preoperational, Concrete Operational, and Formal Operational. Showed children think qualitatively differently than adults.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Children are not mini-adults. They construct understanding of the world through distinct developmental stages — each with its own logic and limitations.</span></div>
+      <div class="forensic-link">Developmental stage determines competency to understand legal proceedings (child witnesses, juvenile defendants). Piaget's framework underpins legal standards for children's testimony and juvenile competency evaluations.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1902–1994</span>
+      <span class="school">Psychosocial Development</span>
+      <div class="name">Erik Erikson</div>
+      <span class="dates">German-American psychologist · 8 Stages of Development</span>
+      <p class="contribution">Proposed eight psychosocial stages across the entire lifespan, each presenting a developmental crisis. Success builds psychological strength; failure leaves vulnerability.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Development continues across the entire lifespan. Each stage presents a conflict; resolution builds a specific ego strength. Unresolved crises create vulnerability and dysfunction.</span></div>
+      <div class="forensic-link">Failure at Industry vs. Inferiority (age 6–12) and Identity vs. Role Confusion (adolescence) are particularly relevant in understanding juvenile delinquency and the developmental roots of criminal behavior.</div>
+    </div>
+
+  </div>
+
+  <div class="era-header">
+    <span class="era-badge">1970s–Present</span>
+    <h2>Forensic Psychology Pioneers</h2>
+    <span class="desc">The researchers who built the field you're entering</span>
+  </div>
+
+  <div class="theorist-grid">
+
+    <div class="theorist-card">
+      <span class="year-badge">1944–present</span>
+      <span class="school">Cognitive Psychology / Law</span>
+      <div class="name">Elizabeth Loftus</div>
+      <span class="dates">American cognitive psychologist · UC Irvine</span>
+      <p class="contribution">Revolutionized understanding of eyewitness testimony through misinformation effect research. Demonstrated that memory is reconstructive, not reproductive — and easily contaminated by post-event information.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Memory is not a recording. It is a reconstruction. Every time we recall something, we risk altering it. Leading questions plant false memories with surprising ease.</span></div>
+      <div class="forensic-link">Her research directly changed jury instructions, eyewitness identification procedures, and interrogation guidelines in the United States. She is the most cited female psychologist alive. She testified in hundreds of trials including O.J. Simpson and Harvey Weinstein.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1943–present</span>
+      <span class="school">Forensic Psychology / Psychopathy</span>
+      <div class="name">Robert Hare</div>
+      <span class="dates">Canadian psychologist · UBC · Creator of PCL-R</span>
+      <p class="contribution">Developed the Psychopathy Checklist-Revised (PCL-R) — the gold standard instrument for measuring psychopathy. Decades of research distinguishing psychopathy from ASPD and identifying its neurological correlates.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Psychopathy is a distinct clinical construct characterized by interpersonal-affective features (shallow emotion, lack of empathy) combined with chronic antisocial behavior — and it predicts violence above all other variables.</span></div>
+      <div class="forensic-link">The PCL-R is used in virtually every serious forensic violence risk evaluation worldwide. Hare's research on psychopathy and recidivism directly influences parole decisions, dangerous offender designations, and sentencing arguments across North America.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1954–present</span>
+      <span class="school">Forensic Psychology / Risk Assessment</span>
+      <div class="name">John Monahan</div>
+      <span class="dates">American psychologist · University of Virginia School of Law</span>
+      <p class="contribution">Pioneered empirical research on violence risk prediction. Led the MacArthur Violence Risk Assessment Study — the most comprehensive study of community violence by people with mental disorders ever conducted.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Violence risk is not a fixed trait — it is dynamic, multifactorial, and predictable within statistical limits. The goal is structured professional judgment, not crystal-ball prediction.</span></div>
+      <div class="forensic-link">His work directly dismantled the myth that mental illness = violence. MacArthur findings show substance abuse is a far stronger violence predictor than mental illness alone. His structured risk assessment framework is used in civil commitment and release decisions.</div>
+    </div>
+
+    <div class="theorist-card">
+      <span class="year-badge">1937–present</span>
+      <span class="school">Forensic Psychology / Assessment</span>
+      <div class="name">Richard Rogers</div>
+      <span class="dates">American psychologist · University of North Texas</span>
+      <p class="contribution">Leading authority on malingering, response styles, and forensic assessment. Developer of the SIRS-2 (gold standard for malingering detection) and prolific researcher on competency, insanity, and Miranda rights.</p>
+      <div class="key-concept"><span class="kc-label">Core Idea</span><span class="kc-text">Forensic evaluators have a professional and ethical obligation to rigorously assess response style — because defendants have strong incentives to distort their presentation in either direction.</span></div>
+      <div class="forensic-link">SIRS-2 is standard in virtually all serious forensic evaluations. His research on Miranda rights comprehension showed that a substantial portion of defendants — especially juveniles and those with low IQ — do not genuinely understand their rights when waiving them.</div>
+    </div>
+
+  </div>
+
+</main>
+
+<div class="page-footer">
+  <span>PSYCHOLOGICAL THEORISTS TIMELINE</span>
+  <span>Poster 03 of 08 · Sloan's Study Kit</span>
+  <span>Freud to Loftus · Building the Science</span>
+</div>
+</body>
+</html>

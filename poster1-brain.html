@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>The Brain — Forensic Psychology Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #1a3a4a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #7ec8e3; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #7ec8e3; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #9ab8c8; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #1a3a4a; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #1a3a4a; color: #f8f4ec; padding: 0.25rem 0.5rem; letter-spacing: 0.1em; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: #0e0c09; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .brain-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+
+  .lobe-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.4rem; position: relative; border-top: 5px solid #1a3a4a; }
+  .lobe-card.frontal { border-top-color: #b5230f; }
+  .lobe-card.parietal { border-top-color: #2a6e2a; }
+  .lobe-card.temporal { border-top-color: #7a3a8a; }
+  .lobe-card.occipital { border-top-color: #c8922a; }
+  .lobe-card.limbic { border-top-color: #1a3a4a; }
+  .lobe-card.cerebellum { border-top-color: #8a4a0a; }
+
+  .lobe-card .lobe-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .lobe-card .location { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8a7e6e; margin-bottom: 0.7rem; display: block; }
+  .lobe-card .functions { font-size: 0.88rem; color: #2a2218; margin-bottom: 0.8rem; line-height: 1.55; }
+  .lobe-card .damage { background: #fff5f5; border-left: 3px solid #b5230f; padding: 0.5rem 0.8rem; font-size: 0.83rem; color: #3a1010; margin-bottom: 0.7rem; }
+  .lobe-card .damage::before { content: 'If Damaged: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #b5230f; display: block; margin-bottom: 0.15rem; }
+  .lobe-card .forensic { background: #f0f5ff; border-left: 3px solid #1a3a4a; padding: 0.5rem 0.8rem; font-size: 0.83rem; color: #0e1a30; font-style: italic; }
+  .lobe-card .forensic::before { content: 'Forensic Relevance: '; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #1a3a4a; display: block; margin-bottom: 0.15rem; }
+
+  .structure-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1px; background: #ddd8cc; border: 1px solid #ddd8cc; }
+  .structure-cell { background: #fff; padding: 1rem 1.2rem; }
+  .structure-cell .s-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .structure-cell .s-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7a3a8a; display: block; margin-bottom: 0.4rem; }
+  .structure-cell p { font-size: 0.84rem; color: #2a2218; line-height: 1.5; }
+  .structure-cell .f-tag { display: inline-block; margin-top: 0.5rem; font-family: 'DM Mono', monospace; font-size: 0.58rem; background: #f0eaf5; color: #7a3a8a; padding: 0.15rem 0.5rem; border: 1px solid #d0c0e0; }
+
+  .neuro-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .neuro-table th { background: #1a3a4a; color: #f8f4ec; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .neuro-table td { padding: 0.65rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; color: #0e0c09; font-size: 0.87rem; line-height: 1.5; }
+  .neuro-table tr:nth-child(even) td { background: #f5f0e5; }
+  .neuro-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+  .neuro-table td.tag { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #b5230f; }
+
+  .page-footer { background: #1a3a4a; color: #6a8898; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #7ec8e3; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Forensic Psychology Study Series · Poster 01 of 08</span>
+  <h1>The <em>Brain</em> — Structure,<br>Function &amp; Forensic Relevance</h1>
+  <p class="subtitle">Every forensic evaluation touches neuroscience. Understanding what each brain region does — and what happens when it's damaged, diseased, or underdeveloped — is foundational to criminal responsibility, risk assessment, and competency evaluation.</p>
+</div>
+
+<main>
+
+  <div class="section-header">
+    <span class="num">01</span>
+    <h2>The Four Lobes of the Cerebral Cortex</h2>
+    <span class="desc">Where higher cognition lives</span>
+  </div>
+
+  <div class="brain-grid">
+
+    <div class="lobe-card frontal">
+      <div class="lobe-name">Frontal Lobe</div>
+      <span class="location">Front of skull — largest lobe</span>
+      <p class="functions"><strong>Functions:</strong> Executive function, impulse control, decision-making, planning, working memory, moral reasoning, personality expression, voluntary movement (motor cortex), speech production (Broca's area).</p>
+      <div class="damage">Impaired judgment, loss of impulse control, personality changes, aggression, inability to plan or sequence behavior. Phineas Gage is the classic case.</div>
+      <div class="forensic">The most forensically critical lobe. Adolescent frontal lobe immaturity (not fully developed until ~age 25) is central to arguments against harsh juvenile sentencing. Frontal damage is cited in diminished capacity defenses, and frontal dysfunction appears consistently in psychopathy research (PCL-R scores correlate with reduced frontal activity).</div>
+    </div>
+
+    <div class="lobe-card parietal">
+      <div class="lobe-name">Parietal Lobe</div>
+      <span class="location">Top and rear of skull</span>
+      <p class="functions"><strong>Functions:</strong> Sensory integration, spatial awareness, attention, body image, mathematical processing, reading comprehension. Contains the somatosensory cortex (touch, pain, temperature mapping).</p>
+      <div class="damage">Neglect syndrome (ignoring one side of body/space), difficulty reading, spatial disorientation, chronic pain processing errors.</div>
+      <div class="forensic">Relevant in traumatic brain injury (TBI) evaluations following assaults. Spatial processing deficits can affect competency assessments. Chronic pain claims in personal injury litigation often involve parietal processing evaluation.</div>
+    </div>
+
+    <div class="lobe-card temporal">
+      <div class="lobe-name">Temporal Lobe</div>
+      <span class="location">Sides of skull, above ears</span>
+      <p class="functions"><strong>Functions:</strong> Auditory processing, language comprehension (Wernicke's area), memory formation (via hippocampus), face recognition, emotional processing, long-term memory storage.</p>
+      <div class="damage">Wernicke's aphasia (fluent but nonsensical speech), memory loss, face blindness, auditory hallucinations, personality changes, temporal lobe epilepsy.</div>
+      <div class="forensic">Temporal lobe epilepsy has historically been raised (controversially) in automatism defenses. Wernicke's aphasia can mimic psychosis. Memory formation deficits are central to amnesia claims in criminal cases — evaluators must distinguish genuine from feigned memory loss.</div>
+    </div>
+
+    <div class="lobe-card occipital">
+      <div class="lobe-name">Occipital Lobe</div>
+      <span class="location">Rear of skull</span>
+      <p class="functions"><strong>Functions:</strong> Visual processing — color, motion, depth, shape recognition. Everything you "see" is processed here after signals travel from the eyes via the optic nerves.</p>
+      <div class="damage">Visual field deficits, cortical blindness, visual hallucinations, inability to recognize objects (visual agnosia).</div>
+      <div class="forensic">Visual hallucinations from occipital damage can be mistaken for psychosis. Relevant in evaluating the reliability of eyewitness testimony when witnesses have visual processing disorders. Also appears in TBI litigation after head impacts.</div>
+    </div>
+
+  </div>
+
+  <div class="section-header">
+    <span class="num">02</span>
+    <h2>Key Deep Brain Structures</h2>
+    <span class="desc">The limbic system and subcortical regions</span>
+  </div>
+
+  <div class="structure-grid">
+    <div class="structure-cell">
+      <span class="s-label">Limbic System</span>
+      <div class="s-name">Amygdala</div>
+      <p>Fear processing, threat detection, emotional memory. Hyperactive amygdala = heightened fear/aggression response. Hypoactive = reduced fear, seen in psychopathy.</p>
+      <span class="f-tag">Psychopathy Research · Fear Response · PTSD</span>
+    </div>
+    <div class="structure-cell">
+      <span class="s-label">Limbic System</span>
+      <div class="s-name">Hippocampus</div>
+      <p>Converts short-term memories to long-term. Damaged by chronic stress, alcohol, PTSD. Critical to evaluating claimed amnesia in criminal cases.</p>
+      <span class="f-tag">Memory Claims · PTSD Evaluation · Competency</span>
+    </div>
+    <div class="structure-cell">
+      <span class="s-label">Limbic System</span>
+      <div class="s-name">Hypothalamus</div>
+      <p>Regulates hunger, thirst, temperature, sexual drive, circadian rhythms. Links nervous system to endocrine system. Dysregulation affects mood and impulse control.</p>
+      <span class="f-tag">Impulse Control · Hormonal Factors</span>
+    </div>
+    <div class="structure-cell">
+      <span class="s-label">Limbic System</span>
+      <div class="s-name">Cingulate Cortex</div>
+      <p>Error detection, emotional regulation, pain processing, decision-making. Anterior cingulate dysfunction linked to impulsivity and poor inhibition.</p>
+      <span class="f-tag">Impulse Control Research · Risk Assessment</span>
+    </div>
+    <div class="structure-cell">
+      <span class="s-label">Reward System</span>
+      <div class="s-name">Nucleus Accumbens</div>
+      <p>Dopamine reward center. Central to addiction, motivation, and pleasure. Dysregulation drives compulsive behavior including substance abuse and risk-taking.</p>
+      <span class="f-tag">Addiction Defenses · Impulse Disorders</span>
+    </div>
+    <div class="structure-cell">
+      <span class="s-label">Brainstem</span>
+      <div class="s-name">Prefrontal-Limbic Circuit</div>
+      <p>The regulatory relationship between the prefrontal cortex (brakes) and amygdala (accelerator). Forensic violence research focuses heavily on this balance.</p>
+      <span class="f-tag">Violence Risk · Criminal Responsibility</span>
+    </div>
+    <div class="structure-cell">
+      <span class="s-label">Motor</span>
+      <div class="s-name">Cerebellum</div>
+      <p>Coordinates movement, balance, fine motor skills. Also involved in cognitive timing. Alcohol affects cerebellum first — explains impaired coordination in DUI.</p>
+      <span class="f-tag">DUI Evaluation · TBI Assessment</span>
+    </div>
+    <div class="structure-cell">
+      <span class="s-label">Relay</span>
+      <div class="s-name">Thalamus</div>
+      <p>Sensory relay station — routes all incoming sensory data (except smell) to cortex. Thalamic damage can produce severe cognitive and sensory disturbances.</p>
+      <span class="f-tag">TBI Litigation · Sensory Processing</span>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="num">03</span>
+    <h2>Neurotransmitters &amp; Their Forensic Significance</h2>
+    <span class="desc">Brain chemistry in the courtroom</span>
+  </div>
+
+  <table class="neuro-table">
+    <thead>
+      <tr>
+        <th>Neurotransmitter</th>
+        <th>Primary Role</th>
+        <th>Deficit / Excess Effect</th>
+        <th>Forensic Application</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Dopamine</td>
+        <td>Reward, motivation, movement, attention</td>
+        <td>Deficit → depression, Parkinson's; Excess → psychosis, schizophrenia</td>
+        <td class="tag">Schizophrenia defenses · Addiction · ADHD in juvenile evals</td>
+      </tr>
+      <tr>
+        <td>Serotonin</td>
+        <td>Mood, impulse control, sleep, aggression</td>
+        <td>Low serotonin strongly linked to impulsive aggression and violent behavior</td>
+        <td class="tag">Violence risk research · Antidepressant defenses · Homicide evals</td>
+      </tr>
+      <tr>
+        <td>Norepinephrine</td>
+        <td>Arousal, fight-or-flight, attention</td>
+        <td>Excess → hyperarousal, anxiety, PTSD symptom maintenance</td>
+        <td class="tag">PTSD evaluations · Battered woman syndrome · Stress defenses</td>
+      </tr>
+      <tr>
+        <td>GABA</td>
+        <td>Primary inhibitory neurotransmitter — calms neural activity</td>
+        <td>Deficit → anxiety, seizures; Alcohol enhances GABA (explains sedation)</td>
+        <td class="tag">Alcohol intoxication defenses · Anxiety disorder evaluations</td>
+      </tr>
+      <tr>
+        <td>Glutamate</td>
+        <td>Primary excitatory neurotransmitter — drives neural firing</td>
+        <td>Excess causes neurotoxicity; dysregulation linked to psychosis</td>
+        <td class="tag">TBI neurodegeneration · Psychosis evaluation</td>
+      </tr>
+      <tr>
+        <td>Oxytocin</td>
+        <td>Social bonding, trust, empathy, attachment</td>
+        <td>Low oxytocin linked to reduced empathy and social disengagement</td>
+        <td class="tag">Psychopathy research · Attachment disorders in juvenile cases</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-header">
+    <span class="num">04</span>
+    <h2>Brain Development Timeline — Forensic Implications</h2>
+    <span class="desc">Why age matters in criminal law</span>
+  </div>
+
+  <table class="neuro-table">
+    <thead>
+      <tr>
+        <th>Age Range</th>
+        <th>Development Stage</th>
+        <th>What's Still Maturing</th>
+        <th>Forensic / Legal Implication</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Birth–5</td>
+        <td>Rapid synaptic growth</td>
+        <td>Basic sensory and motor systems; early emotional regulation</td>
+        <td class="tag">Early trauma effects on attachment and amygdala development</td>
+      </tr>
+      <tr>
+        <td>6–11</td>
+        <td>Synaptic pruning begins</td>
+        <td>Language, memory consolidation, early executive function</td>
+        <td class="tag">Competency to testify as child witness; trauma response evaluation</td>
+      </tr>
+      <tr>
+        <td>12–17</td>
+        <td>Adolescent remodeling</td>
+        <td>Prefrontal cortex still highly immature; limbic system drives behavior</td>
+        <td class="tag">Reduced culpability arguments; SAVRY use; Roper v. Simmons (2005) abolished juvenile death penalty citing brain dev.</td>
+      </tr>
+      <tr>
+        <td>18–24</td>
+        <td>Late adolescent development</td>
+        <td>Prefrontal cortex still pruning; impulse control still developing</td>
+        <td class="tag">Miller v. Alabama (2012); emerging adult sentencing reform arguments</td>
+      </tr>
+      <tr>
+        <td>25+</td>
+        <td>Full adult maturity</td>
+        <td>Prefrontal cortex reaches full development (~age 25)</td>
+        <td class="tag">Standard adult criminal responsibility framework applies</td>
+      </tr>
+    </tbody>
+  </table>
+
+</main>
+
+<div class="page-footer">
+  <span>THE BRAIN — FORENSIC PSYCHOLOGY REFERENCE</span>
+  <span>Poster 01 of 08 · Sloan's Study Kit</span>
+  <span>Structure · Function · Forensic Application</span>
+</div>
+</body>
+</html>

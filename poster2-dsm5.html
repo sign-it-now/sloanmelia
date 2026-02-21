@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>DSM-5 Forensic Quick Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #4a1a2a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #e8a0b0; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #e8a0b0; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #b08090; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #4a1a2a; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #4a1a2a; color: #f8f4ec; padding: 0.25rem 0.5rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .dsm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1rem; }
+
+  .dx-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; border-top: 5px solid #4a1a2a; }
+  .dx-card.personality { border-top-color: #b5230f; }
+  .dx-card.psychotic { border-top-color: #1a3a4a; }
+  .dx-card.mood { border-top-color: #2a6e2a; }
+  .dx-card.trauma { border-top-color: #8a4a0a; }
+  .dx-card.substance { border-top-color: #5a2a7a; }
+  .dx-card.neuro { border-top-color: #2a5a5a; }
+  .dx-card.anxiety { border-top-color: #c8922a; }
+
+  .dx-card .category { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7e6e; display: block; margin-bottom: 0.3rem; }
+  .dx-card .dx-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .dx-card .dsm-code { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: #b5230f; display: block; margin-bottom: 0.6rem; }
+  .dx-card .core { font-size: 0.86rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.5; }
+  .dx-card .key-features { margin-bottom: 0.7rem; }
+  .dx-card .key-features .label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #4a1a2a; display: block; margin-bottom: 0.2rem; }
+  .dx-card .key-features ul { list-style: none; padding: 0; }
+  .dx-card .key-features ul li { font-size: 0.83rem; color: #2a2218; padding-left: 1rem; position: relative; margin-bottom: 0.15rem; }
+  .dx-card .key-features ul li::before { content: '→'; position: absolute; left: 0; color: #b5230f; font-size: 0.75rem; }
+  .dx-card .forensic-note { background: #f8f2ff; border-left: 3px solid #5a2a7a; padding: 0.5rem 0.8rem; font-size: 0.82rem; color: #2a1a3a; font-style: italic; }
+  .dx-card .forensic-note::before { content: 'Forensic Context: '; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #5a2a7a; display: block; margin-bottom: 0.15rem; }
+
+  .axis-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .axis-table th { background: #4a1a2a; color: #f8f4ec; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .axis-table td { padding: 0.65rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; font-size: 0.87rem; line-height: 1.5; color: #0e0c09; }
+  .axis-table tr:nth-child(even) td { background: #f5f0e5; }
+  .axis-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; white-space: nowrap; }
+  .axis-table td.mono { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #b5230f; }
+
+  .page-footer { background: #4a1a2a; color: #8a6070; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #e8a0b0; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Forensic Psychology Study Series · Poster 02 of 08</span>
+  <h1><em>DSM-5</em> Disorders —<br>Forensic Quick Reference</h1>
+  <p class="subtitle">The diagnoses forensic psychologists encounter most frequently — in competency hearings, criminal responsibility evaluations, risk assessments, and expert testimony. These are the disorders that show up in courtrooms.</p>
+</div>
+
+<main>
+
+  <div class="section-header">
+    <span class="num">01</span>
+    <h2>Personality Disorders — The Core Forensic Diagnoses</h2>
+    <span class="desc">Enduring patterns that shape criminal behavior and risk</span>
+  </div>
+
+  <div class="dsm-grid">
+
+    <div class="dx-card personality">
+      <span class="category">Cluster B · Personality Disorders</span>
+      <div class="dx-name">Antisocial Personality Disorder</div>
+      <span class="dsm-code">DSM-5: 301.7 / ICD: F60.2</span>
+      <p class="core">Pervasive pattern of disregard for and violation of the rights of others. Must be age 18+; requires evidence of Conduct Disorder before age 15. The most frequently encountered diagnosis in forensic settings.</p>
+      <div class="key-features">
+        <span class="label">Core Features</span>
+        <ul>
+          <li>Repeated law violations, deceitfulness, impulsivity</li>
+          <li>Irritability and aggressiveness, reckless disregard for safety</li>
+          <li>Consistent irresponsibility; lack of remorse</li>
+          <li>Prevalence: ~3% general pop; ~50–80% incarcerated pop</li>
+        </ul>
+      </div>
+      <div class="forensic-note">ASPD overlaps with but is NOT the same as psychopathy (PCL-R). ASPD focuses on behavior; psychopathy adds affective and interpersonal features. Most psychopaths meet ASPD criteria; most ASPD individuals are not psychopaths.</div>
+    </div>
+
+    <div class="dx-card personality">
+      <span class="category">Cluster B · Personality Disorders</span>
+      <div class="dx-name">Borderline Personality Disorder</div>
+      <span class="dsm-code">DSM-5: 301.83 / ICD: F60.3</span>
+      <p class="core">Instability of interpersonal relationships, self-image, and affect with marked impulsivity. Chronic emptiness, fear of abandonment, self-harm, and suicidal ideation.</p>
+      <div class="key-features">
+        <span class="label">Core Features</span>
+        <ul>
+          <li>Frantic efforts to avoid abandonment (real or imagined)</li>
+          <li>Splitting (all-good or all-bad thinking)</li>
+          <li>Impulsive self-damaging behavior, recurrent self-harm</li>
+          <li>Transient paranoid ideation under stress</li>
+        </ul>
+      </div>
+      <div class="forensic-note">Highly relevant in domestic violence cases, victim evaluations, and self-harm contexts. BPD is frequently misdiagnosed as bipolar disorder. Evaluators must distinguish BPD from PTSD — they present similarly but require different legal and treatment frameworks.</div>
+    </div>
+
+    <div class="dx-card personality">
+      <span class="category">Cluster B · Personality Disorders</span>
+      <div class="dx-name">Narcissistic Personality Disorder</div>
+      <span class="dsm-code">DSM-5: 301.81 / ICD: F60.81</span>
+      <p class="core">Grandiosity, need for admiration, and lack of empathy. Belief in one's special status, entitlement, and interpersonal exploitation. Often co-occurs with ASPD in high-profile offenders.</p>
+      <div class="key-features">
+        <span class="label">Core Features</span>
+        <ul>
+          <li>Grandiose sense of self-importance; preoccupation with fantasies of unlimited success</li>
+          <li>Exploits others to achieve goals; lacks empathy</li>
+          <li>Arrogant, haughty behaviors or attitudes</li>
+        </ul>
+      </div>
+      <div class="forensic-note">Appears frequently in white-collar crime, fraud, and domestic abuse perpetrator evaluations. NPD alone does not typically support criminal responsibility defenses, but its interaction with other disorders is forensically significant.</div>
+    </div>
+
+  </div>
+
+  <div class="section-header">
+    <span class="num">02</span>
+    <h2>Psychotic, Mood &amp; Trauma Disorders</h2>
+    <span class="desc">Disorders most commonly raised in criminal responsibility evaluations</span>
+  </div>
+
+  <div class="dsm-grid">
+
+    <div class="dx-card psychotic">
+      <span class="category">Schizophrenia Spectrum</span>
+      <div class="dx-name">Schizophrenia</div>
+      <span class="dsm-code">DSM-5: 295.90 / ICD: F20</span>
+      <p class="core">Characterized by delusions, hallucinations, disorganized speech and behavior, and negative symptoms (flat affect, alogia, avolition). Duration ≥6 months. Most commonly raised disorder in insanity defenses.</p>
+      <div class="key-features">
+        <span class="label">Positive Symptoms</span>
+        <ul>
+          <li>Delusions — fixed false beliefs (persecutory, grandiose, referential)</li>
+          <li>Hallucinations — most commonly auditory command hallucinations</li>
+          <li>Disorganized thinking and behavior</li>
+        </ul>
+      </div>
+      <div class="forensic-note">Command hallucinations ("voices telling me to do it") are frequently raised in criminal responsibility evaluations. Research shows most people with schizophrenia are not violent, and most violence by people with schizophrenia occurs during untreated acute episodes. Evaluators must assess whether psychotic symptoms were present at the time of the offense.</div>
+    </div>
+
+    <div class="dx-card mood">
+      <span class="category">Bipolar &amp; Related Disorders</span>
+      <div class="dx-name">Bipolar I Disorder</div>
+      <span class="dsm-code">DSM-5: 296.xx / ICD: F31</span>
+      <p class="core">Defined by at least one manic episode. During mania: elevated or irritable mood, decreased need for sleep, grandiosity, pressured speech, risky behavior, sometimes psychotic features.</p>
+      <div class="key-features">
+        <span class="label">Manic Episode Features</span>
+        <ul>
+          <li>Inflated self-esteem or grandiosity</li>
+          <li>Decreased need for sleep (not insomnia — feels rested after 3 hrs)</li>
+          <li>Impulsive high-risk behaviors (spending, sex, business ventures)</li>
+          <li>Severe enough to cause marked social/occupational impairment</li>
+        </ul>
+      </div>
+      <div class="forensic-note">Manic episodes can reach psychotic severity, supporting criminal responsibility arguments. Impulsive offenses committed during severe mania may support diminished capacity claims. Also relevant in competency evaluations when currently manic.</div>
+    </div>
+
+    <div class="dx-card trauma">
+      <span class="category">Trauma &amp; Stressor-Related</span>
+      <div class="dx-name">PTSD</div>
+      <span class="dsm-code">DSM-5: 309.81 / ICD: F43.10</span>
+      <p class="core">Exposure to actual or threatened death, serious injury, or sexual violence followed by intrusion symptoms, avoidance, negative cognitions/mood, and hyperarousal. Duration &gt;1 month.</p>
+      <div class="key-features">
+        <span class="label">Four Symptom Clusters</span>
+        <ul>
+          <li>Intrusion: flashbacks, nightmares, distressing memories</li>
+          <li>Avoidance: of trauma-related stimuli</li>
+          <li>Negative alterations in cognition and mood</li>
+          <li>Hyperarousal: hypervigilance, exaggerated startle, aggression</li>
+        </ul>
+      </div>
+      <div class="forensic-note">Central to Battered Woman Syndrome cases. Also relevant in veteran criminal cases, first responder evaluations, and child abuse victim testimony. Evaluators must distinguish genuine PTSD from malingered PTSD — SIRS-2 and validity scales are essential. Dissociative subtype adds complexity to criminal responsibility analysis.</div>
+    </div>
+
+    <div class="dx-card substance">
+      <span class="category">Substance-Related Disorders</span>
+      <div class="dx-name">Substance Use Disorders</div>
+      <span class="dsm-code">DSM-5: 30x.xx / ICD: F1x</span>
+      <p class="core">Problematic pattern of substance use leading to clinically significant impairment. 11 diagnostic criteria spanning control, social impairment, risky use, and pharmacological effects. Severity: Mild (2–3), Moderate (4–5), Severe (6+).</p>
+      <div class="key-features">
+        <span class="label">Forensically Relevant Substances</span>
+        <ul>
+          <li>Alcohol: Voluntary intoxication generally not a defense; chronic use may cause neurocognitive disorders</li>
+          <li>Stimulants: Cocaine/meth psychosis can be mistaken for schizophrenia</li>
+          <li>Opioids: Relevant in drug court, treatment diversion evaluations</li>
+        </ul>
+      </div>
+      <div class="forensic-note">Voluntary intoxication is rarely a successful criminal defense but is relevant to sentencing. Substance-induced psychosis (e.g., meth psychosis) must be distinguished from primary psychotic disorders — timing and duration of symptoms are key. Heavily relevant in drug court, parole conditions, and treatment planning contexts.</div>
+    </div>
+
+    <div class="dx-card neuro">
+      <span class="category">Neurocognitive Disorders</span>
+      <div class="dx-name">Major Neurocognitive Disorder (Dementia)</div>
+      <span class="dsm-code">DSM-5: 294.xx / ICD: F0x</span>
+      <p class="core">Significant cognitive decline from prior level in one or more cognitive domains: complex attention, executive function, learning/memory, language, perceptual-motor, or social cognition. Interferes with daily independence.</p>
+      <div class="key-features">
+        <span class="label">Forensic Contexts</span>
+        <ul>
+          <li>Testamentary capacity (ability to make a valid will)</li>
+          <li>Contractual capacity (ability to enter legal agreements)</li>
+          <li>Guardianship and conservatorship evaluations</li>
+          <li>Competency to stand trial in elderly defendants</li>
+        </ul>
+      </div>
+      <div class="forensic-note">Alzheimer's type is most common. TBI-related neurocognitive disorders are increasing as a forensic issue, especially with CTE (chronic traumatic encephalopathy) research in athletes and veterans. Flynn Effect must be considered when interpreting historical IQ scores in Atkins (intellectual disability) capital cases.</div>
+    </div>
+
+    <div class="dx-card anxiety">
+      <span class="category">Intellectual Disabilities</span>
+      <div class="dx-name">Intellectual Disability (ID)</div>
+      <span class="dsm-code">DSM-5: 319 / ICD: F70–F79</span>
+      <p class="core">Deficits in intellectual functions (IQ typically ~70 or below) AND adaptive functioning, with onset during the developmental period. Three domains: conceptual, social, and practical adaptive functioning.</p>
+      <div class="key-features">
+        <span class="label">Key Assessment Points</span>
+        <ul>
+          <li>IQ score alone is insufficient — adaptive functioning required</li>
+          <li>Standard Error of Measurement: IQ scores carry ±5 point margin</li>
+          <li>Flynn Effect: IQ tests inflate over time; must correct for test norms date</li>
+        </ul>
+      </div>
+      <div class="forensic-note">CRITICAL in capital cases. Atkins v. Virginia (2002) — Supreme Court ruled execution of intellectually disabled persons unconstitutional. Hall v. Florida (2014) — courts must account for SEM. Evaluators use WAIS-IV + Vineland-3 (adaptive behavior). Defendants may fake ID; evaluators must assess for malingering.</div>
+    </div>
+
+  </div>
+
+  <div class="section-header">
+    <span class="num">03</span>
+    <h2>DSM-5 Structure — What Every Psych Student Must Know</h2>
+    <span class="desc">How diagnoses are organized and applied</span>
+  </div>
+
+  <table class="axis-table">
+    <thead>
+      <tr>
+        <th>Concept</th>
+        <th>Definition</th>
+        <th>Forensic Application</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Differential Diagnosis</td>
+        <td>The process of ruling out alternative diagnoses that explain the same symptoms. Must be documented in any forensic report.</td>
+        <td class="mono">Required in all expert reports to demonstrate diagnostic rigor and withstand Daubert challenge</td>
+      </tr>
+      <tr>
+        <td>Comorbidity</td>
+        <td>Two or more diagnoses co-occurring in the same individual. The rule, not the exception, in forensic populations.</td>
+        <td class="mono">ASPD + Substance Use + PTSD is the most common forensic combination. Each diagnosis has independent legal weight.</td>
+      </tr>
+      <tr>
+        <td>Specifiers</td>
+        <td>Additional descriptors that refine a diagnosis (e.g., "with anxious distress," "with psychotic features," "in partial remission").</td>
+        <td class="mono">Specifiers change the severity and legal significance of a diagnosis. "With psychotic features" on bipolar changes criminal responsibility analysis.</td>
+      </tr>
+      <tr>
+        <td>Clinical Significance Criterion</td>
+        <td>Symptoms must cause clinically significant distress OR impairment in social, occupational, or other important areas of functioning.</td>
+        <td class="mono">Defense must demonstrate impairment was present at time of offense — not just that diagnosis exists. Crucial for insanity and diminished capacity.</td>
+      </tr>
+      <tr>
+        <td>V-Codes / Z-Codes</td>
+        <td>Additional conditions that may be focus of clinical attention (e.g., V61.12: Intimate Partner Violence; V71.01: Adult Antisocial Behavior).</td>
+        <td class="mono">Z-codes for abuse, homelessness, incarceration history are frequently documented in forensic reports to provide context without requiring a clinical diagnosis.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</main>
+
+<div class="page-footer">
+  <span>DSM-5 FORENSIC QUICK REFERENCE</span>
+  <span>Poster 02 of 08 · Sloan's Study Kit</span>
+  <span>Diagnosis · Assessment · Legal Application</span>
+</div>
+</body>
+</html>

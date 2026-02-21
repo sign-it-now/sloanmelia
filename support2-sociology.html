@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Sociology & Criminology — Forensic Foundation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+  .page-header { background: #2a1a0a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #e8b870; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #e8b870; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #806040; max-width: 600px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #2a1a0a; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #2a1a0a; color: #f8f4ec; padding: 0.25rem 0.5rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; border-top: 4px solid #2a1a0a; }
+  .card .label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7e6e; display: block; margin-bottom: 0.3rem; }
+  .card .title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card .body { font-size: 0.87rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; }
+  .card .forensic { background: #fdf8ec; border-left: 3px solid #c8922a; padding: 0.5rem 0.8rem; font-size: 0.82rem; color: #3a2a10; font-style: italic; }
+  .card .forensic::before { content: 'Forensic Link: '; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.1rem; }
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .ref-table th { background: #2a1a0a; color: #f8f4ec; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .ref-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; color: #0e0c09; font-size: 0.87rem; line-height: 1.5; }
+  .ref-table tr:nth-child(even) td { background: #f5f0e5; }
+  .ref-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .ref-table td.tag { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #b5230f; }
+  .page-footer { background: #2a1a0a; color: #706040; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #e8b870; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Supporting Courses Series · Poster 10 of 16</span>
+  <h1><em>Sociology &amp; Criminology</em> —<br>Crime as a Social Phenomenon</h1>
+  <p class="subtitle">Individual psychology explains why one person commits a crime. Sociology explains why crime rates differ across neighborhoods, races, economic classes, and historical periods. Without sociology, forensic psychologists miss half the picture — and get basic facts about criminal behavior wrong.</p>
+</div>
+<main>
+
+  <div class="section-header"><span class="num">01</span><h2>Major Criminological Theories</h2><span class="desc">The sociological frameworks that explain criminal behavior at the population level</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <span class="label">Social Strain Theory</span>
+      <div class="title">Merton's Anomie Theory (1938)</div>
+      <p class="body">Society promotes success goals (wealth, status) but provides unequal access to legitimate means. Those blocked from legitimate paths adapt: conformity, innovation (crime), ritualism, retreatism, or rebellion. Crime is a rational adaptation to structural inequality.</p>
+      <div class="forensic">Explains why crime rates are elevated in low-income communities — not because of individual moral failure but because legitimate pathways to culturally-valued goals are systematically blocked. Essential context in forensic social history and sentencing mitigation.</div>
+    </div>
+    <div class="card">
+      <span class="label">Social Learning Theory</span>
+      <div class="title">Sutherland's Differential Association</div>
+      <p class="body">Criminal behavior is learned through intimate personal groups. People become criminal when they are exposed to more definitions favorable to law violation than against it. Crime is learned the same way any other behavior is learned.</p>
+      <div class="forensic">Gang membership, family criminality, and criminal peer associations are the primary social learning mechanisms for criminal behavior. This theory is foundational for juvenile risk assessment and explains why peer group intervention is the most cost-effective delinquency prevention strategy.</div>
+    </div>
+    <div class="card">
+      <span class="label">Social Control Theory</span>
+      <div class="title">Hirschi's Bonds to Society (1969)</div>
+      <p class="body">Everyone has criminal impulses — what varies is the strength of the social bond that prevents acting on them. Four bond elements: Attachment (caring about others' opinions), Commitment (investment in conventional life), Involvement (time in conventional activities), Belief (acceptance of moral validity of law).</p>
+      <div class="forensic">Weak social bonds are among the most reliable predictors of recidivism. Risk assessment tools (LSI-R) directly measure bond strength — employment, family ties, prosocial activities, and conventional beliefs. Strengthening bonds is the mechanism of effective rehabilitation programs.</div>
+    </div>
+    <div class="card">
+      <span class="label">Labeling Theory</span>
+      <div class="title">Becker, Lemert — Secondary Deviance</div>
+      <p class="body">Being officially labeled as deviant (arrested, convicted, incarcerated) changes how others respond to a person — and how that person sees themselves. Secondary deviance is criminal behavior that results from internalizing the deviant label.</p>
+      <div class="forensic">Explains why arrest and incarceration can increase rather than reduce future offending — especially in adolescents. Diversion programs, expungement laws, and ban-the-box employment policies are all policy responses to labeling theory findings. Forensic evaluators should document how criminal justice involvement itself has affected a defendant's trajectory.</div>
+    </div>
+    <div class="card">
+      <span class="label">Routine Activities Theory</span>
+      <div class="title">Cohen &amp; Felson (1979)</div>
+      <p class="body">Crime occurs when three elements converge: a motivated offender, a suitable target, and the absence of a capable guardian. Crime rate changes are explained by changes in daily routines — not changes in individual motivation.</p>
+      <div class="forensic">Relevant in victimology evaluations and crime scene analysis. Explains crime clustering in specific locations and times. Used in threat assessment to identify when and where violence is most likely and what environmental modifications reduce risk.</div>
+    </div>
+    <div class="card">
+      <span class="label">Life Course Criminology</span>
+      <div class="title">Sampson &amp; Laub — Age-Graded Theory</div>
+      <p class="body">Criminal behavior follows predictable developmental trajectories. "Turning points" — marriage, employment, military service — can redirect criminal careers even for chronic offenders. Social bonds developed in adulthood matter as much as childhood risk factors.</p>
+      <div class="forensic">The most empirically supported criminological framework for forensic risk assessment. Explains why dynamic risk factors (current employment, current relationship stability) are as important as static historical factors in violence risk evaluation.</div>
+    </div>
+  </div>
+
+  <div class="section-header"><span class="num">02</span><h2>Structural Factors Every Forensic Evaluator Must Understand</h2><span class="desc">The systemic context that shapes every case file</span></div>
+  <table class="ref-table">
+    <thead><tr><th>Factor</th><th>What the Research Shows</th><th>Forensic Application</th></tr></thead>
+    <tbody>
+      <tr><td>Concentrated Poverty</td><td>Neighborhood poverty concentration — not just individual poverty — predicts crime rates independently of individual characteristics. Wilson's "truly disadvantaged" framework.</td><td class="tag">Social history documentation · Structural mitigation · Recidivism context</td></tr>
+      <tr><td>Racial Disparities in Justice</td><td>At every stage — arrest, charging, bail, conviction, sentencing — Black and Hispanic defendants face measurably worse outcomes than white defendants with equivalent cases and criminal histories.</td><td class="tag">Bias awareness · Cultural competence · Sentencing evaluation</td></tr>
+      <tr><td>Mass Incarceration Effects</td><td>U.S. incarceration rate is the highest in the world. Incarceration disrupts families, communities, and labor markets — creating criminogenic conditions in released populations.</td><td class="tag">Reentry evaluation · Community supervision · Desistance research</td></tr>
+      <tr><td>Adverse Neighborhood Effects</td><td>Growing up in high-violence neighborhoods produces neurobiological stress responses equivalent to combat trauma — independent of individual family circumstances.</td><td class="tag">Developmental mitigation · PTSD evaluation · Juvenile disposition</td></tr>
+      <tr><td>Desistance from Crime</td><td>Most people who commit crimes — even serious ones — naturally desist as they age. Age is the single most consistent predictor of criminal behavior. Crime peaks in late adolescence and declines sharply through the twenties.</td><td class="tag">Risk assessment context · Parole evaluation · Juvenile transfer hearings</td></tr>
+    </tbody>
+  </table>
+
+</main>
+<div class="page-footer">
+  <span>SOCIOLOGY &amp; CRIMINOLOGY — SUPPORTING COURSE REFERENCE</span>
+  <span>Poster 10 of 16 · Sloan's Study Kit</span>
+  <span>Theory · Structure · Disparity · Desistance</span>
+</div>
+</body>
+</html>

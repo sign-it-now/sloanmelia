@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>APA Ethics Code — Forensic Psychology</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #0e0c09; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #c8922a; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #807060; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #0e0c09; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #0e0c09; color: #f8f4ec; padding: 0.25rem 0.5rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .principle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+
+  .principle-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.4rem; border-top: 5px solid #0e0c09; }
+  .principle-card .letter { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; line-height: 1; color: #c8922a; float: left; margin-right: 0.7rem; margin-top: 0.1rem; }
+  .principle-card .p-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .principle-card .p-def { font-size: 0.87rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; clear: both; }
+  .principle-card .p-forensic { background: #fdf8ec; border-left: 3px solid #c8922a; padding: 0.5rem 0.8rem; font-size: 0.82rem; color: #3a2a10; }
+  .principle-card .p-forensic::before { content: 'Forensic Application: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.1rem; }
+
+  .standard-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .standard-table th { background: #0e0c09; color: #f8f4ec; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .standard-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; color: #0e0c09; font-size: 0.87rem; line-height: 1.5; }
+  .standard-table tr:nth-child(even) td { background: #f5f0e5; }
+  .standard-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; white-space: nowrap; font-size: 0.95rem; }
+  .standard-table td.code { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #b5230f; white-space: nowrap; }
+
+  .dilemma-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1rem; }
+  .dilemma-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; }
+  .dilemma-card .d-scenario { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .dilemma-card .d-tension { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: #b5230f; display: block; margin-bottom: 0.5rem; }
+  .dilemma-card .d-desc { font-size: 0.85rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.5; }
+  .dilemma-card .d-resolution { background: #f5f0e5; padding: 0.5rem 0.8rem; font-size: 0.82rem; color: #3a2a10; border-left: 3px solid #0e0c09; }
+  .dilemma-card .d-resolution::before { content: 'Ethical Resolution: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #0e0c09; display: block; margin-bottom: 0.1rem; }
+
+  .page-footer { background: #0e0c09; color: #5a5040; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #c8922a; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Forensic Psychology Study Series · Poster 08 of 08</span>
+  <h1><em>APA Ethics Code</em> —<br>The Rules Every Psychologist Knows Cold</h1>
+  <p class="subtitle">Ethics isn't optional elective content — it's tested on every licensing exam, governs every forensic evaluation, and forms the backbone of expert witness credibility. A psychologist who violates ethics doesn't just face professional consequences; they can overturn court cases.</p>
+</div>
+
+<main>
+
+  <div class="section-header">
+    <span class="num">01</span>
+    <h2>The Five General Principles — The Aspirational Foundation</h2>
+    <span class="desc">Not enforceable rules — the ideals psychologists strive toward</span>
+  </div>
+
+  <div class="principle-grid">
+
+    <div class="principle-card">
+      <div class="letter">A</div>
+      <div class="p-name">Beneficence &amp; Non-Maleficence</div>
+      <p class="p-def">Strive to benefit those you work with and take care to do no harm. When conflicts arise between potential benefits and harms, psychologists must weigh both carefully. The welfare of the individual client is a core concern — but so is the welfare of third parties and society.</p>
+      <div class="p-forensic">A forensic evaluator must not cause unnecessary harm to a defendant during evaluation — even though the evaluation will likely be used against them. Non-maleficent forensic practice means using minimally invasive procedures, being clear about limits of confidentiality, and not overreaching conclusions.</div>
+    </div>
+
+    <div class="principle-card">
+      <div class="letter">B</div>
+      <div class="p-name">Fidelity &amp; Responsibility</div>
+      <p class="p-def">Establish trust with those you work with. Psychologists are aware of their professional responsibilities to society and the communities they serve. They uphold professional standards and clarify their roles and obligations.</p>
+      <div class="p-forensic">Forensic psychologists must be clear about whom they represent (the court, the attorney, society) and not misrepresent that relationship to defendants. Lack of clarity about role is one of the most common forensic ethics complaints.</div>
+    </div>
+
+    <div class="principle-card">
+      <div class="letter">C</div>
+      <div class="p-name">Integrity</div>
+      <p class="p-def">Promote accuracy, honesty, and truthfulness. Psychologists do not steal, cheat, deceive, or misrepresent themselves or their work. When deception is necessary in research, they minimize it and debrief participants.</p>
+      <div class="p-forensic">Expert witnesses must accurately represent the state of the science — including uncertainty and limitations of their findings. Overclaiming findings, misrepresenting credentials, or selectively omitting contradictory data are integrity violations that can be exposed during cross-examination.</div>
+    </div>
+
+    <div class="principle-card">
+      <div class="letter">D</div>
+      <div class="p-name">Justice</div>
+      <p class="p-def">Psychologists recognize that fairness and justice entitle all people to access and benefit from psychological services. They exercise reasonable judgment and take precautions to ensure their potential biases and limitations don't compromise their work.</p>
+      <div class="p-forensic">Forensic evaluators must be alert to how their own implicit biases (racial, gender, class) may affect their assessments. Justice requires culturally competent evaluation that accounts for systemic factors rather than attributing all criminogenic factors to individual character.</div>
+    </div>
+
+    <div class="principle-card">
+      <div class="letter">E</div>
+      <div class="p-name">Respect for Rights &amp; Dignity</div>
+      <p class="p-def">Psychologists respect the dignity and worth of all people, and their rights to privacy, confidentiality, and self-determination. They are aware of cultural and individual differences and do not engage in unfair discrimination.</p>
+      <div class="p-forensic">Incarcerated populations retain rights to dignity despite their circumstances. Forensic evaluators treat defendants respectfully regardless of the nature of the alleged offense. Failing to do so compromises evaluation validity — defendants who feel disrespected perform differently on assessment measures.</div>
+    </div>
+
+  </div>
+
+  <div class="section-header">
+    <span class="num">02</span>
+    <h2>Key Ethical Standards — The Enforceable Rules</h2>
+    <span class="desc">Violations of these can result in license revocation, legal liability, and case dismissal</span>
+  </div>
+
+  <table class="standard-table">
+    <thead>
+      <tr>
+        <th>Standard</th>
+        <th>APA Code</th>
+        <th>What It Requires</th>
+        <th>Forensic Significance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Informed Consent</td>
+        <td class="code">3.10 / 9.03</td>
+        <td>Obtain informed consent before providing services. In forensic contexts, inform examinees of the nature and purpose of the evaluation and who will receive the report.</td>
+        <td>Failure to provide forensic notification invalidates the evaluation and can result in suppression of the expert report. The evaluee need not consent but must be informed.</td>
+      </tr>
+      <tr>
+        <td>Multiple Relationships</td>
+        <td class="code">3.05</td>
+        <td>Avoid relationships that could impair objectivity or harm the other party. Do not treat someone you evaluated forensically; do not evaluate someone you've treated.</td>
+        <td>One of the most common forensic ethics violations. A treater-turned-evaluator cannot be objective about their patient. The roles of therapist and forensic evaluator are fundamentally incompatible and must be kept separate.</td>
+      </tr>
+      <tr>
+        <td>Competence</td>
+        <td class="code">2.01 / 2.03</td>
+        <td>Provide services only within the boundaries of competence based on education, training, supervised experience, and professional experience. Maintain competence through ongoing education.</td>
+        <td>A psychologist who conducts a specialized evaluation (e.g., sex offender risk assessment) without specific training in that area is practicing outside their competence — a Daubert challenge can expose this and disqualify their testimony.</td>
+      </tr>
+      <tr>
+        <td>Confidentiality</td>
+        <td class="code">4.01 / 4.05</td>
+        <td>Protect the confidentiality of information obtained in professional relationships. Disclose only with consent or as mandated by law (duty to warn, mandated reporting, court order).</td>
+        <td>In forensic settings, evaluees are told upfront that the evaluation is not confidential — it is produced for the court. This is a fundamental difference from therapeutic relationships. Failure to disclose this changes the legal admissibility of the evaluation.</td>
+      </tr>
+      <tr>
+        <td>Assessment Integrity</td>
+        <td class="code">9.01 / 9.06</td>
+        <td>Base opinions on information and techniques sufficient to substantiate findings. Do not base opinions on information or data that is inadequate to make appropriate decisions.</td>
+        <td>A forensic evaluator who renders a diagnosis or risk opinion without sufficient data — records, standardized assessment, collateral interviews — is in violation and vulnerable to successful Daubert challenge. "I just know" is not assessable evidence.</td>
+      </tr>
+      <tr>
+        <td>Test Security</td>
+        <td class="code">9.11</td>
+        <td>Psychologists make reasonable efforts to maintain test security — not reproducing test items or giving answers to tests in ways that would compromise validity for future examinees.</td>
+        <td>Defense attorneys sometimes attempt to coach defendants on how to respond to MMPI-3 or malingering measures. Psychologists who release raw test data to non-psychologists must take steps to ensure it is not used to coach future examinees.</td>
+      </tr>
+      <tr>
+        <td>Duty to Warn (Tarasoff)</td>
+        <td class="code">State Law + 4.05</td>
+        <td>When a client presents a serious and credible threat to an identifiable victim, the therapist has a duty to take reasonable steps to protect the potential victim — including warning them directly.</td>
+        <td>Tarasoff v. Regents (1976) — California Supreme Court. Has since become standard across most states. Forensic evaluators who become aware of credible specific threats must balance confidentiality against duty to protect. Requires documented decision-making.</td>
+      </tr>
+      <tr>
+        <td>Mandatory Reporting</td>
+        <td class="code">State Law</td>
+        <td>Psychologists are mandated reporters — legally required to report reasonable suspicion of child abuse, elder abuse, or dependent adult abuse regardless of the source of the information.</td>
+        <td>Even in forensic evaluations, if an evaluator learns of unreported child abuse — including from the defendant's file — mandatory reporting obligations apply. These override confidentiality in every jurisdiction.</td>
+      </tr>
+      <tr>
+        <td>Expert Testimony Standards</td>
+        <td class="code">2.04 / 9.01</td>
+        <td>Forensic opinions must be based on established scientific and professional knowledge. Psychologists must acknowledge the limitations of their findings and not misrepresent the certainty of their opinions.</td>
+        <td>Daubert v. Merrell Dow (1993) set the federal standard for scientific expert testimony: testable, peer-reviewed, known error rate, generally accepted. Psychologists who overstate certainty or rely on non-validated methods can be disqualified as experts.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-header">
+    <span class="num">03</span>
+    <h2>Classic Forensic Ethics Dilemmas</h2>
+    <span class="desc">The situations where the rules collide — and how to navigate them</span>
+  </div>
+
+  <div class="dilemma-grid">
+
+    <div class="dilemma-card">
+      <span class="d-tension">Role Conflict</span>
+      <div class="d-scenario">The Treating Therapist Who Is Asked to Evaluate</div>
+      <p class="d-desc">A defendant's attorney asks their treating therapist to provide a forensic evaluation for the upcoming hearing. The therapist knows the defendant well and wants to help. The defendant prefers their therapist over a stranger.</p>
+      <div class="d-resolution">Decline the evaluation role. The therapist's duty is to the client's wellbeing; the forensic evaluator's duty is to the court and truth. These roles are fundamentally incompatible — the therapist should write a treatment summary only and refer to an independent forensic evaluator.</div>
+    </div>
+
+    <div class="dilemma-card">
+      <span class="d-tension">Confidentiality vs. Safety</span>
+      <div class="d-scenario">The Client Who Threatens a Specific Person</div>
+      <p class="d-desc">During a therapy session, a client makes a specific, credible threat to harm a named individual. The client has a gun. The client begs you not to tell anyone — it would destroy the therapeutic relationship.</p>
+      <div class="d-resolution">Duty to warn triggers. Contact the intended victim and notify law enforcement. Document the decision-making process. The therapeutic relationship may be harmed — but failure to warn creates civil and criminal liability and, more importantly, risks a human life. Tarasoff is not discretionary.</div>
+    </div>
+
+    <div class="dilemma-card">
+      <span class="d-tension">Competence Boundary</span>
+      <div class="d-scenario">The Referral Outside Your Training</div>
+      <p class="d-desc">You are a well-established forensic evaluator. An attorney asks you to conduct a specialized sex offender risk assessment. You have general forensic training but no specific sex offender assessment training.</p>
+      <div class="d-resolution">Decline or co-evaluate with a qualified specialist. Practicing outside competence boundaries is an ethics violation regardless of experience level in adjacent areas. Specialized forensic assessments require specialized training — including in specific instruments like STATIC-99R and RSVP — that general forensic training does not provide.</div>
+    </div>
+
+    <div class="dilemma-card">
+      <span class="d-tension">Adversarial Allegiance</span>
+      <div class="d-scenario">The Evaluation That Goes Against the Retaining Party</div>
+      <p class="d-desc">You are retained by the defense to evaluate a defendant's mental state at time of offense. After a thorough evaluation, you conclude the defendant was not legally insane and understood the wrongfulness of their actions. The attorney pressures you to reconsider.</p>
+      <div class="d-resolution">Maintain your findings. A forensic evaluator is retained to evaluate honestly — not to advocate for the retaining party's position. If findings don't support the defense theory, the attorney can choose not to use the evaluation (and not disclose it). But the evaluator cannot change or shade findings under pressure. Doing so is an ethics violation and perjury risk.</div>
+    </div>
+
+    <div class="dilemma-card">
+      <span class="d-tension">Mandated Reporting</span>
+      <div class="d-scenario">The File Review That Reveals Unreported Abuse</div>
+      <p class="d-desc">While conducting a forensic evaluation and reviewing historical records, you discover documented evidence of ongoing child abuse by the defendant against a child who was never reported to authorities. You are retained by the defense.</p>
+      <div class="d-resolution">Mandatory reporting obligations apply regardless of your role. You must report to child protective services. Your retention by the defense does not create an exception to mandatory reporting laws. Document that you made the report. This may complicate your relationship with the retaining attorney — that's unavoidable.</div>
+    </div>
+
+    <div class="dilemma-card">
+      <span class="d-tension">Assessment Limits</span>
+      <div class="d-scenario">The Attorney Who Wants a Diagnosis Without Assessment</div>
+      <p class="d-desc">An attorney calls and asks if you can write a letter stating that their client "likely has PTSD" based solely on the attorney's description of the client's history, without conducting an actual evaluation.</p>
+      <div class="d-resolution">Decline. APA Standard 9.01 prohibits rendering diagnostic opinions without adequate assessment. Writing such a letter is an ethics violation, constitutes psychological testimony without assessment, and is scientifically indefensible. Offer to conduct a proper evaluation if the attorney wants a legitimate professional opinion.</div>
+    </div>
+
+  </div>
+
+  <div class="section-header">
+    <span class="num">04</span>
+    <h2>The Specialty Guidelines for Forensic Psychology</h2>
+    <span class="desc">The APA's specific guidance for forensic practice — beyond the general ethics code</span>
+  </div>
+
+  <table class="standard-table">
+    <thead>
+      <tr>
+        <th>Guideline Area</th>
+        <th>Core Requirement</th>
+        <th>Why It Matters</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Impartiality</td>
+        <td>Forensic practitioners strive for impartiality and are aware of the potential effects of adversarial allegiance on their professional opinions.</td>
+        <td>Research shows experts systematically reach conclusions favoring the retaining party — even unconsciously. Blind assessment protocols and structured tools reduce this bias.</td>
+      </tr>
+      <tr>
+        <td>Scope of Opinion</td>
+        <td>Limit opinions to those directly supported by assessment data. Do not opine on ultimate legal questions (e.g., "this defendant is insane") — provide psychological data for the court to decide the legal question.</td>
+        <td>The difference between "this defendant was experiencing psychotic symptoms at the time of the offense" (psychological opinion) and "this defendant was legally insane" (legal determination) is critical and commonly confused.</td>
+      </tr>
+      <tr>
+        <td>Documentation</td>
+        <td>Maintain records sufficient to allow another qualified professional to understand the basis for any opinion rendered. Contemporaneous documentation is required.</td>
+        <td>Forensic reports are subject to legal discovery. Notes, records reviewed, tests administered, and score interpretations must be documented and defensible under cross-examination.</td>
+      </tr>
+      <tr>
+        <td>Cultural Competence</td>
+        <td>Consider cultural, linguistic, and socioeconomic factors that may affect assessment data, diagnosis, and opinion. Use culturally appropriate norms where available.</td>
+        <td>Normative data for many assessment tools was developed primarily on white, middle-class samples. Applying these norms uncritically to diverse forensic populations can produce systematically biased results.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</main>
+
+<div class="page-footer">
+  <span>APA ETHICS CODE — FORENSIC REFERENCE</span>
+  <span>Poster 08 of 08 · Sloan's Study Kit</span>
+  <span>Principles · Standards · Dilemmas · Specialty Guidelines</span>
+</div>
+</body>
+</html>

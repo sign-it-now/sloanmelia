@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Law & Psychology — Psycholegal Studies</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+  .page-header { background: #1a0a2a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #c8a0f0; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #c8a0f0; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #705090; max-width: 600px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #1a0a2a; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #1a0a2a; color: #f8f4ec; padding: 0.25rem 0.5rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; border-top: 4px solid #1a0a2a; }
+  .card .label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7e6e; display: block; margin-bottom: 0.3rem; }
+  .card .title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card .body { font-size: 0.87rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; }
+  .card .forensic { background: #f8f0ff; border-left: 3px solid #5a2a9a; padding: 0.5rem 0.8rem; font-size: 0.82rem; color: #2a1040; font-style: italic; }
+  .card .forensic::before { content: 'Forensic Link: '; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #5a2a9a; display: block; margin-bottom: 0.1rem; }
+  .case-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .case-table th { background: #1a0a2a; color: #f8f4ec; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .case-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; color: #0e0c09; font-size: 0.87rem; line-height: 1.5; }
+  .case-table tr:nth-child(even) td { background: #f5f0e5; }
+  .case-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; white-space: nowrap; }
+  .case-table td.year { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #b5230f; white-space: nowrap; }
+  .page-footer { background: #1a0a2a; color: #503070; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #c8a0f0; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Supporting Courses Series · Poster 13 of 16</span>
+  <h1><em>Law &amp; Psychology</em> —<br>Psycholegal Studies</h1>
+  <p class="subtitle">Forensic psychology is applied at the intersection of two systems — psychology and law — that have fundamentally different assumptions about human behavior, different standards of evidence, and different definitions of truth. Understanding how law thinks is as important as understanding how psychology thinks.</p>
+</div>
+<main>
+
+  <div class="section-header"><span class="num">01</span><h2>How Law and Psychology Differ — The Core Tensions</h2><span class="desc">Two systems that need each other but don't always agree</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <span class="label">Standard of Proof</span>
+      <div class="title">Science vs. Law</div>
+      <p class="body">Science uses probability thresholds (p &lt; .05 — a 5% false positive rate). Law uses "beyond reasonable doubt" (~95%+ certainty for criminal conviction) or "preponderance of evidence" (~51% for civil cases). These standards are not the same, and forensic experts must communicate uncertainty in legal terms.</p>
+      <div class="forensic">When an expert says a finding is "statistically significant," jurors may not understand this means only a 5% chance of being wrong by chance — not that the finding is practically significant or legally certain. Translating statistical language into legal language is a core expert witness skill.</div>
+    </div>
+    <div class="card">
+      <span class="label">Truth-Seeking</span>
+      <div class="title">Nomothetic vs. Idiographic</div>
+      <p class="body">Science seeks nomothetic truth — general laws that apply across populations. Law seeks idiographic truth — what did this specific person do, know, and intend at this specific moment? These are fundamentally different questions that require different reasoning.</p>
+      <div class="forensic">A forensic evaluator who testifies "people with PTSD often react violently to triggers" is making a nomothetic statement. The legal question is whether this defendant's PTSD caused this specific act at this specific time — an idiographic question. Forensic experts must bridge this gap explicitly.</div>
+    </div>
+    <div class="card">
+      <span class="label">Determinism vs. Agency</span>
+      <div class="title">Causation and Responsibility</div>
+      <p class="body">Psychology tends toward deterministic explanations — behavior is caused by prior factors. Law presumes agency — people choose their behavior and are accountable for those choices. Criminal responsibility sits exactly at this tension point.</p>
+      <div class="forensic">The insanity defense is the law's formal recognition that sometimes psychological determinism is so severe that legal agency is substantially impaired. The forensic evaluator's job is to assess the degree of psychological causation and translate it into legal terms the court can apply.</div>
+    </div>
+  </div>
+
+  <div class="section-header"><span class="num">02</span><h2>Landmark Legal Cases Every Forensic Psychologist Must Know</h2><span class="desc">The cases that shaped the field</span></div>
+  <table class="case-table">
+    <thead><tr><th>Case</th><th>Year</th><th>What It Decided</th><th>Forensic Psychology Impact</th></tr></thead>
+    <tbody>
+      <tr><td>Daubert v. Merrell Dow</td><td class="year">1993</td><td>Established federal standard for admissibility of scientific expert testimony: testable, peer-reviewed, known error rate, generally accepted.</td><td>Every forensic tool, method, and opinion must meet Daubert criteria. Replaced Frye "general acceptance" standard in federal courts. Evaluators must know the scientific validity of their methods.</td></tr>
+      <tr><td>Dusky v. United States</td><td class="year">1960</td><td>Defined the legal standard for competency to stand trial: defendant must have sufficient ability to consult with attorney and rational and factual understanding of proceedings.</td><td>The Dusky standard is what every competency evaluation assesses. MacCAT-CA, ECST-R, and all competency tools are designed to measure exactly these three Dusky prongs.</td></tr>
+      <tr><td>Tarasoff v. Regents</td><td class="year">1976</td><td>California Supreme Court established psychotherapist's duty to warn identifiable third parties of credible, specific threats made by clients.</td><td>Created the duty-to-warn standard now adopted in some form across most U.S. states. Changed the confidentiality landscape for all mental health practice and shapes risk management in every forensic setting.</td></tr>
+      <tr><td>Atkins v. Virginia</td><td class="year">2002</td><td>Supreme Court ruled execution of intellectually disabled persons violates the 8th Amendment's prohibition of cruel and unusual punishment.</td><td>Created enormous demand for forensic intellectual disability evaluations in capital cases. Evaluators must use WAIS-IV + adaptive behavior measures + Flynn Effect correction. Became a major area of forensic practice.</td></tr>
+      <tr><td>Roper v. Simmons</td><td class="year">2005</td><td>Supreme Court ruled execution of individuals for crimes committed before age 18 is unconstitutional, citing neuroscientific evidence of adolescent brain immaturity.</td><td>Landmark use of neuroscience in constitutional law. Brain development research directly influenced a Supreme Court decision. Opened the door for further developmental science in sentencing.</td></tr>
+      <tr><td>Miller v. Alabama</td><td class="year">2012</td><td>Supreme Court ruled mandatory life without parole sentences for juvenile offenders are unconstitutional — courts must consider youth and developmental factors.</td><td>Dramatically expanded forensic evaluation of juvenile defendants in serious felony cases. Developmental forensic psychology became a major growth area following this decision.</td></tr>
+      <tr><td>Graham v. Florida</td><td class="year">2010</td><td>Life without parole for non-homicide offenses committed by juveniles is unconstitutional.</td><td>Further expansion of developmental science in juvenile sentencing. Forensic evaluators increasingly tasked with assessing juvenile capacity for rehabilitation and change over time.</td></tr>
+      <tr><td>Miranda v. Arizona</td><td class="year">1966</td><td>Established the right to remain silent and right to counsel before custodial interrogation. Police must inform suspects of these rights.</td><td>Rogers's research showed many defendants — especially juveniles and those with intellectual disabilities — don't genuinely comprehend Miranda rights when waiving them. Miranda comprehension is now a recognized forensic evaluation question.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-header"><span class="num">03</span><h2>The Legal Standards Forensic Evaluators Assess</h2><span class="desc">Every evaluation serves a specific legal question</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <span class="label">Criminal Standard</span>
+      <div class="title">Insanity / Not Guilty by Reason of Insanity</div>
+      <p class="body">Federal standard (post-Hinckley): At the time of the offense, as a result of severe mental disease or defect, the defendant was unable to appreciate the nature and quality or the wrongfulness of his acts. State standards vary — some use M'Naghten, some ALI, some have abolished the insanity defense entirely.</p>
+      <div class="forensic">The forensic evaluator does not determine legal insanity — the court does. The evaluator provides psychological data: was severe mental disease present? Did it substantially impair cognitive or volitional control at the time? How is assessed using RCRAS, collateral records, and clinical interview.</div>
+    </div>
+    <div class="card">
+      <span class="label">Civil Standard</span>
+      <div class="title">Civil Commitment</div>
+      <p class="body">Criteria vary by state but generally require: mental illness AND dangerousness (to self or others) OR grave disability (unable to care for basic needs). Involuntary hospitalization requires meeting this standard by clear and convincing evidence.</p>
+      <div class="forensic">Forensic evaluators in inpatient settings regularly conduct civil commitment evaluations. The dangerousness assessment requires actuarial and structured professional judgment tools. Overprediction of dangerousness is the dominant error — most people who meet commitment criteria do not actually harm anyone if released.</div>
+    </div>
+    <div class="card">
+      <span class="label">Capacity Standard</span>
+      <div class="title">Testamentary Capacity</div>
+      <p class="body">To execute a valid will, a person must know: the nature of making a will, the nature and extent of their property, the natural objects of their bounty (family members), and how the will distributes property. Dementia, psychosis, and undue influence are the most common capacity challenges.</p>
+      <div class="forensic">Testamentary capacity evaluations are often conducted retrospectively — evaluating capacity at a past time using medical records, witness accounts, and behavioral evidence. Forensic neuropsychologists are frequently retained in estate litigation. Cognitive assessment data must be interpreted in the context of specific legal criteria.</div>
+    </div>
+  </div>
+
+</main>
+<div class="page-footer">
+  <span>LAW &amp; PSYCHOLOGY — SUPPORTING COURSE REFERENCE</span>
+  <span>Poster 13 of 16 · Sloan's Study Kit</span>
+  <span>Legal Standards · Landmark Cases · Psycholegal Tensions</span>
+</div>
+</body>
+</html>

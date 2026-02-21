@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Forensic Psychology — Field Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light only;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html, body { background: #f8f4ec !important; color: #0e0c09 !important; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { background: #f8f4ec !important; }
+
+  body {
+    background: #f8f4ec !important;
+    color: #0e0c09 !important;
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    background: #0e0c09;
+    color: #f8f4ec;
+    padding: 2.5rem 2rem 2rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .page-header .left { max-width: 620px; }
+
+  .page-header .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #c8922a;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .page-header h1 em { color: #c8922a; font-style: italic; }
+
+  .page-header .subtitle {
+    margin-top: 0.8rem;
+    font-size: 0.95rem;
+    color: #a09880;
+    max-width: 500px;
+    line-height: 1.5;
+  }
+
+  .page-header .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid #c8922a;
+    color: #c8922a;
+    padding: 0.4rem 0.8rem;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 0.5rem;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #0e0c09;
+  }
+
+  .section-header .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    background: #0e0c09;
+    color: #f8f4ec;
+    padding: 0.25rem 0.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .section-header .desc {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #6a5e4e;
+    margin-left: auto;
+  }
+
+  /* ── TOOL CARDS GRID ── */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .tool-card {
+    background: #ffffff;
+    border: 1px solid #ddd8cc;
+    padding: 1.2rem 1.4rem;
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .tool-card:hover {
+    border-color: #c8922a;
+    box-shadow: 3px 3px 0 #ede5d4;
+  }
+
+  .tool-card .tool-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0e0c09;
+    margin-bottom: 0.15rem;
+  }
+
+  .tool-card .tool-abbr {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #b5230f;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .tool-card .tool-desc {
+    font-size: 0.88rem;
+    color: #2a2218;
+    line-height: 1.55;
+    margin-bottom: 0.8rem;
+  }
+
+  .tool-card .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0;
+    white-space: nowrap;
+  }
+
+  .chip-stat { background: #e8f0e8; color: #2a5c2a; border: 1px solid #b8d4b8; }
+  .chip-court { background: #e8eaf5; color: #2a2a6a; border: 1px solid #b8bce0; }
+  .chip-risk { background: #fdf0e0; color: #8a4a0a; border: 1px solid #e8c890; }
+
+  .tool-card .key-question {
+    margin-top: 0.7rem;
+    padding-top: 0.7rem;
+    border-top: 1px dashed #ddd8cc;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: #3a3020;
+    line-height: 1.4;
+  }
+
+  .tool-card .key-question::before {
+    content: 'Key Question: ';
+    font-style: normal;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #b5230f;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  /* ── STATS FORMULA STRIP ── */
+  .formula-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1px;
+    background: #ddd8cc;
+    border: 1px solid #ddd8cc;
+    margin-top: 0.5rem;
+  }
+
+  .formula-cell {
+    background: #ffffff;
+    padding: 1rem 1.2rem;
+  }
+
+  .formula-cell .f-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #b5230f;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .formula-cell .f-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0e0c09;
+    margin-bottom: 0.3rem;
+  }
+
+  .formula-cell .f-formula {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    background: #f0ece2;
+    padding: 0.25rem 0.5rem;
+    color: #2a1810;
+    display: inline-block;
+    margin-bottom: 0.4rem;
+  }
+
+  .formula-cell .f-use {
+    font-size: 0.82rem;
+    color: #3a3020;
+    line-height: 1.45;
+  }
+
+  /* ── EVAL FRAMEWORK TABLE ── */
+  .eval-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .eval-table th {
+    background: #0e0c09;
+    color: #f8f4ec;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.7rem 1rem;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .eval-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid #e8e0d0;
+    vertical-align: top;
+    color: #0e0c09;
+    line-height: 1.5;
+  }
+
+  .eval-table tr:nth-child(even) td { background: #f5f0e5; }
+  .eval-table tr:hover td { background: #ede5d4; }
+
+  .eval-table td:first-child {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+
+  .eval-table td.mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: #b5230f;
+  }
+
+  /* ── BIAS & ERRORS BOX ── */
+  .bias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .bias-card {
+    border-left: 4px solid #b5230f;
+    padding: 0.8rem 1rem;
+    background: #fff8f5;
+  }
+
+  .bias-card .b-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0e0c09;
+    margin-bottom: 0.25rem;
+  }
+
+  .bias-card .b-stat {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #b5230f;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .bias-card p {
+    font-size: 0.83rem;
+    color: #2a2218;
+    line-height: 1.5;
+  }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    background: #0e0c09;
+    color: #6a5e4e;
+    padding: 1.5rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .page-footer span { color: #c8922a; }
+
+  @media (max-width: 600px) {
+    .section-header .desc { display: none; }
+    .page-header { padding: 1.5rem 1rem; }
+    main { padding: 1.5rem 1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="page-header">
+  <div class="left">
+    <span class="eyebrow">Forensic Psychology · Field Reference</span>
+    <h1>Assessment Tools,<br><em>Statistical Methods</em><br>&amp; Evaluation Framework</h1>
+    <p class="subtitle">The core instruments, formulas, and questions used in professional forensic psychological evaluation — from intake to courtroom testimony.</p>
+  </div>
+  <div class="badge">Graduate-Level Reference</div>
+</div>
+
+<main>
+
+  <!-- ══ SECTION 1: RISK ASSESSMENT TOOLS ══ -->
+  <div class="section-header">
+    <span class="num">01</span>
+    <h2>Violence &amp; Recidivism Risk Assessment Tools</h2>
+    <span class="desc">Predicting future behavior from scored data</span>
+  </div>
+
+  <div class="tool-grid">
+
+    <div class="tool-card">
+      <span class="tool-abbr">PCL-R · Hare Psychopathy Checklist-Revised</span>
+      <div class="tool-name">Psychopathy Checklist-Revised</div>
+      <p class="tool-desc">20-item clinician-rated scale measuring psychopathic personality traits. Score 0–40. Scored via file review + structured interview. Gold standard for psychopathy assessment in forensic settings.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Correlation Analysis</span>
+        <span class="chip chip-stat">Inter-rater Reliability</span>
+        <span class="chip chip-court">Sentencing · Parole</span>
+      </div>
+      <div class="key-question">Does this individual's score predict violent recidivism above base rate for this population?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">HCR-20 · Historical Clinical Risk Management</span>
+      <div class="tool-name">HCR-20 V3</div>
+      <p class="tool-desc">20-item structured professional judgment tool. Divided into Historical (H), Clinical (C), and Risk Management (R) subscales. Used to assess and manage violence risk — not predict it mechanically.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">SPJ Framework</span>
+        <span class="chip chip-stat">Base Rate Comparison</span>
+        <span class="chip chip-court">Civil Commitment · Release</span>
+      </div>
+      <div class="key-question">What dynamic factors currently elevate or reduce this person's risk of future violence?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">STATIC-99R · Sex Offender Risk</span>
+      <div class="tool-name">STATIC-99R</div>
+      <p class="tool-desc">10-item actuarial tool for estimating sexual recidivism risk in adult males. Uses static (unchanging) historical factors. Compares individual score to normative recidivism rates from large samples.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Actuarial / Base Rates</span>
+        <span class="chip chip-stat">AUC / ROC Curves</span>
+        <span class="chip chip-risk">Sex Offender Eval</span>
+      </div>
+      <div class="key-question">How does this individual's recidivism probability compare to the reference group at 5 and 10 years?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">LSI-R · Level of Service Inventory-Revised</span>
+      <div class="tool-name">LSI-R</div>
+      <p class="tool-desc">54-item structured interview assessing criminogenic needs across 10 domains including criminal history, education, finances, family, and attitudes. Used heavily in corrections for case planning.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Regression Analysis</span>
+        <span class="chip chip-stat">Predictive Validity</span>
+        <span class="chip chip-court">Corrections · Probation</span>
+      </div>
+      <div class="key-question">Which specific need areas, if addressed, would most reduce general recidivism risk?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">VRAG-R · Violence Risk Appraisal Guide-Revised</span>
+      <div class="tool-name">VRAG-R</div>
+      <p class="tool-desc">12-item actuarial instrument estimating probability of violent recidivism over 5- and 12-year follow-up periods. One of the most validated actuarial instruments in the field.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Probability Bins</span>
+        <span class="chip chip-stat">Sensitivity / Specificity</span>
+        <span class="chip chip-court">Dangerous Offender Hearings</span>
+      </div>
+      <div class="key-question">Into which actuarial risk bin does this individual fall, and what is the associated recidivism probability?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">SAVRY · Structured Assessment of Violence Risk in Youth</span>
+      <div class="tool-name">SAVRY</div>
+      <p class="tool-desc">24-item structured professional judgment tool for adolescents ages 12–18. Includes historical, social/contextual, and individual risk factors plus protective factors. Developmentally sensitive.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">SPJ Framework</span>
+        <span class="chip chip-stat">Protective Factor Weighting</span>
+        <span class="chip chip-court">Juvenile Courts</span>
+      </div>
+      <div class="key-question">How do this youth's protective factors offset identified risk factors in the current developmental context?</div>
+    </div>
+
+  </div>
+
+
+  <!-- ══ SECTION 2: COMPETENCY & CRIMINAL RESPONSIBILITY ══ -->
+  <div class="section-header">
+    <span class="num">02</span>
+    <h2>Competency &amp; Criminal Responsibility Tools</h2>
+    <span class="desc">Measuring legal capacity and mental state at time of offense</span>
+  </div>
+
+  <div class="tool-grid">
+
+    <div class="tool-card">
+      <span class="tool-abbr">MacCAT-CA · MacArthur Competence Assessment Tool</span>
+      <div class="tool-name">MacCAT-CA</div>
+      <p class="tool-desc">22-item structured interview assessing three competency abilities: Understanding (legal concepts), Appreciation (how law applies to their situation), and Reasoning (ability to weigh information). Yields normative scores.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Normative Comparison</span>
+        <span class="chip chip-stat">Standard Scores</span>
+        <span class="chip chip-court">Competency Hearings</span>
+      </div>
+      <div class="key-question">Does this defendant understand the charges and can they meaningfully assist in their own defense?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">ECST-R · Evaluation of Competency to Stand Trial-Revised</span>
+      <div class="tool-name">ECST-R</div>
+      <p class="tool-desc">Structured interview covering three Dusky prongs: Factual Understanding, Rational Understanding, and Consult with Counsel. Also includes feigning scales to detect malingering of incompetence.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Scale Scores</span>
+        <span class="chip chip-stat">Feigning Detection</span>
+        <span class="chip chip-court">Competency Restoration</span>
+      </div>
+      <div class="key-question">Is the defendant's reported incompetence genuine or feigned, and which specific Dusky prong is impaired?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">RCRAS · Rogers Criminal Responsibility Assessment Scales</span>
+      <div class="tool-name">RCRAS</div>
+      <p class="tool-desc">Quantifies criminal responsibility by rating 30 variables across psychological impairment, cognitive control, and behavioral control at time of the offense. Provides a decision model for legal insanity.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Decision Algorithm</span>
+        <span class="chip chip-stat">Multi-variable Rating</span>
+        <span class="chip chip-court">Insanity Defense</span>
+      </div>
+      <div class="key-question">At the time of the offense, did a mental disease substantially impair the defendant's cognitive or behavioral control?</div>
+    </div>
+
+  </div>
+
+
+  <!-- ══ SECTION 3: PERSONALITY & MALINGERING ══ -->
+  <div class="section-header">
+    <span class="num">03</span>
+    <h2>Personality Assessment &amp; Malingering Detection</h2>
+    <span class="desc">Who is this person — and are they telling the truth?</span>
+  </div>
+
+  <div class="tool-grid">
+
+    <div class="tool-card">
+      <span class="tool-abbr">MMPI-3 · Minnesota Multiphasic Personality Inventory</span>
+      <div class="tool-name">MMPI-3</div>
+      <p class="tool-desc">335-item self-report personality inventory with extensive validity scales (TRIN, VRIN, F, L, K). The most widely researched personality test in forensic settings. Produces T-scores normalized against large normative samples.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">T-Scores / Normal Distribution</span>
+        <span class="chip chip-stat">Validity Scales</span>
+        <span class="chip chip-court">All Forensic Evals</span>
+      </div>
+      <div class="key-question">Does this profile reflect genuine psychopathology or response bias, and how does it compare to relevant forensic normative groups?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">PAI · Personality Assessment Inventory</span>
+      <div class="tool-name">PAI</div>
+      <p class="tool-desc">344-item self-report with 22 scales including clinical, treatment, interpersonal, and validity scales. Commonly used alongside MMPI-3. Particularly useful for treatment planning in correctional settings.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">T-Scores</span>
+        <span class="chip chip-stat">Subscale Profiles</span>
+        <span class="chip chip-court">Treatment Planning · Corrections</span>
+      </div>
+      <div class="key-question">What clinical presentation and treatment targets emerge, and does the validity profile suggest overreporting or underreporting?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">SIRS-2 · Structured Interview of Reported Symptoms</span>
+      <div class="tool-name">SIRS-2</div>
+      <p class="tool-desc">172-item structured interview with 8 primary and 5 supplementary scales specifically designed to detect feigned mental disorders. Considered the gold standard for malingering assessment in forensic evaluations.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Sensitivity / Specificity</span>
+        <span class="chip chip-stat">Classification Accuracy</span>
+        <span class="chip chip-court">Competency · Disability Claims</span>
+      </div>
+      <div class="key-question">Is there evidence of feigned or exaggerated psychiatric symptoms that would undermine the credibility of the self-reported presentation?</div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-abbr">TOMM · Test of Memory Malingering</span>
+      <div class="tool-name">TOMM</div>
+      <p class="tool-desc">Visual recognition memory test with two learning trials and a retention trial. Uses forced-choice methodology — genuine memory-impaired individuals statistically should still score above chance. Below-chance performance indicates feigning.</p>
+      <div class="meta-row">
+        <span class="chip chip-stat">Binomial Probability</span>
+        <span class="chip chip-stat">Chance Performance Baseline</span>
+        <span class="chip chip-court">Neuropsychological Evals</span>
+      </div>
+      <div class="key-question">Does the individual's memory performance fall below statistical chance, indicating deliberate failure rather than genuine impairment?</div>
+    </div>
+
+  </div>
+
+
+  <!-- ══ SECTION 4: KEY STATISTICAL FORMULAS ══ -->
+  <div class="section-header">
+    <span class="num">04</span>
+    <h2>Core Statistical Formulas in Forensic Psychology</h2>
+    <span class="desc">The math behind every expert opinion</span>
+  </div>
+
+  <div class="formula-strip">
+
+    <div class="formula-cell">
+      <span class="f-label">Diagnostic Accuracy</span>
+      <div class="f-name">Sensitivity</div>
+      <div class="f-formula">TP ÷ (TP + FN)</div>
+      <p class="f-use">How well does the tool catch actual positives? High sensitivity = few missed offenders. Critical for violence risk tools.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Diagnostic Accuracy</span>
+      <div class="f-name">Specificity</div>
+      <div class="f-formula">TN ÷ (TN + FP)</div>
+      <p class="f-use">How well does the tool avoid false alarms? High specificity = few innocent people flagged. Critical for courtroom testimony.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Predictive Value</span>
+      <div class="f-name">Positive Predictive Value</div>
+      <div class="f-formula">TP ÷ (TP + FP)</div>
+      <p class="f-use">If the tool says "high risk," how often is it right? Varies dramatically with base rate of the behavior in the population.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Overall Accuracy</span>
+      <div class="f-name">AUC (Area Under Curve)</div>
+      <div class="f-formula">ROC curve integral</div>
+      <p class="f-use">Overall discriminative accuracy. AUC = 0.5 is chance; 0.7 = acceptable; 0.8+ = strong. Most forensic tools fall 0.68–0.78.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Hypothesis Testing</span>
+      <div class="f-name">Chi-Square</div>
+      <div class="f-formula">Σ (O − E)² ÷ E</div>
+      <p class="f-use">Tests whether observed frequencies differ from expected. Used in profiling research to test whether demographic patterns exceed base rates.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Agreement</span>
+      <div class="f-name">Cohen's Kappa</div>
+      <div class="f-formula">(Po − Pe) ÷ (1 − Pe)</div>
+      <p class="f-use">Inter-rater reliability beyond chance. Tools like PCL-R must demonstrate adequate kappa (≥0.70) to be admissible as reliable instruments.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Effect Size</span>
+      <div class="f-name">Cohen's d</div>
+      <div class="f-formula">(M₁ − M₂) ÷ SDpooled</div>
+      <p class="f-use">Standardized difference between two group means. Used to report how much offenders differ from normative population on any measure.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Relationship Strength</span>
+      <div class="f-name">Pearson's r</div>
+      <div class="f-formula">Σ(x−x̄)(y−ȳ) ÷ n·Sx·Sy</div>
+      <p class="f-use">Correlation between scores and outcomes. Used to validate that risk tool scores correlate with actual recidivism data across studies.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Error Types</span>
+      <div class="f-name">Type I Error (α)</div>
+      <div class="f-formula">P(reject H₀ | H₀ true)</div>
+      <p class="f-use">False positive rate. In forensic terms: labeling a non-dangerous person as dangerous. Ethical and legal consequences for the defendant.</p>
+    </div>
+
+    <div class="formula-cell">
+      <span class="f-label">Error Types</span>
+      <div class="f-name">Type II Error (β)</div>
+      <div class="f-formula">P(fail reject H₀ | H₀ false)</div>
+      <p class="f-use">False negative rate. In forensic terms: failing to identify a dangerous person. Consequences for public safety. The tradeoff haunts every risk eval.</p>
+    </div>
+
+  </div>
+
+
+  <!-- ══ SECTION 5: EVALUATION QUESTION FRAMEWORK ══ -->
+  <div class="section-header">
+    <span class="num">05</span>
+    <h2>Forensic Evaluation Question Framework</h2>
+    <span class="desc">The legal question drives the tool selection</span>
+  </div>
+
+  <table class="eval-table">
+    <thead>
+      <tr>
+        <th>Legal Question</th>
+        <th>Forensic Psychological Question</th>
+        <th>Primary Tools</th>
+        <th>Key Stat Concept</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Competency to Stand Trial</td>
+        <td>Can the defendant understand charges and assist counsel?</td>
+        <td class="mono">MacCAT-CA · ECST-R · MMPI-3 · SIRS-2</td>
+        <td>Normative scores, T-scores, malingering detection</td>
+      </tr>
+      <tr>
+        <td>Criminal Responsibility / Insanity</td>
+        <td>Did mental disorder impair cognition or control at time of offense?</td>
+        <td class="mono">RCRAS · MMPI-3 · PCL-R · Collateral Records</td>
+        <td>Decision algorithms, validity scales</td>
+      </tr>
+      <tr>
+        <td>Violence Risk Assessment</td>
+        <td>What is the probability of future violent behavior?</td>
+        <td class="mono">HCR-20 · VRAG-R · PCL-R · LSI-R</td>
+        <td>AUC, sensitivity, specificity, base rates</td>
+      </tr>
+      <tr>
+        <td>Sexual Offender Risk</td>
+        <td>What is the probability of sexual recidivism?</td>
+        <td class="mono">STATIC-99R · RSVP · PCL-R · Phallometry</td>
+        <td>Actuarial bins, ROC curves, PPV</td>
+      </tr>
+      <tr>
+        <td>Juvenile Disposition</td>
+        <td>What level of intervention matches risk and need?</td>
+        <td class="mono">SAVRY · YLS/CMI · PAI-A · MMPI-A-RF</td>
+        <td>Protective factor weighting, SPJ framework</td>
+      </tr>
+      <tr>
+        <td>Eyewitness Reliability</td>
+        <td>Under what conditions is this identification likely accurate?</td>
+        <td class="mono">Research-Based Criteria · Expert Testimony</td>
+        <td>Experimental research, confidence-accuracy correlations</td>
+      </tr>
+      <tr>
+        <td>Malingering / Response Bias</td>
+        <td>Is this presentation genuine or deliberately distorted?</td>
+        <td class="mono">SIRS-2 · TOMM · MMPI-3 Validity · PAI Validity</td>
+        <td>Classification accuracy, below-chance performance</td>
+      </tr>
+      <tr>
+        <td>Capital Sentencing (Atkins)</td>
+        <td>Does this defendant have intellectual disability? (Flynn Effect applies)</td>
+        <td class="mono">WAIS-IV · Vineland-3 · SEM / Confidence Intervals</td>
+        <td>Confidence intervals, Standard Error of Measurement, Flynn Effect correction</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- ══ SECTION 6: COGNITIVE BIASES TO GUARD AGAINST ══ -->
+  <div class="section-header">
+    <span class="num">06</span>
+    <h2>Cognitive Biases That Corrupt Forensic Conclusions</h2>
+    <span class="desc">What statistics is designed to protect against</span>
+  </div>
+
+  <div class="bias-grid">
+
+    <div class="bias-card">
+      <span class="b-stat">Stat Threat: Sampling Bias</span>
+      <div class="b-name">Confirmation Bias</div>
+      <p>Seeking and interpreting evidence that confirms a pre-existing hypothesis. The primary threat to profiling validity. Undetected in non-blind evaluations.</p>
+    </div>
+
+    <div class="bias-card">
+      <span class="b-stat">Stat Threat: Base Rate Neglect</span>
+      <div class="b-name">Prosecution Bias</div>
+      <p>Unconsciously framing findings to support the referring party. Requires evaluator to be blind to referral source where possible. Corrected by actuarial tools.</p>
+    </div>
+
+    <div class="bias-card">
+      <span class="b-stat">Stat Threat: Anchoring Error</span>
+      <div class="b-name">Hindsight Bias</div>
+      <p>Knowing the outcome changes perceived probability of that outcome. Particularly dangerous in criminal responsibility evaluations. Skews retrospective risk judgments.</p>
+    </div>
+
+    <div class="bias-card">
+      <span class="b-stat">Stat Threat: Ecological Fallacy</span>
+      <div class="b-name">Group-to-Individual Error</div>
+      <p>Applying group-level statistics (e.g. "STATIC-99R score X recidivates at 30%") directly to an individual without adjustment for idiographic factors.</p>
+    </div>
+
+    <div class="bias-card">
+      <span class="b-stat">Stat Threat: Overconfidence</span>
+      <div class="b-name">Illusory Correlation</div>
+      <p>Perceiving a relationship between variables (e.g. behavior and diagnosis) when none exists at statistically significant levels. Requires null hypothesis testing to expose.</p>
+    </div>
+
+    <div class="bias-card">
+      <span class="b-stat">Stat Threat: Invalid Profiles</span>
+      <div class="b-name">Feedback Loop Bias</div>
+      <p>Profiles built from biased conviction data (where bias already shaped who was arrested and charged) create a self-validating cycle. The DC Sniper case is the textbook example.</p>
+    </div>
+
+  </div>
+
+</main>
+
+<div class="page-footer">
+  <span>FORENSIC PSYCHOLOGY FIELD REFERENCE</span>
+  <span>Assessment Tools · Statistical Methods · Legal Applications</span>
+  <span>For Educational Purposes</span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>How to Set Up Netlify Hosting — Beginner's Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Mono:wght@400;500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #faf7f2 !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #faf7f2 !important; }
+  body { background: #faf7f2 !important; color: #0e0c09 !important; font-family: 'Jost', sans-serif; font-size: 16px; line-height: 1.75; max-width: 800px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+  /* HEADER */
+  .doc-header { background: #0e0c09; color: #faf7f2; padding: 2.5rem 2rem 2rem; margin: 0 -1.5rem 3rem; }
+  .doc-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: #70b8e8; display: block; margin-bottom: 0.6rem; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 900; line-height: 1.1; margin-bottom: 0.8rem; }
+  .doc-header h1 em { color: #70b8e8; font-style: italic; }
+  .doc-header .sub { font-size: 0.95rem; color: #8a8070; max-width: 540px; line-height: 1.6; }
+  .what-you-need { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #2a2820; }
+  .need-chip { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.35rem 0.8rem; border: 1px solid #3a3820; color: #70b8e8; }
+
+  /* OVERVIEW BAR */
+  .overview { background: #f0ead8; border-left: 5px solid #c8922a; padding: 1.2rem 1.5rem; margin-bottom: 2.5rem; }
+  .overview-title { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.5rem; }
+  .overview p { font-size: 0.9rem; color: #3a2a10; line-height: 1.65; }
+  .overview ol { padding-left: 1.4rem; margin-top: 0.6rem; }
+  .overview li { font-size: 0.88rem; color: #3a2a10; margin-bottom: 0.2rem; }
+
+  /* BIG STEP CARDS */
+  .big-step { margin-bottom: 3rem; }
+  .step-badge { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+  .step-num-circle { width: 44px; height: 44px; border-radius: 50%; background: #0e0c09; color: #faf7f2; font-family: 'DM Mono', monospace; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-badge-text .step-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #9a9080; display: block; }
+  .step-badge-text h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+  .step-intro { font-size: 0.92rem; color: #4a3a20; line-height: 1.7; margin-bottom: 1.2rem; background: #fff; border: 1px solid #e5ddd0; padding: 1rem 1.2rem; border-left: 4px solid #0e0c09; }
+
+  /* SUBSTEPS */
+  .substep { margin-bottom: 1rem; }
+  .substep-header { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.4rem; }
+  .substep-dot { width: 28px; height: 28px; border-radius: 50%; background: #e5ddd0; color: #0e0c09; font-family: 'DM Mono', monospace; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .substep h3 { font-family: 'Jost', sans-serif; font-size: 0.97rem; font-weight: 600; color: #0e0c09; }
+  .substep p { font-size: 0.88rem; color: #3a3020; line-height: 1.65; margin-left: 2.4rem; margin-bottom: 0.4rem; }
+  .substep ul { margin-left: 2.4rem; margin-bottom: 0.4rem; padding-left: 1.2rem; }
+  .substep li { font-size: 0.88rem; color: #3a3020; margin-bottom: 0.3rem; line-height: 1.6; }
+
+  /* CLICK INSTRUCTIONS — the "click this exact thing" elements */
+  .click-box { background: #f5f0ff; border: 2px solid #7a3ab5; border-radius: 0; padding: 0.9rem 1.2rem; margin: 0.5rem 0 0.5rem 2.4rem; font-size: 0.88rem; }
+  .click-box .click-label { font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #7a3ab5; display: block; margin-bottom: 0.3rem; }
+  .click-box strong { color: #3a1a6a; }
+
+  /* SCREEN MOCK */
+  .screen-mock { background: #fff; border: 2px solid #c8c0b0; border-radius: 4px; padding: 0; margin: 0.6rem 0 0.6rem 2.4rem; overflow: hidden; }
+  .screen-mock .mock-bar { background: #e8e0d8; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .mock-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .mock-dot.r { background: #ff5f57; }
+  .mock-dot.y { background: #febc2e; }
+  .mock-dot.g { background: #28c840; }
+  .mock-url { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #7a7060; margin-left: auto; }
+  .screen-mock .mock-body { padding: 1rem 1.2rem; font-size: 0.85rem; color: #3a3020; line-height: 1.6; }
+  .mock-button { display: inline-block; background: #0e0c09; color: #fff; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; padding: 0.35rem 0.9rem; margin: 0.2rem 0.2rem 0.2rem 0; cursor: default; }
+  .mock-button.green { background: #1a6a1a; }
+  .mock-button.blue { background: #1a3a6a; }
+  .mock-button.outline { background: transparent; border: 1px solid #0e0c09; color: #0e0c09; }
+  .mock-field { border: 1px solid #c8c0b0; padding: 0.4rem 0.7rem; font-family: 'DM Mono', monospace; font-size: 0.72rem; color: #7a7060; display: inline-block; min-width: 200px; margin: 0.2rem 0; }
+  .mock-label { font-size: 0.8rem; font-weight: 600; display: block; margin-top: 0.5rem; margin-bottom: 0.2rem; }
+  .mock-section { border: 1px solid #e5ddd0; padding: 0.7rem 0.9rem; margin: 0.4rem 0; }
+  .mock-section-title { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9a9080; margin-bottom: 0.4rem; display: block; }
+
+  /* CUT-AND-PASTE BOXES */
+  .paste-box { background: #0e0c09; color: #e8e0d0; font-family: 'DM Mono', monospace; font-size: 0.8rem; line-height: 1.6; padding: 1rem 1.3rem; margin: 0.5rem 0 0.5rem 2.4rem; position: relative; word-break: break-all; }
+  .paste-box .paste-label { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #70b8e8; display: block; margin-bottom: 0.4rem; }
+
+  /* CALLOUT TYPES */
+  .callout { padding: 0.9rem 1.2rem; margin: 0.8rem 0; font-size: 0.87rem; line-height: 1.65; }
+  .callout.action { background: #f0faf0; border-left: 4px solid #1a6a1a; color: #0a2a0a; }
+  .callout.action::before { content: '▶  DO THIS NOW: '; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #1a6a1a; display: block; margin-bottom: 0.3rem; }
+  .callout.warn { background: #faf5e8; border-left: 4px solid #c8922a; color: #2a1a0a; }
+  .callout.warn::before { content: '⚠  WATCH OUT: '; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #c8922a; display: block; margin-bottom: 0.3rem; }
+  .callout.tip { background: #f0f5ff; border-left: 4px solid #3a3a9a; color: #0a0a2a; }
+  .callout.tip::before { content: '💡  TIP: '; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #3a3a9a; display: block; margin-bottom: 0.3rem; }
+  .callout.success { background: #f0faf8; border-left: 4px solid #1a7a5a; color: #0a2a1a; }
+  .callout.success::before { content: '✓  SUCCESS CHECK: '; font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #1a7a5a; display: block; margin-bottom: 0.3rem; }
+
+  /* DIVIDER */
+  hr.step-rule { border: none; border-top: 2px solid #e5ddd0; margin: 2.5rem 0; }
+
+  /* TROUBLESHOOT */
+  .trouble-section { background: #fff; border: 1px solid #e5ddd0; padding: 1.5rem; margin-top: 2rem; }
+  .trouble-section h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+  .trouble-item { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed #e5ddd0; }
+  .trouble-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .trouble-item .problem { font-weight: 600; font-size: 0.88rem; color: #b5230f; margin-bottom: 0.3rem; }
+  .trouble-item .fix { font-size: 0.87rem; color: #2a2218; line-height: 1.6; }
+
+  /* FINAL SUMMARY */
+  .final-box { background: #0e0c09; color: #faf7f2; padding: 2rem; margin: 2rem -1.5rem 0; }
+  .final-box h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 1rem; color: #70b8e8; }
+  .final-box ol { padding-left: 1.4rem; }
+  .final-box li { font-size: 0.88rem; color: #c8c0b0; margin-bottom: 0.4rem; line-height: 1.6; }
+  .final-box li strong { color: #faf7f2; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <span class="eyebrow">SloanMelia.com · Phase 1 · Beginner's Guide</span>
+  <h1>How to Set Up<br><em>Netlify Hosting</em></h1>
+  <p class="sub">Written for someone with limited coding experience. Every click is described. Every screen is shown. Nothing is assumed. You will have a live website by the end of this guide.</p>
+  <div class="what-you-need">
+    <span class="need-chip">⏱ About 30 minutes</span>
+    <span class="need-chip">💻 A laptop or desktop</span>
+    <span class="need-chip">📁 The sloan-profile.html file saved on your computer</span>
+    <span class="need-chip">📧 An email address</span>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="overview">
+  <span class="overview-title">What We're Doing — Big Picture First</span>
+  <p>Think of it this way: Netlify is like a storage locker on the internet. Your HTML file sits in that locker, and when anyone types sloanmelia.com into a browser, the internet grabs the file from that locker and shows it on screen. That's all "hosting" means — having your file stored somewhere the internet can reach it.</p>
+  <ol>
+    <li><strong>Create a free GitHub account</strong> — this is where your code files get stored</li>
+    <li><strong>Upload your HTML file to GitHub</strong> — one file, named index.html</li>
+    <li><strong>Create a free Netlify account</strong> — connect it to your GitHub</li>
+    <li><strong>Tell Netlify which file to host</strong> — three clicks</li>
+    <li><strong>Get your live URL</strong> — something like sloan-smith.netlify.app</li>
+    <li><strong>Connect your custom domain later</strong> — covered in a separate section at the end</li>
+  </ol>
+</div>
+
+
+<!-- ══════════════════════ STEP 1 ══════════════════════ -->
+<div class="big-step">
+  <div class="step-badge">
+    <div class="step-num-circle">1</div>
+    <div class="step-badge-text">
+      <span class="step-label">First</span>
+      <h2>Prepare Your HTML File</h2>
+    </div>
+  </div>
+
+  <div class="step-intro">Before touching GitHub or Netlify, you need the HTML file from this conversation saved on your computer with the right filename. This takes 2 minutes.</div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">1a</div>
+      <h3>Find the sloan-profile.html file you downloaded</h3>
+    </div>
+    <p>You downloaded <strong>sloan-profile.html</strong> from this Claude conversation. Find it on your computer — probably in your Downloads folder.</p>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">1b</div>
+      <h3>Rename it to exactly: index.html</h3>
+    </div>
+    <p>On a <strong>Windows PC:</strong> Right-click the file → click Rename → type <code>index.html</code> → press Enter</p>
+    <p>On a <strong>Mac:</strong> Click the filename once to select it → press Enter → type <code>index.html</code> → press Enter</p>
+    <div class="callout warn">The filename MUST be exactly <strong>index.html</strong> — all lowercase, no spaces. If it's named anything else (like sloan-profile.html or Index.HTML), the website will show an error instead of her page.</div>
+  </div>
+</div>
+
+<hr class="step-rule">
+
+<!-- ══════════════════════ STEP 2 ══════════════════════ -->
+<div class="big-step">
+  <div class="step-badge">
+    <div class="step-num-circle">2</div>
+    <div class="step-badge-text">
+      <span class="step-label">Second</span>
+      <h2>Create a Free GitHub Account</h2>
+    </div>
+  </div>
+
+  <div class="step-intro">GitHub is like Google Drive, but specifically designed for website and app files. Netlify watches your GitHub and automatically publishes whatever's in it. You don't need to understand how it works — just create an account and upload the file.</div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">2a</div>
+      <h3>Go to GitHub's website</h3>
+    </div>
+    <div class="click-box">
+      <span class="click-label">Open your browser and go to this exact address</span>
+      <strong>github.com</strong>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">2b</div>
+      <h3>Click Sign Up</h3>
+    </div>
+    <p>On the GitHub homepage, look for the <strong>Sign Up</strong> button — it's usually in the top right corner of the page.</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div><span class="mock-url">github.com</span></div>
+      <div class="mock-body">
+        <span style="font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:700;">GitHub</span>
+        <div style="margin-top:0.8rem;">
+          <span class="mock-button outline">Sign in</span>
+          <span class="mock-button green">Sign up</span>
+          &nbsp; ← <strong>Click this green button</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">2c</div>
+      <h3>Fill out the sign-up form</h3>
+    </div>
+    <p>GitHub will walk you through a short sign-up. Here's what to enter:</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div><span class="mock-url">github.com/signup</span></div>
+      <div class="mock-body">
+        <span class="mock-label">Enter your email address</span>
+        <div class="mock-field">yourname@gmail.com</div>
+        <span class="mock-label">Create a password</span>
+        <div class="mock-field">Make it strong — write it down</div>
+        <span class="mock-label">Enter a username</span>
+        <div class="mock-field">sloanmelia  ← use this or anything you like</div>
+        <div style="margin-top:0.8rem;"><span class="mock-button green">Create account</span></div>
+      </div>
+    </div>
+    <div class="callout warn">GitHub will send a verification email. Open your email inbox, find it, and click the verification link before continuing. Check your spam folder if you don't see it within 2 minutes.</div>
+  </div>
+</div>
+
+<hr class="step-rule">
+
+<!-- ══════════════════════ STEP 3 ══════════════════════ -->
+<div class="big-step">
+  <div class="step-badge">
+    <div class="step-num-circle">3</div>
+    <div class="step-badge-text">
+      <span class="step-label">Third</span>
+      <h2>Create a Repository and Upload Your File</h2>
+    </div>
+  </div>
+
+  <div class="step-intro">A "repository" (or "repo") is just a folder on GitHub that holds your files. Think of it like a folder on your desktop — except it lives on the internet. You're going to create one folder and put the index.html file in it.</div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">3a</div>
+      <h3>Find the "New" button to create a repository</h3>
+    </div>
+    <p>After logging in, you'll see your GitHub dashboard. Look for a green button that says <strong>New</strong> on the left side, OR click the <strong>+</strong> icon near the top right corner and select <strong>New repository</strong>.</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div><span class="mock-url">github.com</span></div>
+      <div class="mock-body">
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <div style="width:180px;border-right:1px solid #e5ddd0;padding-right:1rem;">
+            <div style="font-size:0.75rem;font-weight:700;margin-bottom:0.6rem;">Your profile</div>
+            <span class="mock-button green" style="width:100%;text-align:center;display:block;">New</span>
+            <div style="font-size:0.72rem;color:#7a7060;margin-top:0.3rem;">← Click this green button</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:0.8rem;color:#7a7060;">Your repositories will show here after you create them</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">3b</div>
+      <h3>Fill out the New Repository form</h3>
+    </div>
+    <p>Copy these exact values into the form:</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div><span class="mock-url">github.com/new</span></div>
+      <div class="mock-body">
+        <span class="mock-label">Repository name *</span>
+        <div class="mock-field">sloanmelia-site</div>
+        <div style="font-size:0.75rem;color:#1a6a1a;margin-bottom:0.5rem;">✓ sloanmelia-site is available</div>
+
+        <span class="mock-label">Description (optional)</span>
+        <div class="mock-field">Sloan's personal website</div>
+
+        <div style="margin-top:0.6rem;">
+          <strong style="font-size:0.85rem;">Visibility</strong><br>
+          <span style="font-size:0.82rem;">● Private &nbsp;&nbsp; ○ Public</span>
+          <div style="font-size:0.75rem;color:#7a7060;">← Select Private</div>
+        </div>
+
+        <div style="margin-top:0.6rem;">
+          <span style="font-size:0.82rem;">☑ Add a README file</span>
+          <div style="font-size:0.75rem;color:#7a7060;">← Check this box</div>
+        </div>
+
+        <div style="margin-top:0.8rem;"><span class="mock-button green">Create repository</span></div>
+      </div>
+    </div>
+
+    <div class="callout tip">Repository name tip: use lowercase letters and hyphens only — no spaces, no capitals. <strong>sloanmelia-site</strong> is perfect.</div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">3c</div>
+      <h3>Upload your index.html file</h3>
+    </div>
+    <p>After clicking "Create repository", GitHub takes you to your new (mostly empty) repository. Now upload the file:</p>
+    <div class="click-box">
+      <span class="click-label">Click this — it's near the top of the file list</span>
+      Look for the button that says <strong>"Add file"</strong> — click it, then click <strong>"Upload files"</strong> from the dropdown that appears
+    </div>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div><span class="mock-url">github.com/sloanmelia/sloanmelia-site</span></div>
+      <div class="mock-body">
+        <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem;">
+          <span style="font-family:'DM Mono',monospace;font-size:0.7rem;">sloanmelia-site</span>
+          <span style="font-size:0.72rem;color:#7a7060;">Public · 1 commit</span>
+          <span class="mock-button outline" style="margin-left:auto;">Add file ▾</span>
+          <span style="font-size:0.72rem;color:#1a6a1a;">← Click here</span>
+        </div>
+        <div style="background:#f5f5f5;padding:0.6rem;font-size:0.75rem;">
+          📄 README.md &nbsp;&nbsp; <span style="color:#7a7060;">Initial commit</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">3d</div>
+      <h3>Drag and drop your file, then commit it</h3>
+    </div>
+    <p>The upload page has a big dotted box. Either <strong>drag your index.html file from your computer into that box</strong>, or click <strong>"choose your files"</strong> and navigate to where you saved index.html.</p>
+    <p>After the file uploads and appears in the list, scroll down on that same page. You'll see a section called <strong>"Commit changes"</strong>:</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+      <div class="mock-body">
+        <div style="border:2px dashed #c8c0b0;padding:1.5rem;text-align:center;margin-bottom:1rem;font-size:0.82rem;color:#7a7060;">
+          Drag files here to add them to your repository<br>
+          <span style="color:#1a3a9a;">choose your files</span>
+        </div>
+        <div style="font-size:0.8rem;color:#1a6a1a;margin-bottom:0.8rem;">✓ index.html</div>
+        <div style="border-top:1px solid #e5ddd0;padding-top:0.8rem;">
+          <strong style="font-size:0.85rem;">Commit changes</strong>
+          <div class="mock-field" style="margin-top:0.4rem;width:100%;">Add files via upload</div>
+          <div style="margin-top:0.5rem;"><span class="mock-button green">Commit changes</span> &nbsp; ← <strong>Click this green button</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout success">Your file is now on GitHub. You should see index.html appear in your repository file list. If you see it, you're ready for the next step.</div>
+  </div>
+</div>
+
+<hr class="step-rule">
+
+<!-- ══════════════════════ STEP 4 ══════════════════════ -->
+<div class="big-step">
+  <div class="step-badge">
+    <div class="step-num-circle">4</div>
+    <div class="step-badge-text">
+      <span class="step-label">Fourth</span>
+      <h2>Create a Free Netlify Account</h2>
+    </div>
+  </div>
+
+  <div class="step-intro">Now that your file is on GitHub, Netlify needs to know about it. Creating a Netlify account takes about 2 minutes — and you sign in WITH your GitHub account, so there's no new password to create or remember.</div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">4a</div>
+      <h3>Go to Netlify's website</h3>
+    </div>
+    <div class="click-box">
+      <span class="click-label">Open a new browser tab and go to</span>
+      <strong>netlify.com</strong>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">4b</div>
+      <h3>Click "Sign up" then choose "GitHub"</h3>
+    </div>
+    <p>On the Netlify homepage, click the <strong>Sign up</strong> button. You'll be offered several ways to sign up. <strong>Choose GitHub</strong> — this is important because it connects the two accounts automatically.</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div><span class="mock-url">netlify.com/signup</span></div>
+      <div class="mock-body">
+        <div style="text-align:center;padding:0.5rem;">
+          <strong style="font-size:0.9rem;">Sign up for Netlify</strong>
+          <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;max-width:250px;margin-left:auto;margin-right:auto;">
+            <span class="mock-button" style="background:#1a1a1a;padding:0.6rem;text-align:center;">⬡ Sign up with GitHub</span>
+            <div style="font-size:0.72rem;color:#1a6a1a;text-align:center;">← Click this one</div>
+            <span class="mock-button outline" style="padding:0.6rem;text-align:center;color:#7a7060;">Sign up with GitLab</span>
+            <span class="mock-button outline" style="padding:0.6rem;text-align:center;color:#7a7060;">Sign up with Bitbucket</span>
+            <span class="mock-button outline" style="padding:0.6rem;text-align:center;color:#7a7060;">Sign up with email</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">4c</div>
+      <h3>Authorize Netlify to access GitHub</h3>
+    </div>
+    <p>GitHub will pop up a page asking if it's okay for Netlify to read your GitHub repositories. This is expected and safe — click the green <strong>Authorize Netlify</strong> button.</p>
+    <div class="callout tip">This is like giving Netlify a key to your GitHub locker. It can read the files so it can publish them. It can't delete anything or change your GitHub password.</div>
+  </div>
+</div>
+
+<hr class="step-rule">
+
+<!-- ══════════════════════ STEP 5 ══════════════════════ -->
+<div class="big-step">
+  <div class="step-badge">
+    <div class="step-num-circle">5</div>
+    <div class="step-badge-text">
+      <span class="step-label">Fifth</span>
+      <h2>Connect Your GitHub Repo to Netlify</h2>
+    </div>
+  </div>
+
+  <div class="step-intro">You're now inside Netlify. This is where you tell it "take the files from that GitHub folder and put them on the internet." It's literally three clicks and one confirmation.</div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">5a</div>
+      <h3>Click "Add new site"</h3>
+    </div>
+    <p>After logging in, you land on the Netlify dashboard. Look for a button that says <strong>"Add new site"</strong> or <strong>"Import an existing project"</strong>. Click it.</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div><span class="mock-url">app.netlify.com</span></div>
+      <div class="mock-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <strong style="font-size:0.9rem;">Team overview</strong>
+          <span class="mock-button green">Add new site ▾</span>
+        </div>
+        <div style="font-size:0.8rem;color:#7a7060;border:2px dashed #e5ddd0;padding:2rem;text-align:center;">
+          No sites yet. Add your first site to get started.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">5b</div>
+      <h3>Choose "Import an existing project"</h3>
+    </div>
+    <p>A dropdown or new page will appear. Click <strong>"Import an existing project"</strong> (sometimes also shown as <strong>"Deploy with GitHub"</strong>).</p>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">5c</div>
+      <h3>Choose GitHub as your source</h3>
+    </div>
+    <p>Netlify asks where your project comes from. Click the <strong>GitHub</strong> button.</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+      <div class="mock-body">
+        <strong style="font-size:0.85rem;">Connect to Git provider</strong>
+        <div style="margin-top:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <span class="mock-button" style="background:#1a1a1a;">⬡ GitHub</span>
+          <div style="font-size:0.72rem;color:#1a6a1a;align-self:center;">← Click this</div>
+          <span class="mock-button outline" style="color:#7a7060;">GitLab</span>
+          <span class="mock-button outline" style="color:#7a7060;">Bitbucket</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">5d</div>
+      <h3>Find and select your repository</h3>
+    </div>
+    <p>Netlify shows a list of your GitHub repositories. You should see <strong>sloanmelia-site</strong> in the list. Click on it.</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+      <div class="mock-body">
+        <strong style="font-size:0.85rem;">Pick a repository</strong>
+        <div style="margin-top:0.6rem;">
+          <div class="mock-field" style="width:100%;margin-bottom:0.5rem;">🔍 Search repos...</div>
+          <div style="border:1px solid #e5ddd0;padding:0.7rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#f0f5ff;">
+            <span style="font-size:0.85rem;">📁 <strong>sloanmelia-site</strong></span>
+            <span style="font-size:0.72rem;color:#1a3a9a;">Select ›</span>
+          </div>
+        </div>
+        <div style="font-size:0.72rem;color:#1a6a1a;margin-top:0.3rem;">← Click on sloanmelia-site</div>
+      </div>
+    </div>
+    <div class="callout warn">If you don't see sloanmelia-site in the list, click <strong>"Configure the Netlify app on GitHub"</strong> — this opens GitHub and lets you grant Netlify permission to see your specific repository.</div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">5e</div>
+      <h3>Deploy — leave all settings as-is</h3>
+    </div>
+    <p>Netlify shows a "Site settings" page with a bunch of options. <strong>Don't change anything.</strong> Just scroll to the bottom and click the big <strong>Deploy site</strong> button.</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+      <div class="mock-body">
+        <strong style="font-size:0.85rem;">Deploy settings for sloanmelia-site</strong>
+        <div class="mock-section">
+          <span class="mock-section-title">Branch to deploy</span>
+          <span style="font-size:0.82rem;">main ▾</span>
+          <div style="font-size:0.72rem;color:#7a7060;">Leave this as "main" — don't change</div>
+        </div>
+        <div class="mock-section">
+          <span class="mock-section-title">Build command (optional)</span>
+          <div class="mock-field" style="width:100%;color:#bbb;">Leave blank — don't type anything</div>
+        </div>
+        <div class="mock-section">
+          <span class="mock-section-title">Publish directory (optional)</span>
+          <div class="mock-field" style="width:100%;color:#bbb;">Leave blank — don't type anything</div>
+        </div>
+        <div style="margin-top:0.8rem;"><span class="mock-button green" style="padding:0.7rem 2rem;font-size:0.75rem;">Deploy site</span> &nbsp; ← <strong>Click this</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">5f</div>
+      <h3>Wait about 60 seconds for it to deploy</h3>
+    </div>
+    <p>Netlify shows a progress indicator. You'll see it say <strong>"Building"</strong> then <strong>"Published"</strong>. This takes about 30–90 seconds. Don't click anything — just wait.</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+      <div class="mock-body">
+        <div style="display:flex;gap:0.8rem;align-items:center;margin-bottom:0.8rem;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#1a7a5a;"></div>
+          <strong style="font-size:0.9rem;">sloanmelia-site</strong>
+        </div>
+        <div style="background:#f0faf8;padding:0.7rem;font-size:0.82rem;color:#1a4a3a;margin-bottom:0.5rem;">
+          ✓ <strong>Published</strong> — your site is live!
+        </div>
+        <div>
+          <span style="font-size:0.8rem;color:#7a7060;">Your site URL:</span><br>
+          <strong style="color:#1a3a9a;font-size:0.88rem;">https://whimsical-panda-abc123.netlify.app</strong>
+        </div>
+        <div style="font-size:0.72rem;color:#1a6a1a;margin-top:0.3rem;">← This is your live website. Click it to see Sloan's page.</div>
+      </div>
+    </div>
+    <div class="callout success">When you see a green dot and the word "Published," your site is live. Click the URL Netlify gives you and you should see Sloan's profile page in your browser. If you do — congratulations, it works.</div>
+  </div>
+</div>
+
+<hr class="step-rule">
+
+<!-- ══════════════════════ STEP 6 ══════════════════════ -->
+<div class="big-step">
+  <div class="step-badge">
+    <div class="step-num-circle">6</div>
+    <div class="step-badge-text">
+      <span class="step-label">Sixth — Optional but Recommended</span>
+      <h2>Give Your Site a Better URL</h2>
+    </div>
+  </div>
+
+  <div class="step-intro">Right now your URL looks like <strong>whimsical-panda-abc123.netlify.app</strong> — Netlify randomly generates it. You can change the "whimsical-panda-abc123" part to something cleaner for free, without needing a paid domain yet.</div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">6a</div>
+      <h3>Go to Site Settings</h3>
+    </div>
+    <p>In Netlify, click on your site name to open it, then click the <strong>Site settings</strong> button (or tab).</p>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">6b</div>
+      <h3>Change the site name</h3>
+    </div>
+    <p>In Site Settings, look for <strong>"Site details"</strong> or <strong>"Site information"</strong>. You'll see a <strong>"Change site name"</strong> button. Click it.</p>
+    <div class="click-box">
+      <span class="click-label">Type this as the new site name</span>
+      <strong>sloansmith</strong> &nbsp; or &nbsp; <strong>sloanmelia</strong>
+    </div>
+    <p>Your free URL will become: <strong>sloansmith.netlify.app</strong> or <strong>sloanmelia.netlify.app</strong></p>
+    <div class="callout tip">This free Netlify URL works fine as a temporary address to share while you set up the real sloanmelia.com domain. You can put it on college applications right now.</div>
+  </div>
+</div>
+
+<hr class="step-rule">
+
+<!-- ══════════════════════ STEP 7 ══════════════════════ -->
+<div class="big-step">
+  <div class="step-badge">
+    <div class="step-num-circle">7</div>
+    <div class="step-badge-text">
+      <span class="step-label">Seventh — When You Have the Domain</span>
+      <h2>Connect sloanmelia.com to Netlify</h2>
+    </div>
+  </div>
+
+  <div class="step-intro">Once you've registered sloanmelia.com at Namecheap (~$12), this is how you connect it so that typing sloanmelia.com shows her page. This involves copying some text from Netlify and pasting it into Namecheap. Takes about 10 minutes of work, then 30 minutes of waiting.</div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">7a</div>
+      <h3>In Netlify: Go to Domain Management</h3>
+    </div>
+    <p>Open your site in Netlify → click <strong>Site settings</strong> → click <strong>Domain management</strong> in the left sidebar.</p>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">7b</div>
+      <h3>Add your custom domain</h3>
+    </div>
+    <div class="click-box">
+      <span class="click-label">Click this button</span>
+      <strong>Add custom domain</strong>
+    </div>
+    <p>A box appears. Type your domain exactly like this and click Verify:</p>
+    <div class="paste-box">
+      <span class="paste-label">Type exactly this</span>
+      sloanmelia.com
+    </div>
+    <p>Netlify will say "sloanmelia.com doesn't appear to belong to you yet." That's fine — click <strong>Add domain</strong> anyway.</p>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">7c</div>
+      <h3>Get the DNS records from Netlify</h3>
+    </div>
+    <p>Netlify will show you a page with instructions. Look for a section called <strong>"Option 2"</strong> or <strong>"Configure your domain's DNS settings"</strong>. It will show you two records:</p>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+      <div class="mock-body">
+        <strong style="font-size:0.85rem;">DNS records to add at your registrar (Namecheap)</strong>
+        <div class="mock-section" style="margin-top:0.7rem;">
+          <div style="display:grid;grid-template-columns:60px 80px 1fr;gap:0.5rem;font-size:0.75rem;font-family:'DM Mono',monospace;margin-bottom:0.3rem;">
+            <strong>Type</strong><strong>Name</strong><strong>Value</strong>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 80px 1fr;gap:0.5rem;font-size:0.75rem;font-family:'DM Mono',monospace;padding:0.3rem 0;border-top:1px solid #e5ddd0;">
+            <span>CNAME</span><span>www</span><span style="color:#1a3a9a;">YOUR-SITE.netlify.app</span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 80px 1fr;gap:0.5rem;font-size:0.75rem;font-family:'DM Mono',monospace;padding:0.3rem 0;border-top:1px solid #e5ddd0;">
+            <span>A</span><span>@</span><span style="color:#1a3a9a;">75.2.60.5</span>
+          </div>
+        </div>
+        <div style="font-size:0.72rem;color:#c8922a;margin-top:0.5rem;">⚠ Your actual values will be different — copy the exact values Netlify shows you</div>
+      </div>
+    </div>
+    <p>Write down or screenshot these values — you'll need them for the next step in Namecheap.</p>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">7d</div>
+      <h3>Add those records in Namecheap</h3>
+    </div>
+    <ol>
+      <li>Open a new browser tab and go to <strong>namecheap.com</strong></li>
+      <li>Log into your Namecheap account</li>
+      <li>Click <strong>Domain List</strong> in the left sidebar</li>
+      <li>Find sloanmelia.com and click the <strong>Manage</strong> button next to it</li>
+      <li>Click the <strong>Advanced DNS</strong> tab at the top</li>
+      <li>You'll see a section called <strong>Host Records</strong> — click <strong>Add New Record</strong></li>
+    </ol>
+    <div class="screen-mock">
+      <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div><span class="mock-url">namecheap.com — Advanced DNS</span></div>
+      <div class="mock-body">
+        <strong style="font-size:0.85rem;">Host Records</strong>
+        <div style="margin-top:0.7rem;">
+          <div style="display:grid;grid-template-columns:80px 80px 1fr 80px;gap:0.4rem;font-size:0.72rem;font-family:'DM Mono',monospace;font-weight:700;border-bottom:1px solid #e5ddd0;padding-bottom:0.3rem;margin-bottom:0.3rem;">
+            <span>Type</span><span>Host</span><span>Value</span><span>TTL</span>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 80px 1fr 80px;gap:0.4rem;font-size:0.72rem;font-family:'DM Mono',monospace;padding:0.3rem 0;background:#f0f5ff;">
+            <span>CNAME</span><span>www</span><span style="color:#1a3a9a;">[paste Netlify value]</span><span>Automatic</span>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 80px 1fr 80px;gap:0.4rem;font-size:0.72rem;font-family:'DM Mono',monospace;padding:0.3rem 0;background:#f0fff5;">
+            <span>A Record</span><span>@</span><span style="color:#1a3a9a;">[paste Netlify IP]</span><span>Automatic</span>
+          </div>
+        </div>
+        <span class="mock-button green" style="margin-top:0.8rem;display:inline-block;">Save all changes</span>
+      </div>
+    </div>
+    <div class="callout warn">After saving in Namecheap, nothing happens immediately. DNS changes take 5–60 minutes to spread across the internet. This is normal. Go do something else and come back.</div>
+  </div>
+
+  <div class="substep">
+    <div class="substep-header">
+      <div class="substep-dot">7e</div>
+      <h3>Wait, then verify it worked</h3>
+    </div>
+    <p>After 30–60 minutes, go back to Netlify → Domain management. You should see a green checkmark next to sloanmelia.com and a note that HTTPS is enabled.</p>
+    <p>Then open a new browser tab and type <strong>sloanmelia.com</strong>. You should see Sloan's profile page with a padlock icon in the browser bar.</p>
+    <div class="callout success">If sloanmelia.com loads her page with a padlock — you're done. The site is live, secure, and professional. Share that URL.</div>
+  </div>
+</div>
+
+<hr class="step-rule">
+
+<!-- TROUBLESHOOTING -->
+<div class="trouble-section">
+  <h3>Troubleshooting — If Something Goes Wrong</h3>
+
+  <div class="trouble-item">
+    <div class="problem">The site shows a blank white page</div>
+    <div class="fix">Your file is probably not named exactly <strong>index.html</strong>. Go back to GitHub, find your file, click the pencil icon to rename it, and make sure it says exactly <code>index.html</code> — all lowercase, no spaces. Netlify will automatically redeploy within 30 seconds.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="problem">Netlify says "Page not found" or shows a 404 error</div>
+    <div class="fix">Same issue — the file needs to be named <code>index.html</code> at the root level of your repository (not inside any folder). Also check that it's in the <strong>main</strong> branch of your repo, not a different branch.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="problem">I can't see sloanmelia-site in Netlify's repository list</div>
+    <div class="fix">Scroll down on the repository picker page and look for a small link that says <strong>"Configure the Netlify app on GitHub."</strong> Click it — it opens GitHub and shows a list of repos. Find sloanmelia-site and click the checkmark next to it to grant Netlify access. Then go back to Netlify and try again.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="problem">sloanmelia.com isn't loading after I added the DNS records</div>
+    <div class="fix">DNS changes can take up to 24 hours in rare cases, though usually 30–60 minutes. If it's been more than 2 hours: double-check that the values in Namecheap exactly match what Netlify showed you (copy-paste is safer than typing). Also make sure you saved the changes in Namecheap after adding each record.</div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="problem">The site shows "Not Secure" instead of a padlock</div>
+    <div class="fix">HTTPS (the padlock) should enable automatically within a few minutes of DNS connecting. If it hasn't after 30 minutes, go to Netlify → Domain management → HTTPS → and click <strong>"Verify DNS configuration"</strong> then <strong>"Provision certificate."</strong></div>
+  </div>
+
+  <div class="trouble-item">
+    <div class="problem">I want to update the site with a new version of the file</div>
+    <div class="fix">Go to your GitHub repository → click <strong>Add file → Upload files</strong> → upload the new index.html file → commit the change. Netlify detects the change automatically and redeploys within 30–60 seconds. No action needed in Netlify.</div>
+  </div>
+</div>
+
+
+<!-- FINAL SUMMARY -->
+<div class="final-box">
+  <h3>The Whole Process — 60-Second Summary</h3>
+  <ol>
+    <li><strong>Rename your HTML file</strong> to exactly <code>index.html</code></li>
+    <li><strong>Create a free GitHub account</strong> at github.com</li>
+    <li><strong>Create a new repository</strong> called <code>sloanmelia-site</code> (Private)</li>
+    <li><strong>Upload index.html</strong> to that repository and commit it</li>
+    <li><strong>Create a free Netlify account</strong> at netlify.com — sign in with GitHub</li>
+    <li><strong>Click "Add new site" → Import an existing project → GitHub</strong></li>
+    <li><strong>Select sloanmelia-site</strong>, leave all settings as-is, click Deploy</li>
+    <li><strong>Wait 60 seconds</strong> → click the URL Netlify gives you → see her page live</li>
+    <li><strong>Optionally:</strong> Change the site name to sloansmith.netlify.app for a cleaner free URL</li>
+    <li><strong>When ready:</strong> Buy sloanmelia.com at Namecheap, add DNS records, wait 30 min → done</li>
+  </ol>
+</div>
+
+</body>
+</html>

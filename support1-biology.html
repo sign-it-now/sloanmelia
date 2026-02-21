@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Biology & Neuroscience — Forensic Foundation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #1a3a1a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #90e090; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #90e090; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #608060; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #1a3a1a; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #1a3a1a; color: #f8f4ec; padding: 0.25rem 0.5rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+
+  .card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; border-top: 4px solid #1a3a1a; }
+  .card .label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7e6e; display: block; margin-bottom: 0.3rem; }
+  .card .title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card .body { font-size: 0.87rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; }
+  .card .forensic { background: #f0f8f0; border-left: 3px solid #1a3a1a; padding: 0.5rem 0.8rem; font-size: 0.82rem; color: #1a3a1a; font-style: italic; }
+  .card .forensic::before { content: 'Forensic Link: '; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #1a3a1a; display: block; margin-bottom: 0.1rem; }
+
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .ref-table th { background: #1a3a1a; color: #f8f4ec; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .ref-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; color: #0e0c09; font-size: 0.87rem; line-height: 1.5; }
+  .ref-table tr:nth-child(even) td { background: #f5f0e5; }
+  .ref-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; white-space: nowrap; }
+  .ref-table td.tag { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #b5230f; }
+
+  .page-footer { background: #1a3a1a; color: #507050; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #90e090; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Supporting Courses Series · Poster 09 of 16</span>
+  <h1><em>Biology &amp; Neuroscience</em> —<br>The Body Behind the Mind</h1>
+  <p class="subtitle">You cannot evaluate a brain without understanding biology. Every diagnosis, every risk factor, every medication effect, and every criminal responsibility argument eventually traces back to biology. This is the foundation under everything else.</p>
+</div>
+<main>
+
+  <div class="section-header"><span class="num">01</span><h2>The Nervous System — Core Architecture</h2><span class="desc">What every psych student must know cold</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <span class="label">Central Nervous System</span>
+      <div class="title">Brain + Spinal Cord</div>
+      <p class="body">The CNS processes all incoming information and coordinates responses. The brain is divided into the cerebrum (higher cognition), cerebellum (coordination), and brainstem (autonomic survival functions: breathing, heart rate, arousal).</p>
+      <div class="forensic">TBI can damage any CNS structure. Forensic evaluators must understand which functions are impaired by which injuries — frontal TBI produces very different deficits than temporal or cerebellar TBI.</div>
+    </div>
+    <div class="card">
+      <span class="label">Peripheral Nervous System</span>
+      <div class="title">Somatic + Autonomic</div>
+      <p class="body">The PNS connects the CNS to the body. The somatic PNS controls voluntary movement. The autonomic PNS regulates involuntary functions and splits into sympathetic (fight-or-flight) and parasympathetic (rest-and-digest) branches.</p>
+      <div class="forensic">The sympathetic nervous system response (elevated heart rate, cortisol release, hypervigilance) is the physiological basis of the PTSD arousal cluster. Polygraph testing attempts to measure peripheral autonomic responses — and fails because these responses are not lie-specific.</div>
+    </div>
+    <div class="card">
+      <span class="label">Neuron Structure</span>
+      <div class="title">How Nerve Cells Communicate</div>
+      <p class="body">Neurons have dendrites (receive signals), a cell body (soma), and an axon (transmits signals). Action potentials travel down the axon. At the synapse, neurotransmitters are released into the synaptic cleft and bind to receptors on the receiving neuron.</p>
+      <div class="forensic">Psychoactive substances and medications work by altering synaptic transmission — blocking reuptake (SSRIs), mimicking neurotransmitters (opioids), blocking receptors (antipsychotics), or flooding the synapse (stimulants). Understanding this mechanism is essential for evaluating substance-related defenses.</div>
+    </div>
+    <div class="card">
+      <span class="label">Endocrine System</span>
+      <div class="title">Hormones and Behavior</div>
+      <p class="body">The endocrine system communicates through hormones released into the bloodstream. Key glands: adrenal glands (cortisol, adrenaline), pituitary (master gland), gonads (testosterone, estrogen), thyroid (metabolism, mood).</p>
+      <div class="forensic">Testosterone has a modest but real correlation with aggression and dominance behavior. Cortisol dysregulation is a biological marker of chronic stress and trauma. Thyroid disorders can produce psychiatric symptoms (psychosis, depression, anxiety) that must be ruled out in differential diagnosis.</div>
+    </div>
+    <div class="card">
+      <span class="label">Genetics</span>
+      <div class="title">Nature in the Nature vs. Nurture Debate</div>
+      <p class="body">Behavioral genetics examines the heritability of psychological traits through twin studies, adoption studies, and molecular genetics. Heritability estimates for personality disorders range from 40–60%. No single "crime gene" exists — genetic influence is polygenic and probabilistic.</p>
+      <div class="forensic">Genetic evidence (MAOA "warrior gene" studies, twin studies of antisocial behavior) has been introduced in capital sentencing mitigation — with significant scientific controversy. Evaluators must understand both the evidence and its severe limitations before it becomes expert testimony.</div>
+    </div>
+    <div class="card">
+      <span class="label">Epigenetics</span>
+      <div class="title">How Experience Changes Gene Expression</div>
+      <p class="body">Epigenetics studies how environmental experiences turn genes on or off without changing the underlying DNA sequence. Childhood trauma, stress, and substance exposure all produce epigenetic changes — some of which can be transmitted across generations.</p>
+      <div class="forensic">Epigenetic research on ACEs (Adverse Childhood Experiences) is increasingly relevant in forensic mitigation arguments. The biological embedding of early trauma — measurable in gene methylation patterns — provides a biological mechanism connecting childhood abuse to adult criminal behavior.</div>
+    </div>
+  </div>
+
+  <div class="section-header"><span class="num">02</span><h2>ACEs — Adverse Childhood Experiences</h2><span class="desc">The biological impact of early trauma — the most important forensic biology finding of the last 30 years</span></div>
+  <table class="ref-table">
+    <thead><tr><th>ACE Category</th><th>Examples</th><th>Biological Impact</th><th>Forensic Relevance</th></tr></thead>
+    <tbody>
+      <tr><td>Abuse</td><td>Physical, sexual, emotional abuse</td><td>Amygdala hyperactivation, cortisol dysregulation, hippocampal volume reduction, altered HPA axis</td><td class="tag">Criminal responsibility mitigation · PTSD evaluation · Juvenile sentencing</td></tr>
+      <tr><td>Neglect</td><td>Physical and emotional neglect</td><td>Disrupted attachment neurology, reduced prefrontal development, impaired self-regulation circuits</td><td class="tag">Developmental competency · Risk assessment context · Parole mitigation</td></tr>
+      <tr><td>Household Dysfunction</td><td>Domestic violence, parental incarceration, substance abuse in home, mental illness in home</td><td>Chronic toxic stress response, sympathetic nervous system dysregulation, impaired immune function</td><td class="tag">Social history evaluation · Sentencing mitigation · Juvenile disposition</td></tr>
+    </tbody>
+  </table>
+  <div style="background:#fff;border:1px solid #ddd8cc;padding:1.2rem;margin-top:1rem;border-left:5px solid #b5230f;">
+    <span style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:#b5230f;display:block;margin-bottom:0.4rem;">The ACE Score Finding</span>
+    <p style="font-size:0.88rem;color:#2a2218;line-height:1.6;">The original CDC-Kaiser ACE Study (Felitti et al., 1998) found that ACEs are dose-responsive — each additional ACE category significantly increases the probability of mental illness, substance abuse, chronic disease, and involvement in the criminal justice system. An ACE score of 4+ is associated with dramatically elevated risk across every negative health and behavioral outcome measured. This data is now central to trauma-informed forensic evaluation and sentencing reform arguments.</p>
+  </div>
+
+</main>
+<div class="page-footer">
+  <span>BIOLOGY &amp; NEUROSCIENCE — SUPPORTING COURSE REFERENCE</span>
+  <span>Poster 09 of 16 · Sloan's Study Kit</span>
+  <span>CNS · Genetics · ACEs · Forensic Application</span>
+</div>
+</body>
+</html>

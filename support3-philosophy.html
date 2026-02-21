@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Philosophy — Logic & Ethics for Forensic Psychology</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+  .page-header { background: #1a1a3a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #9090e8; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #9090e8; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #606080; max-width: 600px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #1a1a3a; }
+  .section-header .num { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #1a1a3a; color: #f8f4ec; padding: 0.25rem 0.5rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .section-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; border-top: 4px solid #1a1a3a; }
+  .card .label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7e6e; display: block; margin-bottom: 0.3rem; }
+  .card .title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card .body { font-size: 0.87rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; }
+  .card .forensic { background: #f5f5ff; border-left: 3px solid #1a1a3a; padding: 0.5rem 0.8rem; font-size: 0.82rem; color: #1a1a3a; font-style: italic; }
+  .card .forensic::before { content: 'Forensic Link: '; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #1a1a3a; display: block; margin-bottom: 0.1rem; }
+  .logic-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .logic-table th { background: #1a1a3a; color: #f8f4ec; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .logic-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; color: #0e0c09; font-size: 0.87rem; line-height: 1.5; }
+  .logic-table tr:nth-child(even) td { background: #f5f0e5; }
+  .logic-table td:first-child { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .logic-table td.tag { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #b5230f; }
+  .page-footer { background: #1a1a3a; color: #505070; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #9090e8; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Supporting Courses Series · Poster 11 of 16</span>
+  <h1><em>Philosophy</em> — Logic &amp; Ethics<br>The Most Underrated Course on the List</h1>
+  <p class="subtitle">Forensic psychology sits at the intersection of science and law — and both fields run on formal logical argument. A forensic evaluator who cannot identify a fallacy in an attorney's cross-examination, or reason clearly about competing ethical obligations, is dangerously underprepared for the courtroom.</p>
+</div>
+<main>
+
+  <div class="section-header"><span class="num">01</span><h2>Logical Fallacies Every Forensic Psychologist Must Recognize</h2><span class="desc">Attorneys use these in cross-examination. You need to spot them.</span></div>
+  <table class="logic-table">
+    <thead><tr><th>Fallacy</th><th>What It Is</th><th>Courtroom Example</th><th>How to Respond</th></tr></thead>
+    <tbody>
+      <tr><td>Ad Hominem</td><td>Attacking the person rather than their argument or evidence.</td><td>"Dr. Smith testified for the prosecution in 90% of cases — clearly biased." (Does not address the actual findings.)</td><td class="tag">Redirect to the data. "My findings are based on standardized assessment, not personal opinion."</td></tr>
+      <tr><td>False Dichotomy</td><td>Presenting only two options when more exist.</td><td>"Either this defendant is fully sane or fully insane — which is it, doctor?"</td><td class="tag">Explain that legal sanity is a continuum with multiple components, not a binary switch.</td></tr>
+      <tr><td>Straw Man</td><td>Misrepresenting someone's argument to make it easier to attack.</td><td>"So you're saying that anyone who has PTSD can't be held responsible for violence?"</td><td class="tag">"That is not what I said. What I said was..." — restate the actual opinion clearly.</td></tr>
+      <tr><td>Post Hoc</td><td>Assuming that because B followed A, A caused B.</td><td>"The defendant watched violent video games, then committed violence. Therefore the games caused the violence."</td><td class="tag">Correlation is not causation. Multiple variables intervene. Base rates matter.</td></tr>
+      <tr><td>Appeal to Authority</td><td>Claiming something is true because an authority said it — without evidence.</td><td>"The FBI says most serial killers are white males, so the profile must be valid."</td><td class="tag">Authority is not evidence. What does the peer-reviewed data say? What are the base rates?</td></tr>
+      <tr><td>Ecological Fallacy</td><td>Applying group-level statistics to individual cases without justification.</td><td>"Studies show this risk group recidivates at 40% — therefore this defendant will recidivate."</td><td class="tag">Group statistics describe probabilities, not individual destinies. Individual factors modify group-level predictions.</td></tr>
+      <tr><td>Slippery Slope</td><td>Claiming one event will inevitably lead to extreme consequences without evidence for the causal chain.</td><td>"If we accept PTSD as a mitigating factor, every veteran will claim PTSD to avoid accountability."</td><td class="tag">Each case is evaluated individually on its specific evidence. Policy concerns don't determine individual clinical findings.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-header"><span class="num">02</span><h2>Major Ethical Frameworks — Applied to Forensic Psychology</h2><span class="desc">The philosophical foundations of the APA Ethics Code</span></div>
+  <div class="card-grid">
+    <div class="card">
+      <span class="label">Consequentialism</span>
+      <div class="title">Utilitarian Ethics — Mill &amp; Bentham</div>
+      <p class="body">The morally right action is the one that produces the greatest good for the greatest number. Outcomes determine rightness. The consequences of a decision — not the decision itself — carry moral weight.</p>
+      <div class="forensic">When a forensic evaluator must decide whether to breach confidentiality to protect a third party (Tarasoff duty to warn), utilitarian reasoning asks: does warning the potential victim produce more overall good than the harm of breaching confidentiality? This is the philosophical foundation of the duty-to-warn framework.</div>
+    </div>
+    <div class="card">
+      <span class="label">Deontological Ethics</span>
+      <div class="title">Kant's Categorical Imperative</div>
+      <p class="body">Some actions are inherently right or wrong regardless of consequences. Act only according to rules you would want universalized. Treat people as ends in themselves, never merely as means. Duties and rights are primary.</p>
+      <div class="forensic">Informed consent is a deontological requirement — it is owed to defendants regardless of whether getting it produces better outcomes. The forensic evaluator who deceives an examinee to get "better" data violates a categorical duty even if the data helps the case. Rules-based ethics underpin most professional codes.</div>
+    </div>
+    <div class="card">
+      <span class="label">Virtue Ethics</span>
+      <div class="title">Aristotle — Character and Flourishing</div>
+      <p class="body">The focus is not on rules or consequences but on the character of the moral agent. What would a person of good character do? Virtues — honesty, courage, justice, practical wisdom — guide action. Ethics is about who you are, not just what you do.</p>
+      <div class="forensic">When an attorney pressures a forensic evaluator to shade their findings, virtue ethics asks: what does an honest, courageous professional do here? The APA's aspirational principles (integrity, beneficence, justice) are written in the language of virtue ethics — describing the kind of psychologist one should strive to be.</div>
+    </div>
+    <div class="card">
+      <span class="label">Principlism</span>
+      <div class="title">Beauchamp &amp; Childress — Biomedical Ethics Framework</div>
+      <p class="body">Four principles guide biomedical and psychological ethics: Autonomy (respect persons' self-determination), Beneficence (do good), Non-maleficence (do no harm), Justice (distribute benefits and burdens fairly). When principles conflict, context determines priority.</p>
+      <div class="forensic">Principlism is the framework underlying the Belmont Report and most research ethics training. Forensic psychology routinely involves conflicts between these principles — a defendant's autonomy vs. public safety, an evaluatee's wellbeing vs. the court's need for truthful testimony. Understanding how to reason through these conflicts is the mark of an ethical practitioner.</div>
+    </div>
+    <div class="card">
+      <span class="label">Free Will vs. Determinism</span>
+      <div class="title">The Core Philosophical Question of Criminal Justice</div>
+      <p class="body">Did the defendant freely choose to act, or were they determined by factors outside their control — genetics, brain injury, childhood trauma, mental illness? The answer has profound implications for criminal responsibility, punishment, and rehabilitation.</p>
+      <div class="forensic">Every criminal responsibility evaluation engages this question. Hard determinists argue no one is truly responsible for anything. Compatibilists argue free will and determinism can coexist. The law assumes a compatibilist position — people are responsible unless a specific impairment substantially undermined their cognitive or volitional control. Forensic evaluators must be able to articulate this framework clearly under cross-examination.</div>
+    </div>
+    <div class="card">
+      <span class="label">Philosophy of Science</span>
+      <div class="title">What Counts as Knowledge? Popper's Falsifiability</div>
+      <p class="body">Karl Popper argued that genuine science produces falsifiable claims — claims that could in principle be proven wrong. A hypothesis that can explain any outcome is not scientific. Science advances by attempting to falsify hypotheses, not confirm them.</p>
+      <div class="forensic">Daubert v. Merrell Dow (1993) essentially codified Popper in federal law — expert testimony must be based on testable, falsifiable science with known error rates. A forensic evaluator whose methods cannot be falsified — "clinical intuition" with no structured protocol — cannot survive Daubert challenge. Philosophy of science is directly admissibility-relevant.</div>
+    </div>
+  </div>
+
+</main>
+<div class="page-footer">
+  <span>PHILOSOPHY — LOGIC &amp; ETHICS · SUPPORTING COURSE REFERENCE</span>
+  <span>Poster 11 of 16 · Sloan's Study Kit</span>
+  <span>Logic · Fallacies · Ethics Frameworks · Free Will</span>
+</div>
+</body>
+</html>

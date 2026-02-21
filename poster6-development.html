@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Developmental Psychology Stages</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #0a2a3a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #70c8d8; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #70c8d8; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #608898; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .theorist-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 3px solid #0a2a3a; }
+  .theorist-header .t-badge { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #0a2a3a; color: #f8f4ec; padding: 0.25rem 0.6rem; white-space: nowrap; }
+  .theorist-header h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; }
+  .theorist-header .t-focus { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .stage-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; margin-bottom: 1.5rem; }
+  .stage-table th { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .stage-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #e8e0d0; vertical-align: top; line-height: 1.5; color: #0e0c09; }
+  .stage-table td:first-child { white-space: nowrap; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.95rem; }
+  .stage-table td.age { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: #b5230f; white-space: nowrap; }
+  .stage-table td.forensic { font-style: italic; font-size: 0.83rem; color: #1a2a3a; }
+
+  /* Piaget colors */
+  .piaget th { background: #1e3a4a; color: #f8f4ec; }
+  .piaget tr:nth-child(odd) td { background: #f0f5f8; }
+  .piaget tr:nth-child(even) td { background: #ffffff; }
+
+  /* Erikson colors */
+  .erikson th { background: #3a1a2a; color: #f8f4ec; }
+  .erikson tr:nth-child(odd) td { background: #f8f0f5; }
+  .erikson tr:nth-child(even) td { background: #ffffff; }
+
+  /* Kohlberg colors */
+  .kohlberg th { background: #1e3a1e; color: #f8f4ec; }
+  .kohlberg tr:nth-child(odd) td { background: #f0f8f0; }
+  .kohlberg tr:nth-child(even) td { background: #ffffff; }
+
+  /* Bronfenbrenner */
+  .bron-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  .bron-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.2rem; border-top: 4px solid #0a2a3a; }
+  .bron-card .system { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #0a2a3a; display: block; margin-bottom: 0.25rem; }
+  .bron-card .sys-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .bron-card p { font-size: 0.85rem; color: #2a2218; margin-bottom: 0.5rem; line-height: 1.5; }
+  .bron-card .example { font-size: 0.8rem; color: #5a4e3e; font-style: italic; }
+  .bron-card .forensic { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed #ddd8cc; font-size: 0.79rem; color: #1a2a3a; }
+
+  .page-footer { background: #0a2a3a; color: #405a6a; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #70c8d8; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Forensic Psychology Study Series · Poster 06 of 08</span>
+  <h1><em>Developmental Psychology</em> —<br>Piaget, Erikson &amp; Kohlberg on One Chart</h1>
+  <p class="subtitle">Development across the lifespan is foundational to understanding criminal behavior, competency, culpability, and treatment. These three frameworks — cognitive, psychosocial, and moral — are the backbone of every developmental psych course and appear constantly in forensic evaluations of juveniles and adults.</p>
+</div>
+
+<main>
+
+  <!-- PIAGET -->
+  <div class="theorist-header">
+    <span class="t-badge">Jean Piaget · 1896–1980</span>
+    <h2>Cognitive Development — Four Stages</h2>
+    <span class="t-focus">How we think changes qualitatively with age</span>
+  </div>
+
+  <table class="stage-table piaget">
+    <thead>
+      <tr>
+        <th>Stage</th>
+        <th>Age</th>
+        <th>Core Cognitive Ability</th>
+        <th>Key Limitations</th>
+        <th>Forensic Relevance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sensorimotor</td>
+        <td class="age">0–2 yrs</td>
+        <td>Learning through senses and motor actions. Develops object permanence (~8 months) — things exist even when not seen.</td>
+        <td>No symbolic thought. No language-based understanding. No capacity for abstract concepts.</td>
+        <td class="forensic">Establishes why infants cannot be witnesses. Early sensorimotor deprivation (neglect, abuse) disrupts foundational cognitive architecture — relevant in developmental trauma evaluations.</td>
+      </tr>
+      <tr>
+        <td>Preoperational</td>
+        <td class="age">2–7 yrs</td>
+        <td>Symbolic thinking emerges. Language develops rapidly. Pretend play. Beginning of logical thought.</td>
+        <td>Egocentric thinking (cannot take another's perspective). No conservation. Animism. Cannot follow logical sequences.</td>
+        <td class="forensic">Children in this stage cannot reliably distinguish their own perspective from another's — critical for evaluating the reliability of child witness testimony. Suggestibility is highest in this stage.</td>
+      </tr>
+      <tr>
+        <td>Concrete Operational</td>
+        <td class="age">7–11 yrs</td>
+        <td>Logical thinking about concrete objects. Conservation mastered. Decentration. Understanding of reversibility.</td>
+        <td>Cannot yet reason abstractly. Logic requires concrete examples. Hypothetical reasoning is not yet available.</td>
+        <td class="forensic">Children can testify more reliably but still require concrete, non-abstract questioning. Evaluators avoid hypothetical questions. This stage marks the beginning of genuine moral understanding of rules.</td>
+      </tr>
+      <tr>
+        <td>Formal Operational</td>
+        <td class="age">12+ yrs</td>
+        <td>Abstract reasoning. Hypothetical-deductive thinking. Can reason about possibilities, not just realities. Metacognition.</td>
+        <td>Not all adolescents or adults fully reach this stage. Emotional arousal impairs formal operational thinking even in those who possess it.</td>
+        <td class="forensic">Full formal operational thinking is required to genuinely understand legal proceedings and assist in one's defense — competency standard. Adolescent brains reach formal operations cognitively before emotional regulation catches up. This gap is central to juvenile sentencing arguments.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ERIKSON -->
+  <div class="theorist-header">
+    <span class="t-badge">Erik Erikson · 1902–1994</span>
+    <h2>Psychosocial Development — Eight Stages</h2>
+    <span class="t-focus">Each stage presents a crisis whose resolution shapes the next</span>
+  </div>
+
+  <table class="stage-table erikson">
+    <thead>
+      <tr>
+        <th>Stage / Crisis</th>
+        <th>Age</th>
+        <th>Successful Resolution</th>
+        <th>Failed Resolution</th>
+        <th>Forensic Relevance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Trust vs. Mistrust</td>
+        <td class="age">0–18 mo</td>
+        <td>Hope. Sense of security. Trusting caregivers and the world as fundamentally safe.</td>
+        <td>Pervasive mistrust. Fear. Difficulty forming secure attachments throughout life.</td>
+        <td class="forensic">Attachment disruption at this stage — from abuse, neglect, or inconsistent caregiving — is the earliest developmental risk factor for later antisocial behavior and personality pathology.</td>
+      </tr>
+      <tr>
+        <td>Autonomy vs. Shame/Doubt</td>
+        <td class="age">18 mo–3 yrs</td>
+        <td>Will. Sense of self-control and autonomy. Confidence in own abilities.</td>
+        <td>Shame. Self-doubt. Excessive control needs. Rigidity or impulsivity.</td>
+        <td class="forensic">Early trauma and harsh parenting at this stage produce patterns of shame that drive adult behavior — including rage responses to perceived humiliation (relevant in assault evaluations).</td>
+      </tr>
+      <tr>
+        <td>Initiative vs. Guilt</td>
+        <td class="age">3–6 yrs</td>
+        <td>Purpose. Ability to initiate activities. Sense of direction and meaning.</td>
+        <td>Guilt. Inhibited initiation. Fear of punishment for assertiveness.</td>
+        <td class="forensic">Excessive guilt from harsh punishment can produce inhibited personality styles. Insufficient guilt (from permissive parenting or absent moral guidance) contributes to entitlement and antisocial trajectories.</td>
+      </tr>
+      <tr>
+        <td>Industry vs. Inferiority</td>
+        <td class="age">6–12 yrs</td>
+        <td>Competence. Mastery of skills. Sense of capability in social and academic domains.</td>
+        <td>Inferiority. Sense of inadequacy compared to peers. Withdrawal from challenges.</td>
+        <td class="forensic">School failure and peer rejection at this stage are significant predictors of delinquency. Feeling incompetent in legitimate domains pushes children toward criminal peer groups where they can achieve status and competence.</td>
+      </tr>
+      <tr>
+        <td>Identity vs. Role Confusion</td>
+        <td class="age">12–18 yrs</td>
+        <td>Fidelity. Stable sense of identity — who am I? Coherent self-concept.</td>
+        <td>Role confusion. Unstable identity. Susceptibility to negative peer influence. Identity foreclosure.</td>
+        <td class="forensic">The most forensically critical stage. Adolescent identity formation is the mechanism through which gang membership, criminal identity adoption, and peer criminality operate. Unresolved identity crisis is central to juvenile assessment.</td>
+      </tr>
+      <tr>
+        <td>Intimacy vs. Isolation</td>
+        <td class="age">18–40 yrs</td>
+        <td>Love. Capacity for deep, committed relationships. Genuine intimacy without losing self.</td>
+        <td>Isolation. Superficial relationships. Fear of intimacy. Loneliness driving maladaptive coping.</td>
+        <td class="forensic">Intimate partner violence perpetrators frequently show failures at this stage — seeking control as a substitute for genuine intimacy. Stalking behavior often emerges from inability to tolerate the anxiety of separation in this stage.</td>
+      </tr>
+      <tr>
+        <td>Generativity vs. Stagnation</td>
+        <td class="age">40–65 yrs</td>
+        <td>Care. Investment in future generations. Productivity. Legacy-building.</td>
+        <td>Stagnation. Self-absorption. Sense of meaninglessness. Mid-life crisis behavior.</td>
+        <td class="forensic">Mid-life offending (often white-collar crime or late-onset DUI) sometimes reflects stagnation — attempts to manufacture excitement or significance. Relevant in evaluating first-time adult offenders with no prior criminal history.</td>
+      </tr>
+      <tr>
+        <td>Integrity vs. Despair</td>
+        <td class="age">65+ yrs</td>
+        <td>Wisdom. Sense of meaning and acceptance reviewing one's life. Integration of experience.</td>
+        <td>Despair. Regret. Fear of death. Bitterness about unchosen paths.</td>
+        <td class="forensic">Elder abuse evaluations, testamentary capacity assessments, and competency to stand trial for elderly defendants all engage this stage. Despair-driven late-life offending or self-neglect may have forensic implications.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- KOHLBERG -->
+  <div class="theorist-header">
+    <span class="t-badge">Lawrence Kohlberg · 1927–1987</span>
+    <h2>Moral Development — Three Levels, Six Stages</h2>
+    <span class="t-focus">How moral reasoning evolves from self-interest to principle</span>
+  </div>
+
+  <table class="stage-table kohlberg">
+    <thead>
+      <tr>
+        <th>Level / Stage</th>
+        <th>Age (approx)</th>
+        <th>Moral Reasoning Basis</th>
+        <th>Example Reasoning</th>
+        <th>Forensic Relevance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Pre-Conventional<br>Stage 1: Obedience</td>
+        <td class="age">~4–7</td>
+        <td>Avoid punishment. Rules are obeyed to escape negative consequences from authority.</td>
+        <td>"I won't steal because I'll get in trouble."</td>
+        <td class="forensic">Many adult offenders reason at this level. Deterrence-only criminal justice policy assumes all offenders reason at Stage 1. Risk/reward miscalculation, not moral absence, drives most crime at this level.</td>
+      </tr>
+      <tr>
+        <td>Pre-Conventional<br>Stage 2: Self-Interest</td>
+        <td class="age">~7–10</td>
+        <td>Rules followed when they serve one's interests. Reciprocal exchange: "You scratch my back..."</td>
+        <td>"I'll help you if you help me. Otherwise, why bother?"</td>
+        <td class="forensic">Instrumental aggression, transactional criminal relationships, and gang economic arrangements are grounded in Stage 2 reasoning. Antisocial individuals often function primarily at this level regardless of age.</td>
+      </tr>
+      <tr>
+        <td>Conventional<br>Stage 3: Social Conformity</td>
+        <td class="age">~10–adolescence</td>
+        <td>Be a good person. Live up to social roles. Approval from significant others matters.</td>
+        <td>"I want to be a good person. What would my family think?"</td>
+        <td class="forensic">Peer conformity is the engine of adolescent offending at this stage — not moral deficiency but social conformity to delinquent peer norms. Understanding this is foundational to juvenile intervention design.</td>
+      </tr>
+      <tr>
+        <td>Conventional<br>Stage 4: Law and Order</td>
+        <td class="age">adolescence+</td>
+        <td>Maintain social order. Laws represent the social contract; obeying them preserves society.</td>
+        <td>"I follow the law because society depends on everyone following it."</td>
+        <td class="forensic">Most law-abiding adults operate at Stage 4. Understanding why some individuals fail to reach this stage — and what developmental factors prevented it — is central to forensic evaluation of adult offenders.</td>
+      </tr>
+      <tr>
+        <td>Post-Conventional<br>Stage 5: Social Contract</td>
+        <td class="age">adulthood (not all)</td>
+        <td>Laws are social contracts that should serve justice. Unjust laws should be challenged through legitimate means.</td>
+        <td>"This law is unjust. I should work to change it through democratic means."</td>
+        <td class="forensic">Civil disobedience, whistleblowing, and conscientious objection cases engage Stage 5 reasoning. Evaluators may need to assess whether a defendant's law violation reflected principled Stage 5 reasoning or self-serving rationalization.</td>
+      </tr>
+      <tr>
+        <td>Post-Conventional<br>Stage 6: Universal Ethics</td>
+        <td class="age">rare</td>
+        <td>Universal ethical principles — justice, dignity, equality — override specific laws. Laws that violate these principles must be resisted.</td>
+        <td>"I would hide Jewish families from the Nazis regardless of the law."</td>
+        <td class="forensic">Kohlberg considered Gandhi and Martin Luther King Jr. to operate at Stage 6. Extremely rare. Forensic evaluators occasionally encounter defendants who genuinely believe their criminal acts were morally required — requiring careful assessment of principle vs. delusion.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- BRONFENBRENNER -->
+  <div class="theorist-header">
+    <span class="t-badge">Urie Bronfenbrenner · 1917–2005</span>
+    <h2>Ecological Systems Theory — The Environment of Development</h2>
+    <span class="t-focus">Development happens in layered social contexts</span>
+  </div>
+
+  <div class="bron-grid">
+    <div class="bron-card">
+      <span class="system">Innermost Layer</span>
+      <div class="sys-name">Microsystem</div>
+      <p>The immediate environments the person directly experiences: family, school, peer group, neighborhood.</p>
+      <p class="example">A child's day-to-day interactions with parents, teachers, and friends.</p>
+      <div class="forensic">Family violence, school failure, and delinquent peer association operate at the microsystem level. Forensic risk assessments (LSI-R, SAVRY) measure microsystem factors directly.</div>
+    </div>
+    <div class="bron-card">
+      <span class="system">Second Layer</span>
+      <div class="sys-name">Mesosystem</div>
+      <p>Interactions between microsystems — how family and school relate to each other, for example.</p>
+      <p class="example">Parents who don't engage with school; disconnection between home and school norms.</p>
+      <div class="forensic">Family-school disconnection is a risk factor for delinquency. Rehabilitation programs that fail to address mesosystem connections often produce poor outcomes.</div>
+    </div>
+    <div class="bron-card">
+      <span class="system">Third Layer</span>
+      <div class="sys-name">Exosystem</div>
+      <p>Environments the person doesn't directly experience but that affect them: parent's workplace, community agencies, local economic conditions.</p>
+      <p class="example">A parent's job loss leads to family stress that increases abuse risk.</p>
+      <div class="forensic">Poverty, unemployment, and lack of social services operate at the exosystem level. These factors appear as background variables in forensic social history sections and mitigation arguments.</div>
+    </div>
+    <div class="bron-card">
+      <span class="system">Outermost Layer</span>
+      <div class="sys-name">Macrosystem</div>
+      <p>The broader cultural, ideological, and social context: laws, cultural norms, political systems, economic structures.</p>
+      <p class="example">Racial disparities in criminal justice. Cultural norms around violence and masculinity.</p>
+      <div class="forensic">Systemic racism, mass incarceration policies, and structural inequality are macrosystem factors that forensic evaluators must consider when contextualizing individual criminal histories.</div>
+    </div>
+    <div class="bron-card">
+      <span class="system">Time Dimension</span>
+      <div class="sys-name">Chronosystem</div>
+      <p>The influence of time and historical events on development — how transitions, traumas, and historical context shape experience across the lifespan.</p>
+      <p class="example">A child who experiences a parent's incarceration at age 7 is affected differently than one who experiences it at 15.</p>
+      <div class="forensic">Timing of adversity matters forensically. Age of onset of abuse, age of first offense, and developmental windows for intervention all involve chronosystem thinking.</div>
+    </div>
+  </div>
+
+</main>
+
+<div class="page-footer">
+  <span>DEVELOPMENTAL PSYCHOLOGY STAGES</span>
+  <span>Poster 06 of 08 · Sloan's Study Kit</span>
+  <span>Piaget · Erikson · Kohlberg · Bronfenbrenner</span>
+</div>
+</body>
+</html>

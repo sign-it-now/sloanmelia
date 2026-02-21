@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Defense Mechanisms — Forensic Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light only; }
+  @media (prefers-color-scheme: dark) { html, body { background: #f8f4ec !important; color: #0e0c09 !important; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #f8f4ec !important; }
+  body { background: #f8f4ec !important; color: #0e0c09 !important; font-family: 'Crimson Pro', Georgia, serif; font-size: 17px; line-height: 1.7; }
+
+  .page-header { background: #2a1a4a; color: #f8f4ec; padding: 2.5rem 2rem 2rem; }
+  .page-header .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #b090e0; display: block; margin-bottom: 0.6rem; }
+  .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; line-height: 1.1; }
+  .page-header h1 em { color: #b090e0; font-style: italic; }
+  .page-header .subtitle { margin-top: 0.8rem; font-size: 0.95rem; color: #8070a0; max-width: 600px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .level-header { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid #2a1a4a; }
+  .level-header .level-badge { font-family: 'DM Mono', monospace; font-size: 0.65rem; background: #2a1a4a; color: #f8f4ec; padding: 0.25rem 0.6rem; white-space: nowrap; }
+  .level-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .level-header .desc { font-style: italic; font-size: 0.9rem; color: #6a5e4e; margin-left: auto; }
+
+  .dm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+
+  .dm-card { background: #fff; border: 1px solid #ddd8cc; padding: 1.3rem; }
+  .dm-card .level-tag { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; display: inline-block; padding: 0.15rem 0.5rem; margin-bottom: 0.5rem; border: 1px solid; }
+  .dm-card .level-tag.primitive { color: #b5230f; border-color: #b5230f; background: #fff5f5; }
+  .dm-card .level-tag.neurotic { color: #8a4a0a; border-color: #c8922a; background: #fdf5e5; }
+  .dm-card .level-tag.mature { color: #1e3a1e; border-color: #2a6e2a; background: #f0f8f0; }
+
+  .dm-card .dm-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .dm-card .dm-def { font-size: 0.87rem; color: #2a2218; margin-bottom: 0.7rem; line-height: 1.55; }
+  .dm-card .dm-example { background: #f8f4ec; border-left: 3px solid #c8922a; padding: 0.45rem 0.7rem; font-size: 0.83rem; color: #3a2a10; margin-bottom: 0.6rem; font-style: italic; }
+  .dm-card .dm-example::before { content: 'Everyday Example: '; font-style: normal; font-family: 'DM Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: #c8922a; display: block; margin-bottom: 0.1rem; }
+  .dm-card .dm-court { background: #f5f0ff; border-left: 3px solid #5a2a7a; padding: 0.45rem 0.7rem; font-size: 0.82rem; color: #2a1a3a; }
+  .dm-card .dm-court::before { content: 'In the Courtroom: '; font-family: 'DM Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: #5a2a7a; display: block; margin-bottom: 0.1rem; }
+
+  .page-footer { background: #2a1a4a; color: #60508a; padding: 1.5rem 2rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .page-footer span { color: #b090e0; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <span class="eyebrow">Forensic Psychology Study Series · Poster 05 of 08</span>
+  <h1><em>Defense Mechanisms</em> —<br>All Major Types with Courtroom Examples</h1>
+  <p class="subtitle">Defense mechanisms are unconscious psychological strategies the ego uses to manage anxiety, protect self-image, and handle conflict between impulses and reality. They show up in every forensic evaluation — in how defendants explain their behavior, minimize their actions, and manage the stress of criminal proceedings.</p>
+</div>
+
+<main>
+
+  <div class="level-header">
+    <span class="level-badge">Level 1 — Primitive / Immature</span>
+    <h2>Primitive Defenses</h2>
+    <span class="desc">Seen in severe psychopathology, early development, and extreme stress</span>
+  </div>
+
+  <div class="dm-grid">
+
+    <div class="dm-card">
+      <span class="level-tag primitive">Primitive</span>
+      <div class="dm-name">Denial</div>
+      <p class="dm-def">Refusing to acknowledge a painful or threatening reality. The simplest and most primitive defense. The person acts as if a disturbing thought, feeling, or event simply does not exist.</p>
+      <div class="dm-example">"I don't have a drinking problem. I can stop whenever I want."</div>
+      <div class="dm-court">Defendants who deny committing crimes even in the face of overwhelming evidence. Abusers who genuinely believe "she fell." Denial is common in domestic violence perpetrators and sex offenders during initial evaluation — and must be distinguished from conscious lying.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag primitive">Primitive</span>
+      <div class="dm-name">Splitting</div>
+      <p class="dm-def">Seeing people and situations in all-or-nothing, all-good or all-bad terms. The inability to integrate positive and negative qualities into a whole picture. Characteristic of Borderline Personality Disorder.</p>
+      <div class="dm-example">"My therapist is the only person who has ever truly understood me" — followed two weeks later by "My therapist is completely incompetent."</div>
+      <div class="dm-court">BPD defendants may idealize and then suddenly devalue victims, attorneys, or evaluators. Splitting explains sudden shifts in testimony and helps evaluators understand volatile victim-perpetrator relationships in domestic violence cases.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag primitive">Primitive</span>
+      <div class="dm-name">Projection</div>
+      <p class="dm-def">Attributing one's own unacceptable feelings, thoughts, or impulses to another person. The person cannot acknowledge their own hostile feelings, so they experience others as hostile toward them.</p>
+      <div class="dm-example">A person who harbors intense anger toward their boss accuses the boss of being out to get them.</div>
+      <div class="dm-court">Paranoid presentations in forensic evaluations often involve projection. Stalkers who believe victims "want them" are projecting their own desire. Evaluators must distinguish projection-based paranoia from genuine delusional disorder with paranoid features.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag primitive">Primitive</span>
+      <div class="dm-name">Projective Identification</div>
+      <p class="dm-def">More complex than projection — the person projects a feeling onto another, then behaves in ways that provoke that feeling in the other person, then relates to the person as if they have that feeling.</p>
+      <div class="dm-example">An abuser who feels worthless treats their partner with contempt until the partner feels worthless, then relates to them as a worthless person.</div>
+      <div class="dm-court">Central to understanding the psychological dynamics of coercive control in domestic abuse. Helps explain why victims of long-term abuse begin to internalize their abuser's view of them — with implications for victim credibility assessments.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag primitive">Primitive</span>
+      <div class="dm-name">Idealization</div>
+      <p class="dm-def">Attributing exaggerated positive qualities to another person, idea, or institution. Often the flip side of splitting — the person or thing before the inevitable devaluation occurs.</p>
+      <div class="dm-example">"My gang is a family. They would do anything for me. They're the only ones I can trust."</div>
+      <div class="dm-court">Relevant in gang affiliation evaluations. Understanding the psychological need driving idealization of criminal peer groups helps evaluators assess gang disengagement risk and design appropriate intervention.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag primitive">Primitive</span>
+      <div class="dm-name">Dissociation</div>
+      <p class="dm-def">A disruption in the normal integration of consciousness, identity, memory, or perception. A spectrum from mild detachment ("I felt like I was watching myself") to severe (Dissociative Identity Disorder).</p>
+      <div class="dm-example">A trauma survivor describes the assault in a flat, emotionless tone as if describing someone else's experience.</div>
+      <div class="dm-court">Automatism defenses claim the defendant was dissociating and had no conscious control over their actions. Dissociative Amnesia claims in criminal cases require careful evaluation with malingering measures. Genuine vs. feigned dissociation is one of the most challenging forensic assessment questions.</div>
+    </div>
+
+  </div>
+
+  <div class="level-header">
+    <span class="level-badge">Level 2 — Neurotic / Intermediate</span>
+    <h2>Neurotic Defenses</h2>
+    <span class="desc">Common in most adults under stress — not pathological, but limiting</span>
+  </div>
+
+  <div class="dm-grid">
+
+    <div class="dm-card">
+      <span class="level-tag neurotic">Neurotic</span>
+      <div class="dm-name">Repression</div>
+      <p class="dm-def">Unconsciously pushing threatening thoughts, memories, or impulses out of conscious awareness. The fundamental defense mechanism on which others build. Freud considered this the cornerstone of neurosis.</p>
+      <div class="dm-example">An adult with no conscious memory of childhood abuse who experiences anxiety and relationship problems without knowing why.</div>
+      <div class="dm-court">Claimed repressed memories of abuse are highly controversial forensically. Loftus's research demonstrated that "recovered memories" elicited through hypnosis or suggestion are frequently false memories — directly impacting how courts handle historic abuse testimony.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag neurotic">Neurotic</span>
+      <div class="dm-name">Rationalization</div>
+      <p class="dm-def">Creating logical-sounding justifications for behaviors or feelings that were actually driven by other motives. The real reason is replaced by an acceptable one — but the person genuinely believes the rationalization.</p>
+      <div class="dm-example">"I only hit her because she made me lose my temper. If she hadn't pushed me, it never would have happened."</div>
+      <div class="dm-court">Extremely common in domestic violence perpetrators, sex offenders, and child abusers. CBT-based treatment programs specifically target rationalizations (cognitive distortions) because they maintain offending behavior and prevent accountability.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag neurotic">Neurotic</span>
+      <div class="dm-name">Displacement</div>
+      <p class="dm-def">Redirecting an emotion from its original target (which feels unsafe or unavailable) to a substitute target. The emotion is genuine; the target is substituted.</p>
+      <div class="dm-example">A man screamed at by his boss comes home and yells at his children.</div>
+      <div class="dm-court">Pattern of displaced aggression is relevant in understanding escalating domestic violence. Violence that appears random may be displaced anger from another relationship or context. Understanding displacement helps build accurate offense chronology.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag neurotic">Neurotic</span>
+      <div class="dm-name">Reaction Formation</div>
+      <p class="dm-def">Converting an unacceptable impulse into its opposite. The person feels one way but acts in a dramatically opposite way — often with exaggerated intensity that betrays the underlying impulse.</p>
+      <div class="dm-example">Someone with intense unconscious hostility becomes excessively kind and concerned about others.</div>
+      <div class="dm-court">Relevant in cases involving those who publicly crusade against behaviors they secretly engage in. Understanding reaction formation helps evaluators look past the surface presentation in forensic interviews and identify inconsistencies between stated values and behavior.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag neurotic">Neurotic</span>
+      <div class="dm-name">Intellectualization</div>
+      <p class="dm-def">Focusing on abstract, intellectual aspects of a threatening situation to avoid the emotional experience. Using thinking to distance oneself from feeling.</p>
+      <div class="dm-example">A person who just received a terminal diagnosis immediately begins researching statistics on survival rates instead of processing the fear.</div>
+      <div class="dm-court">Common in defendants during forensic evaluations — presenting elaborate, logical accounts of their offense that are emotionally flat and intellectually distanced. Evaluators note this as a marker of emotional avoidance and possible emotional immaturity or psychopathic traits.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag neurotic">Neurotic</span>
+      <div class="dm-name">Minimization</div>
+      <p class="dm-def">Acknowledging that something happened but drastically reducing its significance, severity, or impact. "It wasn't that bad." "She's overreacting." A partial admission that protects self-image.</p>
+      <div class="dm-example">"I pushed her once — it was hardly anything. She bruises easily."</div>
+      <div class="dm-court">One of the most common defenses in domestic violence, sexual assault, and child abuse cases. Collateral records, medical evidence, and victim accounts provide objective anchors that expose minimization. Forensic evaluators document minimization patterns as evidence of limited insight and poor treatment prognosis.</div>
+    </div>
+
+  </div>
+
+  <div class="level-header">
+    <span class="level-badge">Level 3 — Mature</span>
+    <h2>Mature Defenses</h2>
+    <span class="desc">Adaptive, prosocial, and associated with good psychological health</span>
+  </div>
+
+  <div class="dm-grid">
+
+    <div class="dm-card">
+      <span class="level-tag mature">Mature</span>
+      <div class="dm-name">Sublimation</div>
+      <p class="dm-def">Channeling unacceptable impulses into socially acceptable and often constructive activities. The most mature and adaptive defense mechanism. Energy is redirected, not suppressed.</p>
+      <div class="dm-example">A person with aggressive impulses becomes a competitive boxer, surgeon, or criminal defense attorney.</div>
+      <div class="dm-court">Sublimation is a positive prognostic indicator in risk assessments and treatment planning. Evaluators look for evidence of sublimation as a sign of resilience and adaptive functioning that can be built upon in treatment.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag mature">Mature</span>
+      <div class="dm-name">Humor</div>
+      <p class="dm-def">Using humor to manage distress without denying it. The anxiety-provoking aspect is acknowledged but transformed into something shareable and bearable. Distinct from cynical humor that minimizes genuine harm.</p>
+      <div class="dm-example">A first responder who uses dark humor to process scenes of tragedy without becoming overwhelmed or dissociating.</div>
+      <div class="dm-court">Appropriate humor in forensic contexts signals emotional resilience. Inappropriate humor about the offense or victims is a red flag for minimization and lack of empathy — documented in forensic reports as a negative prognostic indicator.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag mature">Mature</span>
+      <div class="dm-name">Altruism</div>
+      <p class="dm-def">Managing one's own anxiety or guilt by focusing on meeting the needs of others. Constructive and genuinely helpful to others, unlike reaction formation which superficially resembles it.</p>
+      <div class="dm-example">A recovering addict who volunteers at a treatment center, managing their own cravings by helping others navigate theirs.</div>
+      <div class="dm-court">Genuine altruism (vs. performed altruism) is a positive indicator in risk evaluations and parole assessments. Evaluators distinguish authentic prosocial engagement from strategic pro-social presentation designed to manipulate the evaluation.</div>
+    </div>
+
+    <div class="dm-card">
+      <span class="level-tag mature">Mature</span>
+      <div class="dm-name">Suppression</div>
+      <p class="dm-def">Consciously choosing to set aside a disturbing thought or feeling to deal with it later. Unlike repression (unconscious), suppression is deliberate and adaptive — "I'll think about that after this crisis passes."</p>
+      <div class="dm-example">A paramedic who holds their emotional response during an emergency call and processes it after their shift with a colleague.</div>
+      <div class="dm-court">Suppression is a marker of emotional regulation capacity. Its presence in a defendant's repertoire of coping strategies is a positive indicator for treatment response and risk management.</div>
+    </div>
+
+  </div>
+
+</main>
+
+<div class="page-footer">
+  <span>DEFENSE MECHANISMS REFERENCE</span>
+  <span>Poster 05 of 08 · Sloan's Study Kit</span>
+  <span>Primitive → Neurotic → Mature · Courtroom Applications</span>
+</div>
+</body>
+</html>
