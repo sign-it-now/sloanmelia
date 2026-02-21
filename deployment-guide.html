@@ -1,0 +1,131 @@
+deployment-workflow.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML → GitHub → Cloudflare → Domain Flowchart</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }
+  h1 { text-align: center; color: #7dd3fc; font-size: 1.2rem; margin-bottom: 30px; }
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .step { background: #1e293b; border: 2px solid #334155; border-radius: 12px; padding: 16px 24px; width: 320px; position: relative; }
+  .step-num { position: absolute; top: -12px; left: -12px; background: #3b82f6; color: white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; }
+  .step-title { font-size: 1rem; font-weight: bold; color: #7dd3fc; margin-bottom: 6px; }
+  .step-sub { font-size: 0.78rem; color: #94a3b8; line-height: 1.5; }
+  .step-tag { display: inline-block; font-size: 0.7rem; background: #0f172a; border: 1px solid #475569; border-radius: 6px; padding: 2px 8px; margin-top: 6px; color: #cbd5e1; }
+  .arrow { display: flex; flex-direction: column; align-items: center; margin: 4px 0; }
+  .arrow-line { width: 2px; height: 30px; background: #475569; }
+  .arrow-head { width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #475569; }
+  .arrow-label { font-size: 0.7rem; color: #64748b; margin: 2px 0; font-style: italic; }
+  .connector-box { background: #1e3a5f; border: 2px dashed #3b82f6; border-radius: 12px; padding: 14px 24px; width: 320px; margin: 8px 0; }
+  .connector-title { font-size: 0.9rem; font-weight: bold; color: #60a5fa; margin-bottom: 5px; }
+  .connector-sub { font-size: 0.75rem; color: #93c5fd; line-height: 1.5; }
+  .note { margin-top: 30px; background: #1e293b; border-left: 4px solid #f59e0b; padding: 14px 18px; border-radius: 8px; max-width: 360px; font-size: 0.78rem; color: #cbd5e1; line-height: 1.6; }
+  .note strong { color: #fbbf24; }
+</style>
+</head>
+<body>
+<h1>🌐 How Your Webpage Gets Online — In Order</h1>
+
+<div class="flow">
+
+  <!-- STEP 1 -->
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-title">📄 Write Your HTML File</div>
+    <div class="step-sub">Create your <strong style="color:#7dd3fc">index.html</strong> (and CSS/JS) on your local computer. This is just a file — it lives nowhere yet.</div>
+    <span class="step-tag">Local Machine</span>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">git init → git add → git commit → git push</div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- STEP 2 -->
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-title">🐙 Push to GitHub Repository</div>
+    <div class="step-sub">Your files get stored in a GitHub repo. GitHub acts like a <em>filing cabinet in the cloud</em> — version controlled and accessible anywhere.</div>
+    <span class="step-tag">github.com/yourname/yourrepo</span>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">GitHub Pages, Netlify, Vercel, or self-hosted</div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- STEP 3 -->
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-title">🖥️ Deploy to a Host / Web Server</div>
+    <div class="step-sub">A web server (like GitHub Pages or your Oracle Cloud server) serves the HTML files to browsers. It gets an <strong style="color:#7dd3fc">IP address</strong> — your site's "street address" on the internet.</div>
+    <span class="step-tag">IP: 104.21.xx.xx</span>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">Point DNS records at your server's IP</div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- STEP 4 -->
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-title">☁️ Configure Cloudflare DNS</div>
+    <div class="step-sub">In Cloudflare, create an <strong style="color:#7dd3fc">A Record</strong> pointing your domain → your server IP. Cloudflare also adds speed (CDN), security (DDoS), and free SSL.</div>
+    <span class="step-tag">Cloudflare Dashboard → DNS Settings</span>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">Set Cloudflare nameservers at registrar</div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- STEP 5 -->
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-title">🌍 Connect Your Domain Name</div>
+    <div class="step-sub">At your domain registrar (GoDaddy, Namecheap, etc.), set the <strong style="color:#7dd3fc">nameservers</strong> to Cloudflare's. Now when someone types your domain, Cloudflare routes them to your server.</div>
+    <span class="step-tag">ns1.cloudflare.com / ns2.cloudflare.com</span>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-line"></div>
+    <div class="arrow-label">DNS propagates (up to 48 hrs)</div>
+    <div class="arrow-head"></div>
+  </div>
+
+  <!-- RESULT -->
+
+  <div class="connector-box">
+    <div class="connector-title">✅ Visitor Types yoursite.com</div>
+    <div class="connector-sub">
+      Browser → Cloudflare DNS → finds IP → Oracle/GitHub server → serves your HTML file → page loads in browser 🎉
+    </div>
+  </div>
+
+</div>
+
+<div style="display:flex; justify-content:center;">
+  <div class="note">
+    <strong>💡 Analogy:</strong> Think of it like a restaurant.<br><br>
+    • <strong>HTML</strong> = the food you cooked<br>
+    • <strong>GitHub</strong> = your recipe book / storage<br>
+    • <strong>Web Server</strong> = the restaurant building<br>
+    • <strong>Cloudflare</strong> = the road + traffic cop getting customers there safely<br>
+    • <strong>Domain Name</strong> = your restaurant's address on Google Maps
+  </div>
+</div>
+
+</body>
+</html>
