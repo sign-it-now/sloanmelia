@@ -3,128 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sloan Melia - College Application Builder</title>
+    <title>SloanMelia Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Crimson Pro', Georgia, serif;
+            background: #faf7f2;
+            color: #0e0c09;
         }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        
-        h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-        
-        .tagline {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-        
-        .welcome-text {
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-        
-        .app-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        .app-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-        
-        .app-button:active {
-            transform: translateY(0);
-        }
-        
-        .features {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #f0f0f0;
-        }
-        
-        .feature-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            color: #555;
-        }
-        
-        .feature-item::before {
-            content: "✓";
-            color: #667eea;
-            font-weight: bold;
-            font-size: 1.5em;
-            margin-right: 15px;
-        }
+        #root { min-height: 100vh; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Sloan Melia</h1>
-        <p class="tagline">Your College Application Journey Starts Here</p>
-        
-        <p class="welcome-text">
-            We help students navigate the college application process with confidence. 
-            Let's build your perfect application together.
-        </p>
-        
-        <button class="app-button" onclick="launchApp()">Launch Sloan Melia</button>
-        
-        <div class="features">
-            <div class="feature-item">Step-by-step application guidance</div>
-            <div class="feature-item">Essay writing support</div>
-            <div class="feature-item">Deadline tracking</div>
-            <div class="feature-item">Document organization</div>
-        </div>
-    </div>
+    <div id="root"></div>
     
-    <script>
-        function launchApp() {
-            // For now, redirect to the main application page
-            // Replace 'main-app.html' with your actual app entry point
-            alert('Welcome to Sloan Melia! The full application is launching...');
-            
-            // When you have your main app ready, uncomment this:
-            // window.location.href = 'main-app.html';
-            
-            // For now, this shows it's working
-            console.log('Launch button clicked successfully!');
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createClient } = supabase;
+
+        function App() {
+            const [supabaseClient, setSupabaseClient] = useState(null);
+            const [session, setSession] = useState(null);
+            const [loading, setLoading] = useState(true);
+
+            // Configuration form
+            const [projectUrl, setProjectUrl] = useState('');
+            const [anonKey, setAnonKey] = useState('');
+
+            useEffect(() => {
+                // Try to load from localStorage
+                const savedUrl = localStorage.getItem('supabase_url');
+                const savedKey = localStorage.getItem('supabase_key');
+                
+                if (savedUrl && savedKey) {
+                    initializeSupabase(savedUrl, savedKey);
+                } else {
+                    setLoading(false);
+                }
+            }, []);
+
+            function initializeSupabase(url, key) {
+                try {
+                    const client = createClient(url, key);
+                    setSupabaseClient(client);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('supabase_url', url);
+                    localStorage.setItem('supabase_key', key);
+                    
+                    // Check session
+                    client.auth.getSession().then(({ data: { session } }) => {
+                        setSession(session);
+                        setLoading(false);
+                    });
+
+                    // Listen for auth changes
+                    client.auth.onAuthStateChange((_event, session) => {
+                        setSession(session);
+                    });
+                } catch (error) {
+                    alert('Invalid Supabase credentials');
+                    setLoading(false);
+                }
+            }
+
+            function handleConfigure(e) {
+                e.preventDefault();
+                if (!projectUrl || !anonKey) {
+                    alert('Please enter both Project URL and Anon Key');
+                    return;
+                }
+                setLoading(true);
+                initializeSupabase(projectUrl, anonKey);
+            }
+
+            // Not configured yet
+            if (!supabaseClient) {
+                return (
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        minHeight: '100vh',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        padding: '20px'
+                    }}>
+                        <div style={{
+                            background: 'white',
+                            borderRadius: '20px',
+                            padding: '40px',
+                            maxWidth: '500px',
+                            width: '100%',
+                            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+                        }}>
+                            <h1 style={{ color: '#667eea', marginBottom: '10px' }}>SloanMelia Setup</h1>
+                            <p style={{ color: '#666', marginBottom: '30px' }}>
+                                Enter your Supabase credentials to get started
+                            </p>
+                            <form onSubmit={handleConfigure}>
+                                <div style={{ marginBottom: '20px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                                        Supabase Project URL
+                                    </label>
+                                    <input 
+                                        type="url"
+                                        value={projectUrl}
+                                        onChange={(e) => setProjectUrl(e.target.value)}
+                                        placeholder="https://your-project.supabase.co"
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            border: '2px solid #e0e0e0',
+                                            borderRadius: '8px',
+                                            fontSize: '14px'
+                                        }}
+                                        required
+                                    />
+                                </div>
+                                <div style={{ marginBottom: '30px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                                        Supabase Anon Public Key
+                                    </label>
+                                    <input 
+                                        type="text"
+                                        value={anonKey}
+                                        onChange={(e) => setAnonKey(e.target.value)}
+                                        placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            border: '2px solid #e0e0e0',
+                                            borderRadius: '8px',
+                                            fontSize: '14px'
+                                        }}
+                                        required
+                                    />
+                                </div>
+                                <button 
+                                    type="submit"
+                                    style={{
+                                        width: '100%',
+                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '15px',
+                                        borderRadius: '8px',
+                                        fontSize: '16px',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Launch SloanMelia
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Not logged in
+            if (!session) {
+                return <LoginPage supabase={supabaseClient} />;
+            }
+
+            // Logged in - show dashboard
+            return <Dashboard supabase={supabaseClient} session={session} />;
         }
+
+        function LoginPage({ supabase }) {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [loading, setLoading] = useState(false);
+            const [isSignUp, setIsSignUp] = useState(false);
+
+            async function handleAuth(e) {
+                e.preventDefault();
+                setLoading(true);
+
+                try {
+                    if (isSignUp) {
+                        const { error } = await supabase.auth.signUp({ email, password });
+                        if (error) throw error;
+                        alert('Check your email for confirmation link!');
+                    } else {
+                        const { error } = await supabase.auth.signInWithPassword({ email, password });
+                        if (error) throw error;
+                    }
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            return (
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '100vh',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                }}>
+                    <div style={{
+                        background: 'white',
+                        borderRadius: '20px',
+                        padding: '40px',
+                        maxWidth: '400px',
+                        width: '100%',
+                        boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+                    }}>
+                        <h1 style={{ color: '#667eea', marginBottom: '30px', textAlign: 'center' }}>
+                            {isSignUp ? 'Create Account' : 'Welcome Back'}
+                        </h1>
+                        <form onSubmit={handleAuth}>
+                            <input 
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    marginBottom: '15px',
+                                    border: '2px solid #e0e0e0',
+                                    borderRadius: '8px'
+                                }}
+                                required
+                            />
+                            <input 
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    marginBottom: '20px',
+                                    border: '2px solid #e0e0e0',
+                                    borderRadius: '8px'
+                                }}
+                                required
+                            />
+                            <button 
+                                type="submit"
+                                disabled={loading}
+                                style={{
+                                    width: '100%',
+                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '15px',
+                                    borderRadius: '8px',
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                    cursor: loading ? 'not-allowed' : 'pointer',
+                                    opacity: loading ? 0.7 : 1
+                                }}
+                            >
+                                {loading ? 'Please wait...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+                            </button>
+                        </form>
+                        <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
+                            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+                            <a 
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); setIsSignUp(!isSignUp); }}
+                                style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}
+                            >
+                                {isSignUp ? 'Sign In' : 'Sign Up'}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        function Dashboard({ supabase, session }) {
+            async function handleLogout() {
+                await supabase.auth.signOut();
+            }
+
+            return (
+                <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto' }}>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '40px'
+                    }}>
+                        <div>
+                            <h1 style={{ color: '#667eea', marginBottom: '5px' }}>SloanMelia Dashboard</h1>
+                            <p style={{ color: '#666' }}>Welcome, {session.user.email}</p>
+                        </div>
+                        <button
+                            onClick={handleLogout}
+                            style={{
+                                background: '#dc3545',
+                                color: 'white',
+                                border: 'none',
+                                padding: '10px 20px',
+                                borderRadius: '8px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Log Out
+                        </button>
+                    </div>
+                    
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                        gap: '20px'
+                    }}>
+                        {[
+                            { title: 'Document Vault', icon: '📁', desc: 'Upload and organize documents' },
+                            { title: 'College Tracker', icon: '🎓', desc: 'Track application progress' },
+                            { title: 'Study Library', icon: '📚', desc: 'Forensic psychology resources' },
+                            { title: 'Achievements', icon: '🏆', desc: 'Log accomplishments' },
+                            { title: 'Financial Aid', icon: '💰', desc: 'FAFSA and scholarships' },
+                            { title: 'AI Coach', icon: '🤖', desc: 'Get personalized help' }
+                        ].map((module) => (
+                            <div 
+                                key={module.title}
+                                style={{
+                                    background: 'white',
+                                    padding: '30px',
+                                    borderRadius: '15px',
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                                    cursor: 'pointer',
+                                    transition: 'transform 0.2s',
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                            >
+                                <div style={{ fontSize: '40px', marginBottom: '15px' }}>{module.icon}</div>
+                                <h3 style={{ color: '#0e0c09', marginBottom: '10px' }}>{module.title}</h3>
+                                <p style={{ color: '#666', fontSize: '14px' }}>{module.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div style={{
+                        marginTop: '40px',
+                        padding: '20px',
+                        background: '#e7f3ff',
+                        borderLeft: '4px solid #667eea',
+                        borderRadius: '8px'
+                    }}>
+                        <p style={{ color: '#0e0c09' }}>
+                            <strong>Coming Soon:</strong> Full module functionality is being built. 
+                            This dashboard is your home base for college application success!
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>
