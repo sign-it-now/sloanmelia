@@ -286,13 +286,20 @@ function SetupScreen({ onSetup }) {
   };
   useEffect(stored, []);
 
+  const urlRef = React.useRef(null);
+  const keyRef = React.useRef(null);
+  const coachRef = React.useRef(null);
+
   const save = () => {
-    if(!url.trim()||!key.trim()) { setErr('Supabase URL and Anon Key are required.'); return; }
-    localStorage.setItem('sm_url', url.trim());
-    localStorage.setItem('sm_key', key.trim());
-    localStorage.setItem('sm_coach', coachUrl.trim());
-    initSupabase(url.trim(), key.trim());
-    onSetup({ url: url.trim(), key: key.trim(), coachUrl: coachUrl.trim() });
+    const finalUrl = (urlRef.current?.value || url || '').trim();
+    const finalKey = (keyRef.current?.value || key || '').trim();
+    const finalCoach = (coachRef.current?.value || coachUrl || '').trim();
+    if(!finalUrl||!finalKey) { setErr('Supabase URL and Anon Key are required.'); return; }
+    localStorage.setItem('sm_url', finalUrl);
+    localStorage.setItem('sm_key', finalKey);
+    localStorage.setItem('sm_coach', finalCoach);
+    initSupabase(finalUrl, finalKey);
+    onSetup({ url: finalUrl, key: finalKey, coachUrl: finalCoach });
   };
 
   return (
@@ -306,11 +313,11 @@ function SetupScreen({ onSetup }) {
 
         <div className="mb2">
           <label className="label">Supabase Project URL *</label>
-          <input className="input" value={url} onChange={e=>setUrl(e.target.value)} placeholder="https://your-project.supabase.co"/>
+          <input ref={urlRef} className="input" value={url} onChange={e=>setUrl(e.target.value)} onPaste={e=>setTimeout(()=>setUrl(urlRef.current.value),10)} placeholder="https://your-project.supabase.co"/>
         </div>
         <div className="mb2">
           <label className="label">Supabase Anon (Public) Key *</label>
-          <input className="input" value={key} onChange={e=>setKey(e.target.value)} placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp..."/>
+          <input ref={keyRef} className="input" value={key} onChange={e=>setKey(e.target.value)} onPaste={e=>setTimeout(()=>setKey(keyRef.current.value),10)} placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp..."/>
         </div>
         <div className="mb2">
           <label className="label">Coach Edge Function URL (optional — add later)</label>
