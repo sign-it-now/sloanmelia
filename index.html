@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
 <title>Sloan Smith — sloanmelia.com</title>
+<script>
+  // If Supabase auth token lands here via magic link, forward to dashboard
+  if (window.location.hash && window.location.hash.includes('access_token')) {
+    window.location.replace('/dashboard.html' + window.location.hash);
+  }
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
