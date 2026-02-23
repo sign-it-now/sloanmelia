@@ -6,10 +6,17 @@
 <meta name="color-scheme" content="light">
 <title>SloanMelia — Sloan Smith Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Initialize Supabase immediately — before React loads
+window.__sb = window.supabase.createClient(
+  'https://gpktuflimoqeyxtwadsy.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U'
+);
+</script>
 <style>
 :root {
   color-scheme: light only;
@@ -221,12 +228,8 @@ textarea.input{resize:vertical;min-height:80px;}
 const { useState, useEffect, useRef, useCallback } = React;
 
 // ── SUPABASE CLIENT (lazy initialized) ──────────────────────────────────────
-let supabase = null;
-function getSupabase() { return supabase; }
-function initSupabase(url, key) {
-  supabase = window.supabase.createClient(url, key);
-  return supabase;
-}
+function getSupabase() { return window.__sb; }
+function initSupabase() { return window.__sb; }
 
 // ── TOAST SYSTEM ──────────────────────────────────────────────────────────────
 function ToastContainer({ toasts }) {
@@ -1153,7 +1156,6 @@ function App() {
 
   useEffect(()=>{
     // Initialize Supabase with hardwired credentials
-    initSupabase(SUPABASE_URL, SUPABASE_ANON_KEY);
     const sb = getSupabase();
 
     // Check if magic link token is in the URL hash
