@@ -1152,7 +1152,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [page, setPage] = useState('home');
   const [authLoading, setAuthLoading] = useState(true);
-  const coachUrl = ''; // Add Claude API Edge Function URL here in Phase 3
+  const coachUrl = 'https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach';
 
   useEffect(()=>{
     // Initialize Supabase with hardwired credentials
