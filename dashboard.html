@@ -1156,22 +1156,38 @@ function App() {
     initSupabase(SUPABASE_URL, SUPABASE_ANON_KEY);
     const sb = getSupabase();
 
-    // Check existing session
-    sb.auth.getSession().then(({data:{session}})=>{
-      if(session?.user) {
-        setUser(session.user);
-      } else {
-        // Not logged in — redirect to login page
-        window.location.href = '/login.html';
-      }
-      setAuthLoading(false);
-    });
+    // Check if magic link token is in the URL hash
+    const hasToken = window.location.hash && window.location.hash.includes('access_token');
 
-    // Listen for auth changes
-    sb.auth.onAuthStateChange((_,session)=>{
-      if(!session?.user) window.location.href = '/login.html';
-      else setUser(session.user);
-    });
+    if(hasToken) {
+      // Let Supabase process the token via onAuthStateChange
+      // Don't redirect — wait for the session to be established
+      sb.auth.onAuthStateChange((_,session)=>{
+        if(session?.user) {
+          setUser(session.user);
+          // Clean the URL hash
+          window.history.replaceState(null, '', '/dashboard.html');
+        } else {
+          window.location.href = '/login.html';
+        }
+        setAuthLoading(false);
+      });
+    } else {
+      // Normal flow — check existing session
+      sb.auth.getSession().then(({data:{session}})=>{
+        if(session?.user) {
+          setUser(session.user);
+        } else {
+          window.location.href = '/login.html';
+        }
+        setAuthLoading(false);
+      });
+
+      sb.auth.onAuthStateChange((_,session)=>{
+        if(!session?.user) window.location.href = '/login.html';
+        else setUser(session.user);
+      });
+    }
   },[]);
 
   const signOut = async () => {
