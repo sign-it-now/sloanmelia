@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SloanMelia.com — Build Roadmap + Coach</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   SLOANMELIA — ROADMAP + COACH
+   Dark mission-control aesthetic
+═══════════════════════════════════════════ */
+:root {
+  --void:#03050a; --deep:#060b14; --panel:#0b1523; --card:#101e30;
+  --border:#162035; --wire:#1d2f48;
+  --teal:#00d4c8; --gold:#f5c842; --green:#22c55e;
+  --blue:#3b82f6; --violet:#a78bfa; --pink:#ec4899;
+  --rose:#f43f5e; --amber:#f59e0b;
+  --muted:#334155; --dim:#64748b; --soft:#94a3b8;
+  --text:#cbd5e1; --bright:#f1f5f9; --white:#ffffff;
+  --fn:'Space Grotesk',sans-serif;
+  --mono:'Space Mono',monospace;
+  --head:'Syne',sans-serif;
+
+  /* Phase accent colours */
+  --p1:#00d4c8; --p2:#f5c842; --p3:#a78bfa; --p4:#ec4899; --p5:#22c55e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--fn);background:var(--void);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:14px}
+
+/* GRID */
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,200,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,212,200,.03) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0}
+
+/* GLOW ORBS */
+.orb{position:fixed;border-radius:50%;filter:blur(140px);pointer-events:none;z-index:0;opacity:.28}
+.orb1{width:800px;height:800px;background:radial-gradient(#00d4c830,transparent 70%);top:-300px;right:-200px}
+.orb2{width:600px;height:600px;background:radial-gradient(#f5c84220,transparent 70%);bottom:-200px;left:-200px}
+.orb3{width:400px;height:400px;background:radial-gradient(#a78bfa18,transparent 70%);top:60%;left:35%}
+
+/* ═══ STICKY NAV ═══ */
+#nav{position:sticky;top:0;z-index:200;
+  background:rgba(3,5,10,.94);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);padding:14px 20px}
+.nav-inner{max-width:900px;margin:0 auto}
+.nav-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.logo{font-family:var(--head);font-size:20px;font-weight:800;color:var(--bright);letter-spacing:-.03em}
+.logo em{color:var(--teal);font-style:normal}
+.logo-sub{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:1px}
+.nav-stats{margin-left:auto;display:flex;align-items:center;gap:16px}
+.stat-pill{font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--soft)}
+.stat-pill.live{border-color:rgba(34,197,94,.4);color:var(--green)}
+
+/* PROGRESS MASTER */
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .5s ease;background:linear-gradient(90deg,var(--teal),var(--violet),var(--pink))}
+.progress-pct{font-family:var(--mono);font-size:11px;color:var(--bright);min-width:36px;text-align:right}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-top:12px}
+.tab{flex:1;padding:8px 4px;font-family:var(--fn);font-size:12px;font-weight:600;
+  border:1.5px solid var(--border);border-radius:8px;background:transparent;
+  color:var(--dim);cursor:pointer;transition:all .18s;text-align:center}
+.tab:hover{color:var(--soft);border-color:var(--wire)}
+.tab.active-build{border-color:rgba(0,212,200,.5);background:rgba(0,212,200,.08);color:var(--teal)}
+.tab.active-coach{border-color:rgba(245,200,66,.5);background:rgba(245,200,66,.07);color:var(--gold)}
+.tab.active-ref{border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.07);color:var(--violet)}
+
+/* ═══ MAIN CONTENT ═══ */
+#content{max-width:900px;margin:0 auto;padding:20px 20px 100px;position:relative;z-index:1}
+
+/* ═══ PHASE BLOCKS ═══ */
+.phase-block{margin-bottom:20px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--deep)}
+.phase-header{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;transition:background .15s}
+.phase-header:hover{background:rgba(255,255,255,.02)}
+.phase-icon{font-size:26px;flex-shrink:0}
+.phase-meta{flex:1}
+.phase-num{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2px}
+.phase-title{font-family:var(--head);font-size:16px;font-weight:700;color:var(--bright)}
+.phase-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.phase-mini-bar{width:90px;flex-shrink:0;text-align:right}
+.phase-pct{font-family:var(--mono);font-size:10px;font-weight:700;display:block;margin-bottom:4px}
+.phase-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.phase-fill{height:100%;border-radius:2px;transition:width .4s}
+.phase-chevron{font-size:14px;color:var(--dim);transition:transform .25s;flex-shrink:0;margin-left:8px}
+.phase-chevron.open{transform:rotate(90deg)}
+
+/* PHASE BODY */
+.phase-body{display:none;padding:0 20px 20px}
+.phase-body.open{display:block}
+.phase-intro{font-size:12.5px;color:var(--soft);line-height:1.7;padding:12px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.phase-intro strong{color:var(--bright)}
+
+/* TASKS */
+.task-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start;transition:opacity .2s}
+.task-item.done{opacity:.55}
+.task-check{flex-shrink:0;margin-top:2px}
+.task-check button{
+  width:22px;height:22px;border-radius:6px;
+  border:2px solid var(--wire);background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .18s;padding:0}
+.task-check button.checked{background:var(--green);border-color:var(--green)}
+.task-check button svg{display:none}
+.task-check button.checked svg{display:block}
+.task-info{flex:1}
+.task-title{font-weight:600;color:var(--bright);font-size:13px;margin-bottom:3px}
+.task-item.done .task-title{text-decoration:line-through;color:var(--dim)}
+.task-what{font-size:11.5px;color:var(--soft);line-height:1.6}
+.task-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.task-tag{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid var(--border);color:var(--dim)}
+
+/* DELIVERABLE */
+.deliverable-row{margin-top:16px;padding:12px 16px;border-radius:10px;
+  background:rgba(0,212,200,.06);border:1px solid rgba(0,212,200,.2);
+  display:flex;align-items:center;gap:10px}
+.del-icon{font-size:18px}
+.del-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:2px}
+.del-text{font-size:12px;color:var(--bright)}
+
+/* GATE */
+.gate-section{margin-top:16px;background:var(--panel);border-radius:10px;padding:14px}
+.gate-title{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.gate-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.gate-item:last-child{border-bottom:none}
+.gate-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .2s}
+.gate-dot.done{background:var(--green)}
+.gate-text{font-size:11.5px;color:var(--soft)}
+
+/* ═══ COACH TAB ═══ */
+.coach-hero{background:linear-gradient(135deg,var(--deep),var(--panel));
+  border:1px solid rgba(245,200,66,.2);border-radius:14px;
+  padding:28px 24px;margin-bottom:20px;position:relative;overflow:hidden}
+.coach-hero::before{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;
+  border-radius:50%;background:radial-gradient(rgba(245,200,66,.08),transparent 70%);pointer-events:none}
+.coach-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.coach-headline{font-family:var(--head);font-size:22px;font-weight:800;color:var(--bright);line-height:1.2;margin-bottom:10px}
+.coach-intro{font-size:12.5px;color:var(--soft);line-height:1.7;max-width:560px}
+
+/* COACH STATUS */
+.coach-status{background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  padding:20px;margin-bottom:20px}
+.coach-status-label{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:12px}
+.coach-msg{font-size:13px;color:var(--bright);line-height:1.8;
+  padding:14px;background:rgba(245,200,66,.05);border-left:3px solid var(--gold);
+  border-radius:0 8px 8px 0;font-style:italic}
+.coach-next{margin-top:12px;padding:10px 14px;background:rgba(0,212,200,.06);
+  border:1px solid rgba(0,212,200,.2);border-radius:8px}
+.coach-next-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--teal);margin-bottom:4px}
+.coach-next-text{font-size:12px;color:var(--bright)}
+
+/* COACH PHASE CARDS */
+.coach-phases{display:grid;gap:12px}
+.coach-phase-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.coach-phase-top{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.coach-phase-icon{font-size:20px}
+.coach-phase-name{font-family:var(--head);font-size:13px;font-weight:700;color:var(--bright)}
+.coach-phase-level{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:10px;margin-left:auto}
+.coach-phase-body{padding:14px 16px}
+.coach-ability-title{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.coach-ability{display:flex;gap:7px;margin-bottom:5px;align-items:flex-start}
+.coach-ability-arrow{color:var(--teal);font-size:10px;margin-top:2px;flex-shrink:0}
+.coach-ability-text{font-size:12px;color:var(--text);line-height:1.55}
+.coach-sample{margin-top:10px;padding:10px 12px;background:var(--deep);border-radius:6px;
+  border-left:2px solid var(--gold)}
+.coach-sample-label{font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:3px}
+.coach-sample-msg{font-size:11.5px;color:var(--soft);font-style:italic;line-height:1.6}
+
+/* ═══ REFERENCE TAB ═══ */
+.ref-section{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.ref-section-title{padding:12px 16px;border-bottom:1px solid var(--border);
+  font-family:var(--head);font-size:13px;font-weight:700;color:var(--bright)}
+.ref-item{display:flex;justify-content:space-between;align-items:center;
+  padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.04);gap:12px}
+.ref-item:last-child{border-bottom:none}
+.ref-label{font-size:13px;font-weight:500;color:var(--bright)}
+.ref-note{font-size:11px;color:var(--dim);margin-top:1px}
+.ref-link{font-family:var(--mono);font-size:9px;padding:4px 10px;
+  border:1px solid var(--wire);border-radius:6px;color:var(--teal);
+  text-decoration:none;white-space:nowrap;transition:all .15s}
+.ref-link:hover{border-color:var(--teal);background:rgba(0,212,200,.08)}
+.ref-cost{font-family:var(--mono);font-size:10px;color:var(--green);white-space:nowrap}
+
+/* ARCH DIAGRAM */
+.arch-block{background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  padding:20px;margin-bottom:20px}
+.arch-title{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:16px}
+.arch-layer{border:1px solid var(--wire);border-radius:8px;padding:14px 16px;
+  margin-bottom:10px;position:relative}
+.arch-layer:last-child{margin-bottom:0}
+.arch-layer-label{position:absolute;top:-9px;left:12px;background:var(--panel);
+  padding:0 8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+.arch-layer-title{font-family:var(--head);font-size:13px;font-weight:700;color:var(--bright);margin-bottom:4px}
+.arch-layer-desc{font-size:11.5px;color:var(--soft);line-height:1.6;margin-bottom:8px}
+.arch-tags{display:flex;flex-wrap:wrap;gap:5px}
+.arch-tag{font-family:var(--mono);font-size:9px;padding:2px 8px;
+  background:rgba(255,255,255,.05);border:1px solid var(--wire);border-radius:10px;color:var(--dim)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--void)}
+::-webkit-scrollbar-thumb{background:var(--wire);border-radius:3px}
+
+@media(max-width:600px){
+  #nav{padding:10px 14px}
+  #content{padding:14px 14px 80px}
+  .nav-stats{display:none}
+  .phase-mini-bar{display:none}
+}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="nav-top">
+      <div>
+        <div class="logo"><em>Sloan</em>Melia.com</div>
+        <div class="logo-sub">Build Roadmap + Progress Coach</div>
+      </div>
+      <div class="nav-stats">
+        <span class="stat-pill live" id="stat-done">0/0 Tasks</span>
+        <span class="stat-pill" id="stat-phase">Phase 1 Active</span>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <span style="font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.1em;white-space:nowrap">OVERALL</span>
+      <div class="progress-track"><div class="progress-fill" id="master-bar" style="width:0%"></div></div>
+      <span class="progress-pct" id="master-pct">0%</span>
+    </div>
+    <div class="tabs">
+      <button class="tab active-build" onclick="setTab('build')">📋 Roadmap</button>
+      <button class="tab" onclick="setTab('coach')">🧠 Coach</button>
+      <button class="tab" onclick="setTab('ref')">📚 Reference</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ CONTENT ═══ -->
+<div id="content">
+
+  <!-- ═══════════ BUILD TAB ═══════════ -->
+  <div id="tab-build">
+
+    <!-- PHASE 1 -->
+    <div class="phase-block" id="block-p1">
+      <div class="phase-header" onclick="togglePhase('p1')">
+        <div class="phase-icon">🌐</div>
+        <div class="phase-meta">
+          <div class="phase-num" style="color:var(--p1)">Phase 01 · Start Here</div>
+          <div class="phase-title">Public Profile + Domain</div>
+          <div class="phase-sub">sloanmelia.com goes live · 1–2 sessions with Claude</div>
+        </div>
+        <div class="phase-mini-bar">
+          <span class="phase-pct" id="pct-p1" style="color:var(--p1)">0%</span>
+          <div class="phase-track"><div class="phase-fill" id="bar-p1" style="width:0%;background:var(--p1)"></div></div>
+        </div>
+        <span class="phase-chevron open" id="chev-p1">▶</span>
+      </div>
+      <div class="phase-body open" id="body-p1">
+        <p class="phase-intro">Think of Phase 1 like planting a flag. Before any app is built, Sloan needs her name on the internet — professional, memorable, hers forever. This phase plants that flag.<br><strong>Analogy: Getting your driver's licence before buying a car. You need the identity before the tools.</strong></p>
+
+        <div class="task-item" id="ti-p1t1">
+          <div class="task-check"><button id="cb-p1t1" onclick="toggle('p1t1')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Register sloanmelia.com</div>
+            <div class="task-what">Go to Namecheap.com → search "sloanmelia" → register the .com for ~$12/year. This is her professional name on the internet forever. She owns this, not a company.</div>
+            <div class="task-tags"><span class="task-tag">namecheap.com</span><span class="task-tag">~$12/yr</span><span class="task-tag">5 min</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p1t2">
+          <div class="task-check"><button id="cb-p1t2" onclick="toggle('p1t2')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Create free Netlify account</div>
+            <div class="task-what">Netlify hosts her website for free. Go to netlify.com → sign up with GitHub. This is the garage where her digital presence lives — no monthly cost at her scale.</div>
+            <div class="task-tags"><span class="task-tag">netlify.com</span><span class="task-tag">Free</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p1t3">
+          <div class="task-check"><button id="cb-p1t3" onclick="toggle('p1t3')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build the public profile page with Claude</div>
+            <div class="task-what">Ask Claude to build an HTML profile page with: Sloan's bio, photo placeholder, degree goals (forensic psych → PhD), highlights (Mu Alpha Theta, extracurriculars), contact, and social links. Claude generates the entire file — you just provide the content.</div>
+            <div class="task-tags"><span class="task-tag">Claude session</span><span class="task-tag">HTML/CSS</span><span class="task-tag">1–2 hours</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p1t4">
+          <div class="task-check"><button id="cb-p1t4" onclick="toggle('p1t4')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Deploy to Netlify + connect domain</div>
+            <div class="task-what">Drag your HTML file into Netlify → it generates a URL. Then in Netlify settings, add sloanmelia.com as a custom domain. In Namecheap, point DNS to Netlify. Her page is live. SSL (the padlock) is automatic and free.</div>
+            <div class="task-tags"><span class="task-tag">DNS setup</span><span class="task-tag">30 min</span><span class="task-tag">Free SSL</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p1t5">
+          <div class="task-check"><button id="cb-p1t5" onclick="toggle('p1t5')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Set up professional email via Zoho</div>
+            <div class="task-what">Go to zoho.com/mail → free plan → connect sloanmelia.com → create sloan@sloanmelia.com. This email on college applications is a power move. Free forever for one mailbox.</div>
+            <div class="task-tags"><span class="task-tag">zoho.com/mail</span><span class="task-tag">Free</span><span class="task-tag">1 mailbox</span></div>
+          </div>
+        </div>
+
+        <div class="deliverable-row">
+          <span class="del-icon">🚀</span>
+          <div><span class="del-label">Phase 1 Deliverable</span><span class="del-text">sloanmelia.com is live and shareable — she can send this URL to admissions officers today</span></div>
+        </div>
+
+        <div class="gate-section">
+          <div class="gate-title">✅ Phase Gate — All must be green before Phase 2</div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p1t1"></div><span class="gate-text">sloanmelia.com resolves in a browser</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p1t2"></div><span class="gate-text">Netlify account connected to domain</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p1t3"></div><span class="gate-text">Profile page shows bio, photo, goals</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p1t4"></div><span class="gate-text">sloan@sloanmelia.com email works</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p1t5"></div><span class="gate-text">HTTPS padlock shows in browser bar</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-block" id="block-p2">
+      <div class="phase-header" onclick="togglePhase('p2')">
+        <div class="phase-icon">🔐</div>
+        <div class="phase-meta">
+          <div class="phase-num" style="color:var(--p2)">Phase 02 · Core Dashboard</div>
+          <div class="phase-title">Login + Document Vault + Study Library</div>
+          <div class="phase-sub">Her private command centre · 3–5 sessions with Claude</div>
+        </div>
+        <div class="phase-mini-bar">
+          <span class="phase-pct" id="pct-p2" style="color:var(--p2)">0%</span>
+          <div class="phase-track"><div class="phase-fill" id="bar-p2" style="width:0%;background:var(--p2)"></div></div>
+        </div>
+        <span class="phase-chevron" id="chev-p2">▶</span>
+      </div>
+      <div class="phase-body" id="body-p2">
+        <p class="phase-intro">Phase 2 adds a private back room to the house. The public sees her profile — only Sloan can walk through the locked door into her personal command centre.<br><strong>Analogy: The profile page is the shop window. The dashboard is the workshop where the real work happens.</strong></p>
+
+        <div class="task-item" id="ti-p2t1">
+          <div class="task-check"><button id="cb-p2t1" onclick="toggle('p2t1')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Create Supabase account + project</div>
+            <div class="task-what">Go to supabase.com → sign up (GitHub is easiest) → New Project → name it "sloanmelia-app". Supabase is the cargo system — it holds all her data, handles logins, and stores files. Free tier: 500MB database, 1GB files. More than enough for years.</div>
+            <div class="task-tags"><span class="task-tag">supabase.com</span><span class="task-tag">Free tier</span><span class="task-tag">PostgreSQL</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p2t2">
+          <div class="task-check"><button id="cb-p2t2" onclick="toggle('p2t2')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build login page (email + Google SSO)</div>
+            <div class="task-what">Ask Claude to build a login page connected to Supabase Auth. Include email/password and Google sign-in button. Sloan gets her own secure account. Nobody else can access her data. Claude generates all the code — you just connect it to your Supabase project URL and API key.</div>
+            <div class="task-tags"><span class="task-tag">Supabase Auth</span><span class="task-tag">Google SSO</span><span class="task-tag">Session mgmt</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p2t3">
+          <div class="task-check"><button id="cb-p2t3" onclick="toggle('p2t3')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build Document Vault module</div>
+            <div class="task-what">The brain of the whole app. Ask Claude to build a file upload module where Sloan can drag-and-drop documents: transcripts, SAT scores, recommendation letters, certificates, resume. Files stored in Supabase Storage. Each file gets category tags so the AI coach can find them later. Preview PDFs in-browser.</div>
+            <div class="task-tags"><span class="task-tag">File upload</span><span class="task-tag">PDF preview</span><span class="task-tag">Category tags</span><span class="task-tag">Private storage</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p2t4">
+          <div class="task-check"><button id="cb-p2t4" onclick="toggle('p2t4')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build Study Library (load all 16 posters)</div>
+            <div class="task-what">The 16 forensic psychology reference posters already built are the seed content. Ask Claude to build a Study Library module that displays them as a searchable, filterable grid. Each poster opens full-screen. Later: upload her own lecture notes and textbook PDFs. The library grows with her from senior year to PhD.</div>
+            <div class="task-tags"><span class="task-tag">16 posters ready</span><span class="task-tag">Search + filter</span><span class="task-tag">PDF upload</span><span class="task-tag">Full-screen view</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p2t5">
+          <div class="task-check"><button id="cb-p2t5" onclick="toggle('p2t5')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Deploy dashboard + connect to sloanmelia.com</div>
+            <div class="task-what">Push the dashboard app to GitHub → Netlify auto-deploys. The public sees sloanmelia.com (her profile). The private dashboard is at sloanmelia.com/dashboard — only she can access it after login. Mobile-responsive design throughout so it works on her iPhone 14.</div>
+            <div class="task-tags"><span class="task-tag">GitHub → Netlify</span><span class="task-tag">Mobile-ready</span><span class="task-tag">iPhone 14</span></div>
+          </div>
+        </div>
+
+        <div class="deliverable-row" style="background:rgba(245,200,66,.05);border-color:rgba(245,200,66,.2)">
+          <span class="del-icon">🏗️</span>
+          <div><span class="del-label" style="color:var(--gold)">Phase 2 Deliverable</span><span class="del-text">Private dashboard live — all 16 study posters accessible, documents stored securely, works on phone</span></div>
+        </div>
+
+        <div class="gate-section">
+          <div class="gate-title">✅ Phase Gate</div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p2t1"></div><span class="gate-text">Supabase project created with API keys saved</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p2t2"></div><span class="gate-text">Login works — can sign in and sign out</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p2t3"></div><span class="gate-text">Can upload a PDF and view it in the vault</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p2t4"></div><span class="gate-text">All 16 posters visible and searchable in library</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p2t5"></div><span class="gate-text">Dashboard loads correctly on iPhone 14</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-block" id="block-p3">
+      <div class="phase-header" onclick="togglePhase('p3')">
+        <div class="phase-icon">🤖</div>
+        <div class="phase-meta">
+          <div class="phase-num" style="color:var(--p3)">Phase 03 · Application Tools</div>
+          <div class="phase-title">AI Coach + College Tracker + Achievements Log</div>
+          <div class="phase-sub">The AI works for her · 4–6 sessions with Claude</div>
+        </div>
+        <div class="phase-mini-bar">
+          <span class="phase-pct" id="pct-p3" style="color:var(--p3)">0%</span>
+          <div class="phase-track"><div class="phase-fill" id="bar-p3" style="width:0%;background:var(--p3)"></div></div>
+        </div>
+        <span class="phase-chevron" id="chev-p3">▶</span>
+      </div>
+      <div class="phase-body" id="body-p3">
+        <p class="phase-intro">Phase 3 is where the app earns its keep. The AI coach comes alive — reading her vault, filling application forms, and eliminating the most tedious parts of applying to college.<br><strong>Analogy: She uploads her data once. The coach fills out every form forever. Like a GPS that already knows every road she's been on.</strong></p>
+
+        <div class="task-item" id="ti-p3t1">
+          <div class="task-check"><button id="cb-p3t1" onclick="toggle('p3t1')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Get Claude API key (Anthropic)</div>
+            <div class="task-what">Go to console.anthropic.com → sign up → API Keys → Create Key → name it "sloanmelia-coach" → copy immediately (shown once!). This key activates the AI brain. Claude Sonnet 4 is the right model — intelligent enough for real coaching, affordable at ~$5–15/month of use.</div>
+            <div class="task-tags"><span class="task-tag">console.anthropic.com</span><span class="task-tag">Claude Sonnet 4</span><span class="task-tag">~$5–15/mo</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p3t2">
+          <div class="task-check"><button id="cb-p3t2" onclick="toggle('p3t2')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build Achievements Log module</div>
+            <div class="task-what">A structured log of every extracurricular, volunteer hour, award, and membership. Each entry: organisation name, role, dates, hours, impact statement, and tags. Mu Alpha Theta gets its own entry. Every achievement logged once — the AI coach uses it everywhere. Eliminates retyping the same activities for the 15th school.</div>
+            <div class="task-tags"><span class="task-tag">Structured entries</span><span class="task-tag">Impact statements</span><span class="task-tag">Character count</span><span class="task-tag">Tag system</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p3t3">
+          <div class="task-check"><button id="cb-p3t3" onclick="toggle('p3t3')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build College Application Tracker</div>
+            <div class="task-what">Track every school she's applying to — application status (Not Started / In Progress / Submitted / Decision), deadlines, requirements, and essay prompts. Deadline calendar view with colour-coded urgency. Never miss a deadline. See everything at a glance across all schools.</div>
+            <div class="task-tags"><span class="task-tag">School database</span><span class="task-tag">Deadline calendar</span><span class="task-tag">Status tracking</span><span class="task-tag">Essay prompts</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p3t4">
+          <div class="task-check"><button id="cb-p3t4" onclick="toggle('p3t4')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build AI Form Analyzer (the star feature)</div>
+            <div class="task-what">She pastes any application form text into the Form Analyzer. The Claude AI reads the form, cross-references her Document Vault and Achievements Log, then generates pre-filled answers field-by-field — respecting every character limit. Copy → paste into the real form. The coach also flags what's missing so she never submits incomplete applications.</div>
+            <div class="task-tags"><span class="task-tag">Paste any form</span><span class="task-tag">Vault-aware AI</span><span class="task-tag">Copy-paste output</span><span class="task-tag">Missing doc alerts</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p3t5">
+          <div class="task-check"><button id="cb-p3t5" onclick="toggle('p3t5')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Add Essay Coach + Study Chat</div>
+            <div class="task-what">AI chat in every module. In the College Tracker: essay coach that reviews and improves her writing. In the Study Library: ask questions about the forensic psych posters and get detailed answers. The AI already has forensic psych context from all 16 posters — it knows her field, not just generic advice.</div>
+            <div class="task-tags"><span class="task-tag">Essay review</span><span class="task-tag">Study Q&A</span><span class="task-tag">ForenPsych context</span></div>
+          </div>
+        </div>
+
+        <div class="deliverable-row" style="background:rgba(167,139,250,.06);border-color:rgba(167,139,250,.25)">
+          <span class="del-icon">🧠</span>
+          <div><span class="del-label" style="color:var(--violet)">Phase 3 Deliverable</span><span class="del-text">AI coach is active — paste any form, get pre-filled answers from her own data in seconds</span></div>
+        </div>
+
+        <div class="gate-section">
+          <div class="gate-title">✅ Phase Gate</div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p3t1"></div><span class="gate-text">Claude API key saved and working</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p3t2"></div><span class="gate-text">At least 5 achievements logged with impact statements</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p3t3"></div><span class="gate-text">At least 3 schools added to tracker with deadlines</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p3t4"></div><span class="gate-text">Form Analyzer generates real output from a test form paste</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p3t5"></div><span class="gate-text">Essay coach responds with useful feedback on test essay</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-block" id="block-p4">
+      <div class="phase-header" onclick="togglePhase('p4')">
+        <div class="phase-icon">💰</div>
+        <div class="phase-meta">
+          <div class="phase-num" style="color:var(--p4)">Phase 04 · Financial Aid Hub</div>
+          <div class="phase-title">FAFSA Guide + Illinois 529 + Scholarships</div>
+          <div class="phase-sub">Full funding command centre · 3–4 sessions with Claude</div>
+        </div>
+        <div class="phase-mini-bar">
+          <span class="phase-pct" id="pct-p4" style="color:var(--p4)">0%</span>
+          <div class="phase-track"><div class="phase-fill" id="bar-p4" style="width:0%;background:var(--p4)"></div></div>
+        </div>
+        <span class="phase-chevron" id="chev-p4">▶</span>
+      </div>
+      <div class="phase-body" id="body-p4">
+        <p class="phase-intro">Phase 4 is the money module — understanding every source of funding, tracking every scholarship, and never leaving aid on the table.<br><strong>Analogy: Think of this as her personal financial navigator. FAFSA is the map. The 529 is fuel already in the tank. Scholarships are bonus fuel stops along the highway.</strong></p>
+
+        <div class="task-item" id="ti-p4t1">
+          <div class="task-check"><button id="cb-p4t1" onclick="toggle('p4t1')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build FAFSA walkthrough module</div>
+            <div class="task-what">Field-by-field plain English guide to FAFSA. Each field explained in simple language — no jargon. The AI coach can answer follow-up questions about any field. Key facts already embedded: parent-owned 529 only counts as 5.64% toward Expected Family Contribution — so the 529 barely affects aid eligibility.</div>
+            <div class="task-tags"><span class="task-tag">Field-by-field guide</span><span class="task-tag">AI Q&A</span><span class="task-tag">529 FAFSA impact</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p4t2">
+          <div class="task-check"><button id="cb-p4t2" onclick="toggle('p4t2')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build Illinois Bright Start 529 tracker</div>
+            <div class="task-what">Track the 529 account balance, qualified expenses by school and semester, and annual Illinois tax deduction status ($10k single / $20k joint). Key fact already built-in: graduate school expenses qualify, so the 529 can fund her Master's and PhD too. SECURE 2.0 Act note: unused funds can roll into Roth IRA (up to $35k lifetime) — no risk in overfunding.</div>
+            <div class="task-tags"><span class="task-tag">IL Bright Start</span><span class="task-tag">Tax deduction tracker</span><span class="task-tag">Grad school eligible</span><span class="task-tag">Roth IRA rollover</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p4t3">
+          <div class="task-check"><button id="cb-p4t3" onclick="toggle('p4t3')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build scholarship database + tracker</div>
+            <div class="task-what">Curated scholarship list: psychology, women in STEM, Illinois resident, forensic science, pre-doctoral programs. For each scholarship: deadline, amount, requirements, link. Tracker columns: Saved / Applied / Submitted / Awarded. AI coach can auto-fill scholarship application fields from her vault — same as the college form analyzer.</div>
+            <div class="task-tags"><span class="task-tag">Psych scholarships</span><span class="task-tag">IL resident</span><span class="task-tag">Women STEM</span><span class="task-tag">Pre-doctoral</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p4t4">
+          <div class="task-check"><button id="cb-p4t4" onclick="toggle('p4t4')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build financial aid award comparator</div>
+            <div class="task-what">When schools send aid packages, this tool puts them side by side. Net cost = tuition + fees + room/board minus all grants and scholarships. Shows real cost at each school after all aid. The AI coach explains the difference between grants (free money), loans (payback required), and work-study. Empowers an informed decision.</div>
+            <div class="task-tags"><span class="task-tag">Side-by-side view</span><span class="task-tag">Net cost calc</span><span class="task-tag">Grant vs loan</span></div>
+          </div>
+        </div>
+
+        <div class="deliverable-row" style="background:rgba(236,72,153,.06);border-color:rgba(236,72,153,.25)">
+          <span class="del-icon">💼</span>
+          <div><span class="del-label" style="color:var(--pink)">Phase 4 Deliverable</span><span class="del-text">Full financial aid command centre — FAFSA, Illinois 529, scholarships, and award comparison all in one place</span></div>
+        </div>
+
+        <div class="gate-section">
+          <div class="gate-title">✅ Phase Gate</div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p4t1"></div><span class="gate-text">FAFSA walkthrough navigable field-by-field</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p4t2"></div><span class="gate-text">529 tracker shows balance and qualified expenses</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p4t3"></div><span class="gate-text">At least 10 scholarships added to database</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p4t4"></div><span class="gate-text">Award comparator shows net cost correctly</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase-block" id="block-p5">
+      <div class="phase-header" onclick="togglePhase('p5')">
+        <div class="phase-icon">🎓</div>
+        <div class="phase-meta">
+          <div class="phase-num" style="color:var(--p5)">Phase 05 · Lifetime Platform</div>
+          <div class="phase-title">Profile Builder + Long-Term Growth Features</div>
+          <div class="phase-sub">From senior year to Dr. Melia · 2–3 sessions, then ongoing</div>
+        </div>
+        <div class="phase-mini-bar">
+          <span class="phase-pct" id="pct-p5" style="color:var(--p5)">0%</span>
+          <div class="phase-track"><div class="phase-fill" id="bar-p5" style="width:0%;background:var(--p5)"></div></div>
+        </div>
+        <span class="phase-chevron" id="chev-p5">▶</span>
+      </div>
+      <div class="phase-body" id="body-p5">
+        <p class="phase-intro">Phase 5 completes the circle. The profile builder makes her public page fully self-managed. And the long-term features mean this platform grows with her — from high school senior to doctoral researcher.<br><strong>Analogy: Phase 1 planted the flag. Phase 5 builds the skyscraper on top of it. This is her professional identity infrastructure for the next decade.</strong></p>
+
+        <div class="task-item" id="ti-p5t1">
+          <div class="task-check"><button id="cb-p5t1" onclick="toggle('p5t1')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Build WYSIWYG profile editor</div>
+            <div class="task-what">A visual editor inside her dashboard that controls sloanmelia.com. She types her bio, updates her photo, adds new achievements — and clicks Publish. Changes go live on her public page instantly. No more asking a developer. She owns and controls her own professional identity.</div>
+            <div class="task-tags"><span class="task-tag">Visual editor</span><span class="task-tag">Live preview</span><span class="task-tag">One-click publish</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p5t2">
+          <div class="task-check"><button id="cb-p5t2" onclick="toggle('p5t2')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Add resume PDF export</div>
+            <div class="task-what">One button generates a professional, formatted resume PDF from her Profile + Achievements Log data. No rebuilding from scratch every time. AI coach suggests wording and helps format achievements in resume-standard language. ATS-friendly format (passes automated resume scanners used by employers and grad programs).</div>
+            <div class="task-tags"><span class="task-tag">One-click PDF</span><span class="task-tag">ATS-friendly</span><span class="task-tag">AI wording help</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p5t3">
+          <div class="task-check"><button id="cb-p5t3" onclick="toggle('p5t3')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Add Academic CV builder (grad school format)</div>
+            <div class="task-what">Different from a resume. Academic CVs include: education history, publications, presentations, research experience, teaching experience, professional memberships, awards. Built for grad school applications and eventually faculty positions. Starts with what she has now — grows into a full CV over her academic career.</div>
+            <div class="task-tags"><span class="task-tag">Academic format</span><span class="task-tag">Publications</span><span class="task-tag">Research exp</span><span class="task-tag">Grows over time</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p5t4">
+          <div class="task-check"><button id="cb-p5t4" onclick="toggle('p5t4')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Add Professional Network section</div>
+            <div class="task-what">A private list of professional relationships: professors, mentors, advisors, internship supervisors, anyone who might write a letter of recommendation. For each contact: their info, relationship notes, last contact date, and whether they're a potential reference. The AI coach can draft professional emails to contacts based on the context.</div>
+            <div class="task-tags"><span class="task-tag">Contact manager</span><span class="task-tag">Reference tracking</span><span class="task-tag">AI email drafts</span></div>
+          </div>
+        </div>
+
+        <div class="task-item" id="ti-p5t5">
+          <div class="task-check"><button id="cb-p5t5" onclick="toggle('p5t5')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M13.5 4.5L6 12L2.5 8.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+          <div class="task-info">
+            <div class="task-title">Add Publication Tracker (for doctoral research)</div>
+            <div class="task-what">Years from now when Sloan is publishing research, this tracks every paper, journal, co-author, submission status, and citation count. Her digital HQ grows with her. The same app that helped her apply to college will eventually showcase her doctoral research to the world.</div>
+            <div class="task-tags"><span class="task-tag">Publication log</span><span class="task-tag">Journal submissions</span><span class="task-tag">Citation tracking</span><span class="task-tag">Future-ready</span></div>
+          </div>
+        </div>
+
+        <div class="deliverable-row" style="background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.25)">
+          <span class="del-icon">🏆</span>
+          <div><span class="del-label" style="color:var(--green)">Phase 5 Deliverable</span><span class="del-text">Fully self-managed lifetime platform — from senior year through Dr. Melia, she never needs to start over</span></div>
+        </div>
+
+        <div class="gate-section">
+          <div class="gate-title">✅ Phase Gate</div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p5t1"></div><span class="gate-text">Profile editor publishes changes to live site</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p5t2"></div><span class="gate-text">Resume PDF downloads correctly formatted</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p5t3"></div><span class="gate-text">Academic CV template populated with her info</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p5t4"></div><span class="gate-text">At least 3 contacts added to professional network</span></div>
+          <div class="gate-item"><div class="gate-dot" id="gd-p5t5"></div><span class="gate-text">Full system test — all 5 phases working together</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-build -->
+
+  <!-- ═══════════ COACH TAB ═══════════ -->
+  <div id="tab-coach" style="display:none">
+
+    <div class="coach-hero">
+      <div class="coach-eyebrow">🧠 Truth AI™ Cognitive Fusion — Build Coach</div>
+      <div class="coach-headline">Your Personal Progress Coach</div>
+      <p class="coach-intro">Think of this coach like a GPS that already knows every road. It reads your progress, tells you exactly what to do next, and gets smarter as you build more. The more you check off, the more precise its guidance becomes.</p>
+    </div>
+
+    <!-- LIVE STATUS -->
+    <div class="coach-status">
+      <div class="coach-status-label">🎯 Coach Current Status — Live Progress Reading</div>
+      <div class="coach-msg" id="coach-main-msg">
+        Loading your progress... Check tasks in the Roadmap tab and the coach will update in real time.
+      </div>
+      <div class="coach-next" id="coach-next-block">
+        <div class="coach-next-label">▶ NEXT RECOMMENDED ACTION</div>
+        <div class="coach-next-text" id="coach-next-text">Complete your first task to unlock coach guidance.</div>
+      </div>
+    </div>
+
+    <!-- PHASE COACH CARDS -->
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:12px">Coach Intelligence By Phase</div>
+
+    <div class="coach-phases">
+
+      <div class="coach-phase-card">
+        <div class="coach-phase-top">
+          <span class="coach-phase-icon">🌐</span>
+          <div>
+            <div class="coach-phase-name">Phase 1 Coach — Foundation</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:1px">Getting sloanmelia.com live</div>
+          </div>
+          <span class="coach-phase-level" style="background:rgba(0,212,200,.1);color:var(--teal);border:1px solid rgba(0,212,200,.3)">Starter</span>
+        </div>
+        <div class="coach-phase-body">
+          <div class="coach-ability-title">What the Coach Can Do</div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Reminds you which task is next when you open the app</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Links directly to Namecheap, Netlify, Zoho — no hunting</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Verifies each gate condition before you move to Phase 2</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Generates the exact Claude prompt to build the profile page</span></div>
+          <div class="coach-sample">
+            <div class="coach-sample-label">💬 Sample Coach Message</div>
+            <p class="coach-sample-msg">"Welcome back! Domain is registered — great start. Next up: create your free Netlify account. Go to netlify.com, sign up with GitHub, and come back to check this off. Takes about 5 minutes."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="coach-phase-card">
+        <div class="coach-phase-top">
+          <span class="coach-phase-icon">🔐</span>
+          <div>
+            <div class="coach-phase-name">Phase 2 Coach — Connected</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:1px">Dashboard, vault, and study library</div>
+          </div>
+          <span class="coach-phase-level" style="background:rgba(245,200,66,.08);color:var(--gold);border:1px solid rgba(245,200,66,.3)">Builder</span>
+        </div>
+        <div class="coach-phase-body">
+          <div class="coach-ability-title">What the Coach Can Do</div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Generates exact Supabase setup steps with your project URL pre-filled</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Gives you the Claude prompt that builds the Document Vault in one session</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Confirms all 16 forensic psych posters are correctly linked in the library</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Tests mobile responsiveness checklist for iPhone 14</span></div>
+          <div class="coach-sample">
+            <div class="coach-sample-label">💬 Sample Coach Message</div>
+            <p class="coach-sample-msg">"Phase 1 complete — sloanmelia.com is live! Now let's build the private dashboard. First: go to supabase.com, create a project called 'sloanmelia-app', and save the Project URL and anon key. Ready for the next step?"</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="coach-phase-card">
+        <div class="coach-phase-top">
+          <span class="coach-phase-icon">🤖</span>
+          <div>
+            <div class="coach-phase-name">Phase 3 Coach — AI Activated</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:1px">Form filler, tracker, essay coach</div>
+          </div>
+          <span class="coach-phase-level" style="background:rgba(167,139,250,.1);color:var(--violet);border:1px solid rgba(167,139,250,.3)">AI-Powered</span>
+        </div>
+        <div class="coach-phase-body">
+          <div class="coach-ability-title">What the Coach Can Do</div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Tests the Form Analyzer with a real sample college application</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Confirms Claude API key is connected and responding correctly</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Generates first 5 achievement entries from information you provide</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Calculates API cost estimate based on her usage pattern</span></div>
+          <div class="coach-sample">
+            <div class="coach-sample-label">💬 Sample Coach Message</div>
+            <p class="coach-sample-msg">"AI coach is LIVE! Test it now: copy any college application form text, paste it into the Form Analyzer, and watch it pull answers from your vault. The forensic psych context from your 16 posters is already embedded — your coach knows her field."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="coach-phase-card">
+        <div class="coach-phase-top">
+          <span class="coach-phase-icon">💰</span>
+          <div>
+            <div class="coach-phase-name">Phase 4 Coach — Financial Navigator</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:1px">FAFSA, 529, scholarships</div>
+          </div>
+          <span class="coach-phase-level" style="background:rgba(236,72,153,.1);color:var(--pink);border:1px solid rgba(236,72,153,.3)">Advanced</span>
+        </div>
+        <div class="coach-phase-body">
+          <div class="coach-ability-title">What the Coach Can Do</div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Explains every FAFSA field in plain language when she gets stuck</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Calculates the Illinois 529 annual tax deduction she qualifies for</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Searches and adds relevant scholarships to her tracker automatically</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Compares financial aid award letters from multiple schools by net cost</span></div>
+          <div class="coach-sample">
+            <div class="coach-sample-label">💬 Sample Coach Message</div>
+            <p class="coach-sample-msg">"Good news: your parent-owned 529 only counts as 5.64% toward your Expected Family Contribution — so a $40k balance adds less than $2,300 to your EFC. Colleges see it as nearly invisible. Keep contributing. The financial module is tracking this for you."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="coach-phase-card">
+        <div class="coach-phase-top">
+          <span class="coach-phase-icon">🎓</span>
+          <div>
+            <div class="coach-phase-name">Phase 5 Coach — Lifetime Partner</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:1px">Profile, resume, CV, publications</div>
+          </div>
+          <span class="coach-phase-level" style="background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.3)">Full System</span>
+        </div>
+        <div class="coach-phase-body">
+          <div class="coach-ability-title">What the Coach Can Do</div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Pushes profile updates live to sloanmelia.com with one click</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Generates ATS-optimised resume PDF from achievements data</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Drafts professional emails to professors and mentors from contact notes</span></div>
+          <div class="coach-ability"><span class="coach-ability-arrow">▸</span><span class="coach-ability-text">Runs full system health check across all 5 phases</span></div>
+          <div class="coach-sample">
+            <div class="coach-sample-label">💬 Sample Coach Message</div>
+            <p class="coach-sample-msg">"All 5 phases complete. System health: ✅ Site live · ✅ Dashboard secure · ✅ AI coach active · ✅ Financial hub tracking · ✅ Profile auto-publishing. sloanmelia.com is ready to grow with her from senior year to Dr. Melia."</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /tab-coach -->
+
+  <!-- ═══════════ REFERENCE TAB ═══════════ -->
+  <div id="tab-ref" style="display:none">
+
+    <!-- ARCHITECTURE -->
+    <div class="arch-block">
+      <div class="arch-title">📐 SloanMelia.com — Full System Architecture</div>
+
+      <div class="arch-layer" style="border-color:rgba(0,212,200,.4)">
+        <div class="arch-layer-label" style="background:var(--panel);color:var(--teal)">Layer 1 — Public</div>
+        <div class="arch-layer-title">sloanmelia.com — What the World Sees</div>
+        <div class="arch-layer-desc">Professional profile page visible to anyone. College admissions officers, future employers, scholarship committees, professors.</div>
+        <div class="arch-tags"><span class="arch-tag">Bio + Photo</span><span class="arch-tag">Degree Goals</span><span class="arch-tag">Highlights</span><span class="arch-tag">Contact</span><span class="arch-tag">Resume Download</span></div>
+      </div>
+
+      <div class="arch-layer" style="border-color:rgba(245,200,66,.4)">
+        <div class="arch-layer-label" style="background:var(--panel);color:var(--gold)">Layer 2 — Private Login</div>
+        <div class="arch-layer-title">Secure Dashboard — Only Sloan Enters Here</div>
+        <div class="arch-layer-desc">Email/password + Google SSO via Supabase Auth. All data encrypted. Session management + password reset included.</div>
+        <div class="arch-tags"><span class="arch-tag">Supabase Auth</span><span class="arch-tag">Google SSO</span><span class="arch-tag">Session Mgmt</span><span class="arch-tag">Password Reset</span></div>
+      </div>
+
+      <div class="arch-layer" style="border-color:rgba(167,139,250,.4)">
+        <div class="arch-layer-label" style="background:var(--panel);color:var(--violet)">Layer 3 — Six Modules</div>
+        <div class="arch-layer-title">Six Interconnected Tools — Her Command Centre</div>
+        <div class="arch-layer-desc">Each module talks to the others. Documents in the Vault feed the AI Coach everywhere else.</div>
+        <div class="arch-tags"><span class="arch-tag">📚 Study Library</span><span class="arch-tag">📋 Document Vault</span><span class="arch-tag">🎓 College Tracker</span><span class="arch-tag">💰 Financial Hub</span><span class="arch-tag">📝 Profile Builder</span><span class="arch-tag">🏆 Achievements Log</span></div>
+      </div>
+
+      <div class="arch-layer" style="border-color:rgba(236,72,153,.4)">
+        <div class="arch-layer-label" style="background:var(--panel);color:var(--pink)">Layer 4 — AI Coach</div>
+        <div class="arch-layer-title">Claude API — Runs Through Everything</div>
+        <div class="arch-layer-desc">Reads her vault, fills forms, coaches essays, answers questions. Already understands forensic psychology from the 16 reference posters.</div>
+        <div class="arch-tags"><span class="arch-tag">Form Analyzer</span><span class="arch-tag">Essay Coach</span><span class="arch-tag">Study Q&A</span><span class="arch-tag">FAFSA Guide</span><span class="arch-tag">Scholarship Matcher</span></div>
+      </div>
+    </div>
+
+    <!-- TECH STACK -->
+    <div class="ref-section">
+      <div class="ref-section-title">🔧 Tech Stack — What Each Tool Does</div>
+      <div class="ref-item"><div><div class="ref-label">Namecheap</div><div class="ref-note">Domain registration — sloanmelia.com</div></div><div style="display:flex;align-items:center;gap:10px"><span class="ref-cost">~$12/yr</span><a href="https://namecheap.com" target="_blank" class="ref-link">Open ↗</a></div></div>
+      <div class="ref-item"><div><div class="ref-label">Netlify</div><div class="ref-note">Hosts frontend files — connects to domain, auto-SSL</div></div><div style="display:flex;align-items:center;gap:10px"><span class="ref-cost">Free</span><a href="https://netlify.com" target="_blank" class="ref-link">Open ↗</a></div></div>
+      <div class="ref-item"><div><div class="ref-label">Supabase</div><div class="ref-note">Database + Auth + File Storage — all in one, all free at her scale</div></div><div style="display:flex;align-items:center;gap:10px"><span class="ref-cost">Free tier</span><a href="https://supabase.com" target="_blank" class="ref-link">Open ↗</a></div></div>
+      <div class="ref-item"><div><div class="ref-label">Claude API (Anthropic)</div><div class="ref-note">Powers the AI coach — form filling, essay coaching, study Q&A</div></div><div style="display:flex;align-items:center;gap:10px"><span class="ref-cost">~$5–15/mo</span><a href="https://console.anthropic.com" target="_blank" class="ref-link">Open ↗</a></div></div>
+      <div class="ref-item"><div><div class="ref-label">GitHub</div><div class="ref-note">Code backup — enables Netlify auto-deploy on every save</div></div><div style="display:flex;align-items:center;gap:10px"><span class="ref-cost">Free</span><a href="https://github.com" target="_blank" class="ref-link">Open ↗</a></div></div>
+      <div class="ref-item"><div><div class="ref-label">Zoho Mail</div><div class="ref-note">sloan@sloanmelia.com — professional email on her domain</div></div><div style="display:flex;align-items:center;gap:10px"><span class="ref-cost">Free</span><a href="https://zoho.com/mail" target="_blank" class="ref-link">Open ↗</a></div></div>
+      <div class="ref-item"><div><div class="ref-label">React (Vite)</div><div class="ref-note">Dashboard framework — Claude builds React natively, easy to extend</div></div><div style="display:flex;align-items:center;gap:10px"><span class="ref-cost">Free / OSS</span><a href="https://vitejs.dev" target="_blank" class="ref-link">Open ↗</a></div></div>
+    </div>
+
+    <!-- COSTS -->
+    <div class="ref-section">
+      <div class="ref-section-title">💵 Real Cost Breakdown</div>
+      <div class="ref-item"><div><div class="ref-label">Domain — sloanmelia.com</div><div class="ref-note">Renews annually. She owns this forever.</div></div><span class="ref-cost">~$12/yr</span></div>
+      <div class="ref-item"><div><div class="ref-label">Hosting — Netlify</div><div class="ref-note">Free indefinitely at her traffic level</div></div><span class="ref-cost">$0/mo</span></div>
+      <div class="ref-item"><div><div class="ref-label">Database + Auth — Supabase</div><div class="ref-note">500MB DB + 1GB storage free. Years of runway.</div></div><span class="ref-cost">$0/mo</span></div>
+      <div class="ref-item"><div><div class="ref-label">AI Coach — Claude API</div><div class="ref-note">Light use under $5. Heavy daily use ~$15 max.</div></div><span class="ref-cost">$5–15/mo</span></div>
+      <div class="ref-item"><div><div class="ref-label">Email — Zoho</div><div class="ref-note">One mailbox free forever</div></div><span class="ref-cost">$0/mo</span></div>
+      <div class="ref-item" style="background:rgba(34,197,94,.04);border-left:2px solid var(--green)"><div><div class="ref-label" style="color:var(--green)">TOTAL MONTHLY AVERAGE</div><div class="ref-note">Less than a streaming subscription. Full AI-powered platform.</div></div><span class="ref-cost" style="font-size:13px">~$15/mo</span></div>
+    </div>
+
+    <!-- 529 FACTS -->
+    <div class="ref-section">
+      <div class="ref-section-title">🎓 Illinois 529 — Bright Start Key Facts</div>
+      <div class="ref-item"><div><div class="ref-label">State Tax Deduction — Single Filers</div><div class="ref-note">Illinois deduction per year</div></div><span class="ref-cost">$10,000</span></div>
+      <div class="ref-item"><div><div class="ref-label">State Tax Deduction — Joint Filers</div><div class="ref-note">Illinois joint deduction per year</div></div><span class="ref-cost">$20,000</span></div>
+      <div class="ref-item"><div><div class="ref-label">FAFSA Impact</div><div class="ref-note">Parent-owned 529 counts only 5.64% toward Expected Family Contribution — nearly invisible to aid calculations</div></div><span class="ref-cost">5.64%</span></div>
+      <div class="ref-item"><div><div class="ref-label">Qualified Expenses</div><div class="ref-note">Tuition, fees, books, room & board, computers required for school — AND graduate school</div></div><span class="ref-cost">Includes PhD</span></div>
+      <div class="ref-item"><div><div class="ref-label">SECURE 2.0 Act — Roth IRA Rollover</div><div class="ref-note">Unused 529 funds can roll to Roth IRA (up to $35k lifetime) — no risk in overfunding</div></div><span class="ref-cost">$35k lifetime</span></div>
+      <div class="ref-item"><div><div class="ref-label">Bright Start Portal</div><div class="ref-note">Illinois official 529 plan management</div></div><a href="https://www.brightstartsavings.com" target="_blank" class="ref-link">Open ↗</a></div>
+    </div>
+
+    <!-- RESOURCES ALREADY BUILT -->
+    <div class="ref-section">
+      <div class="ref-section-title">✅ Resources Already Built — Ready to Deploy</div>
+      <div class="ref-item"><div><div class="ref-label">Brain + Neuroscience Poster</div><div class="ref-note">Forensic psych reference — Phase 2 Study Library seed content</div></div><span class="ref-cost">Ready</span></div>
+      <div class="ref-item"><div><div class="ref-label">DSM-5 Reference Poster</div><div class="ref-note">Disorders and diagnostic criteria for forensic application</div></div><span class="ref-cost">Ready</span></div>
+      <div class="ref-item"><div><div class="ref-label">Theorists Poster</div><div class="ref-note">Key psychologists and their contributions</div></div><span class="ref-cost">Ready</span></div>
+      <div class="ref-item"><div><div class="ref-label">Research Methods Poster</div><div class="ref-note">Forensic psychology research methodology</div></div><span class="ref-cost">Ready</span></div>
+      <div class="ref-item"><div><div class="ref-label">Criminal Defense Poster</div><div class="ref-note">Competency, insanity, and criminal responsibility</div></div><span class="ref-cost">Ready</span></div>
+      <div class="ref-item"><div><div class="ref-label">Development Poster</div><div class="ref-note">Developmental psychology in forensic contexts</div></div><span class="ref-cost">Ready</span></div>
+      <div class="ref-item"><div><div class="ref-label">Cognitive Biases Poster</div><div class="ref-note">Bias recognition in forensic assessment</div></div><span class="ref-cost">Ready</span></div>
+      <div class="ref-item"><div><div class="ref-label">Ethics Poster</div><div class="ref-note">Professional ethics and standards in forensic psychology</div></div><span class="ref-cost">Ready</span></div>
+      <div class="ref-item"><div><div class="ref-label">+ 8 more support posters</div><div class="ref-note">Biology, Sociology, Philosophy, Pharmacology, Law, Comms, Stats, Profile</div></div><span class="ref-cost">Ready</span></div>
+    </div>
+
+  </div><!-- /tab-ref -->
+
+</div><!-- /content -->
+
+<script>
+/* ═══════════════════════════════════════
+   STATE — localStorage persistence
+═══════════════════════════════════════ */
+const STORAGE_KEY = 'sloanmelia-roadmap-v1';
+let state = {};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = JSON.parse(saved);
+  } catch(e) { state = {}; }
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+/* All tasks map: id → gate dot id suffix */
+const PHASES = [
+  { id:'p1', tasks:['p1t1','p1t2','p1t3','p1t4','p1t5'], color:'var(--p1)' },
+  { id:'p2', tasks:['p2t1','p2t2','p2t3','p2t4','p2t5'], color:'var(--p2)' },
+  { id:'p3', tasks:['p3t1','p3t2','p3t3','p3t4','p3t5'], color:'var(--p3)' },
+  { id:'p4', tasks:['p4t1','p4t2','p4t3','p4t4'],         color:'var(--p4)' },
+  { id:'p5', tasks:['p5t1','p5t2','p5t3','p5t4','p5t5'], color:'var(--p5)' },
+];
+const ALL_TASKS = PHASES.flatMap(p => p.tasks);
+
+/* ═══ TOGGLE TASK ═══ */
+function toggle(taskId) {
+  state[taskId] = !state[taskId];
+  saveState();
+  renderAll();
+}
+
+/* ═══ RENDER ═══ */
+function renderAll() {
+  const totalDone = ALL_TASKS.filter(t => state[t]).length;
+  const totalCount = ALL_TASKS.length;
+  const pct = Math.round(totalDone / totalCount * 100);
+
+  // Master bar
+  document.getElementById('master-bar').style.width = pct + '%';
+  document.getElementById('master-pct').textContent = pct + '%';
+  document.getElementById('stat-done').textContent = totalDone + '/' + totalCount + ' Tasks';
+
+  // Active phase
+  let activePhase = 'All Complete!';
+  for (const p of PHASES) {
+    const pDone = p.tasks.filter(t => state[t]).length;
+    if (pDone < p.tasks.length) { activePhase = 'Phase ' + p.id.replace('p','') + ' Active'; break; }
+  }
+  document.getElementById('stat-phase').textContent = activePhase;
+
+  // Phase bars + checkboxes + gate dots
+  for (const p of PHASES) {
+    const pDone = p.tasks.filter(t => state[t]).length;
+    const pPct = Math.round(pDone / p.tasks.length * 100);
+
+    const barEl = document.getElementById('bar-' + p.id);
+    const pctEl = document.getElementById('pct-' + p.id);
+    if (barEl) barEl.style.width = pPct + '%';
+    if (pctEl) pctEl.textContent = pPct + '%';
+
+    // tasks
+    p.tasks.forEach((tid, i) => {
+      const cb = document.getElementById('cb-' + tid);
+      const ti = document.getElementById('ti-' + tid);
+      const gd = document.getElementById('gd-' + tid);
+      if (cb) { cb.className = state[tid] ? 'checked' : ''; }
+      if (ti) { ti.className = 'task-item' + (state[tid] ? ' done' : ''); }
+      if (gd) { gd.className = 'gate-dot' + (state[tid] ? ' done' : ''); }
+    });
+  }
+
+  updateCoach(totalDone, totalCount, pct);
+}
+
+/* ═══ COACH INTELLIGENCE ═══ */
+function updateCoach(done, total, pct) {
+  const p1done = PHASES[0].tasks.filter(t => state[t]).length;
+  const p2done = PHASES[1].tasks.filter(t => state[t]).length;
+  const p3done = PHASES[2].tasks.filter(t => state[t]).length;
+  const p4done = PHASES[3].tasks.filter(t => state[t]).length;
+  const p5done = PHASES[4].tasks.filter(t => state[t]).length;
+
+  let msg = '';
+  let next = '';
+
+  if (done === 0) {
+    msg = "Welcome, daddy boy! We're building Sloan's digital headquarters — from a simple profile page today to a full AI-powered academic platform. Start with Phase 1: registering sloanmelia.com. It takes 5 minutes and costs ~$12. That URL will open doors for years.";
+    next = "→ Go to namecheap.com, search 'sloanmelia', and register the .com domain. Then come back and check off Task 1.";
+  } else if (pct === 100) {
+    msg = "🎉 MISSION COMPLETE! All 5 phases built. sloanmelia.com is live, the AI coach is active, the financial hub is tracking, and the platform will grow with Sloan from senior year to Dr. Melia. This is a legacy gift. Well done.";
+    next = "→ Run a full system test: visit sloanmelia.com publicly, log in to the dashboard, paste a form into the AI analyzer, and confirm everything works on her iPhone 14.";
+  } else if (p1done < 5) {
+    const p1tasks = [
+      "Register sloanmelia.com at namecheap.com (~$12/yr)",
+      "Create a free Netlify account at netlify.com",
+      "Ask Claude to build the HTML profile page with bio, photo, goals, and contact info",
+      "Deploy to Netlify and connect sloanmelia.com to your Netlify account",
+      "Set up sloan@sloanmelia.com via zoho.com/mail (free forever)"
+    ];
+    msg = `Phase 1 in progress — ${p1done}/5 tasks done. You're planting the flag right now. Think of it this way: every college admissions officer who Googles her name will land on sloanmelia.com. That first impression is built here, in Phase 1.`;
+    next = '→ Next: ' + p1tasks[p1done];
+  } else if (p2done < 5) {
+    const p2tasks = [
+      "Go to supabase.com, create a project called 'sloanmelia-app', save the URL and anon key",
+      "Ask Claude to build a login page connected to Supabase with email/password and Google SSO",
+      "Ask Claude to build the Document Vault — file upload, tags, PDF preview, Supabase Storage",
+      "Ask Claude to build the Study Library displaying all 16 forensic psych posters with search/filter",
+      "Push to GitHub → Netlify auto-deploys. Test on iPhone 14 — mobile must work."
+    ];
+    msg = `Phase 1 complete — sloanmelia.com is live! 🌐 Now we build the private back room. Phase 2 turns a static profile into a secure personal command centre. The Document Vault you build here is the brain of the entire app — everything else feeds from it. ${p2done}/5 tasks done.`;
+    next = '→ Next: ' + p2tasks[p2done];
+  } else if (p3done < 5) {
+    const p3tasks = [
+      "Go to console.anthropic.com → API Keys → Create Key named 'sloanmelia-coach' → copy it immediately",
+      "Ask Claude to build the Achievements Log with structured entry fields and character counters",
+      "Ask Claude to build the College Application Tracker with school database and deadline calendar",
+      "Ask Claude to build the Form Analyzer — paste form text → AI reads vault → generates pre-filled answers",
+      "Ask Claude to add Essay Coach in the tracker and Study Chat in the library using the Claude API"
+    ];
+    msg = `Phase 2 complete — the dashboard is live and secure! 🔐 Now we activate the AI. Phase 3 is where the platform earns its worth — Sloan pastes any college application form and the coach fills it using her own data. No more retyping the same things for the 15th school. ${p3done}/5 tasks done.`;
+    next = '→ Next: ' + p3tasks[p3done];
+  } else if (p4done < 4) {
+    const p4tasks = [
+      "Ask Claude to build a FAFSA walkthrough module with field-by-field plain English explanations",
+      "Ask Claude to build the Illinois 529 tracker with balance, qualified expenses, and tax deduction alerts",
+      "Curate and add 10+ scholarships to the database (psychology, women in STEM, IL resident, pre-doctoral)",
+      "Ask Claude to build the financial aid award comparator — net cost side-by-side across schools"
+    ];
+    msg = `Phase 3 complete — the AI coach is active! 🤖 The Form Analyzer is live and the essay coach knows forensic psychology. Now we build the money module. Financial aid is where most families leave thousands on the table. The 529 tracker, FAFSA guide, and scholarship database change that. ${p4done}/4 tasks done.`;
+    next = '→ Next: ' + p4tasks[p4done];
+  } else if (p5done < 5) {
+    const p5tasks = [
+      "Ask Claude to build a WYSIWYG profile editor that publishes updates to sloanmelia.com with one click",
+      "Ask Claude to add a Resume PDF export feature pulling from Profile + Achievements Log data",
+      "Ask Claude to build an Academic CV builder (education, publications, research experience format)",
+      "Ask Claude to build a Professional Network section — contacts, mentors, potential references",
+      "Ask Claude to add a Publication Tracker for future research papers, journals, and citations"
+    ];
+    msg = `Phase 4 complete — the financial hub is live! 💰 The 529 is tracked, FAFSA is guided, scholarships are organised. One phase left. Phase 5 is the forever layer — profile control, resume export, academic CV, and the publication tracker she'll use all the way to her PhD. ${p5done}/5 tasks done.`;
+    next = '→ Next: ' + p5tasks[p5done];
+  }
+
+  document.getElementById('coach-main-msg').textContent = msg;
+  document.getElementById('coach-next-text').textContent = next;
+}
+
+/* ═══ TABS ═══ */
+let currentTab = 'build';
+function setTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-build').style.display = tab === 'build' ? 'block' : 'none';
+  document.getElementById('tab-coach').style.display = tab === 'coach' ? 'block' : 'none';
+  document.getElementById('tab-ref').style.display = tab === 'ref' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach(t => {
+    t.className = 'tab';
+    if (t.textContent.toLowerCase().includes(tab === 'build' ? 'roadmap' : tab)) {
+      t.className = 'tab active-' + tab;
+    }
+  });
+  if (tab === 'coach') updateCoach(
+    ALL_TASKS.filter(t => state[t]).length,
+    ALL_TASKS.length,
+    Math.round(ALL_TASKS.filter(t => state[t]).length / ALL_TASKS.length * 100)
+  );
+}
+
+/* ═══ PHASE ACCORDION ═══ */
+function togglePhase(pid) {
+  const body = document.getElementById('body-' + pid);
+  const chev = document.getElementById('chev-' + pid);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  body.style.display = !isOpen ? 'block' : 'none';
+  if (chev) chev.className = 'phase-chevron' + (!isOpen ? ' open' : '');
+}
+
+/* ═══ INIT ═══ */
+loadState();
+
+// Init accordion states — open Phase 1, rest closed
+PHASES.forEach((p, i) => {
+  const body = document.getElementById('body-' + p.id);
+  if (body) {
+    if (i === 0) { body.classList.add('open'); body.style.display = 'block'; }
+    else { body.style.display = 'none'; }
+  }
+});
+
+renderAll();
+</script>
+</body>
+</html>
