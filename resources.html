@@ -453,8 +453,11 @@
     <script>
         const SUPABASE_URL = 'https://lkjhqlwkflvqkypmdlne.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxramhxbHdrZmx2cWt5cG1kbG5lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg0NTI2MDksImV4cCI6MjA1NDAyODYwOX0.v_bV6EbnLF-kVPxGv5CQcbTK4_BqbLUbE35dCxzp7FM';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        let supabase;
+if (!window.sloanmeliaSupabase) {
+    window.sloanmeliaSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+supabase = window.sloanmeliaSupabase;
         let allResources = [];
         let allCategories = [];
         let allTags = [];
