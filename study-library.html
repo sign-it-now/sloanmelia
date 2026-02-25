@@ -674,12 +674,7 @@
         const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
         
-        let supabase;
-        if (!window.sloanmeliaSupabase) {
-            window.sloanmeliaSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
-        supabase = window.sloanmeliaSupabase;
-
+       const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let allResources = [];
         let allCategories = [];
         let allTags = [];
