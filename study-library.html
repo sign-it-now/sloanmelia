@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Library - SloanMelia</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f5f0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #1a1a1a;
+            color: white;
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-box {
+            background-color: #d4a574;
+            color: #1a1a1a;
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .brand-name {
+            font-style: italic;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            font-size: 0.7em;
+            letter-spacing: 2px;
+            color: #888;
+        }
+
+        .nav-menu {
+            margin-top: 40px;
+        }
+
+        .nav-item {
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .nav-item:hover {
+            background-color: #2a2a2a;
+        }
+
+        .nav-item.active {
+            background-color: #3a3a2a;
+            border-left: 3px solid #d4a574;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 50px;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .page-header h1 .highlight {
+            font-style: italic;
+            color: #d4a574;
+        }
+
+        .page-subtitle {
+            font-size: 0.85em;
+            color: #888;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            color: #d4a574;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            letter-spacing: 1px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #333;
+            letter-spacing: 1px;
+        }
+
+        .section-subtitle {
+            font-size: 0.85em;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Topic Modules Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .module-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+
+        .module-category {
+            font-size: 0.75em;
+            color: #d4a574;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .module-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .module-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .module-link {
+            color: #d4a574;
+            text-decoration: none;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .module-link:hover {
+            color: #1a1a1a;
+        }
+
+        /* Resources Section */
+        .filters-section {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            font-size: 0.85em;
+            color: #666;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            font-family: Georgia, serif;
+            font-size: 1em;
+        }
+
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85em;
+        }
+
+        .filter-chip:hover {
+            border-color: #d4a574;
+        }
+
+        .filter-chip.active {
+            background: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
+        }
+
+        /* Resources Grid */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .resource-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .resource-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .resource-category {
+            font-size: 0.75em;
+            color: #d4a574;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .resource-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .resource-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .resource-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .resource-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            background: #f5f5f0;
+            border: 1px solid #e0e0e0;
+            font-size: 0.75em;
+            color: #666;
+        }
+
+        .resource-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .free-badge {
+            font-size: 0.8em;
+            color: #4a8c4a;
+            font-weight: 600;
+        }
+
+        .paid-badge {
+            font-size: 0.8em;
+            color: #d4a574;
+            font-weight: 600;
+        }
+
+        .bookmark-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.3s;
+        }
+
+        .bookmark-btn:hover {
+            color: #d4a574;
+        }
+
+        .bookmark-btn.active {
+            color: #d4a574;
+        }
+
+        .study-link {
+            color: #d4a574;
+            text-decoration: none;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .study-link:hover {
+            color: #1a1a1a;
+        }
+
+        .loading, .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f0f0f0;
+            border-top: 3px solid #d4a574;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .main-content {
+                margin-left: 200px;
+                padding: 30px 20px;
+            }
+            .modules-grid,
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-box">SM</div>
+            <div class="brand-name">SloanMelia</div>
+            <div class="tagline">COLLEGE COMMAND CENTER</div>
+        </div>
+
+        <div class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <span>🏠</span> HOME
+            </a>
+            <a href="study-library.html" class="nav-item active">
+                <span>📚</span> STUDY LIBRARY
+            </a>
+            <a href="documents.html" class="nav-item">
+                <span>📄</span> DOCUMENT VAULT
+            </a>
+            <a href="dashboard.html#colleges" class="nav-item">
+                <span>🎓</span> COLLEGE TRACKER
+            </a>
+            <a href="dashboard.html#achievements" class="nav-item">
+                <span>⭐</span> ACHIEVEMENTS
+            </a>
+            <a href="financial-aid.html" class="nav-item">
+                <span>💰</span> FINANCIAL AID
+            </a>
+            <a href="coach.html" class="nav-item">
+                <span>🤖</span> COACH
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Study <span class="highlight">Library</span></h1>
+            <p class="page-subtitle">16 FORENSIC PSYCHOLOGY TOPIC MODULES • CLICK ANY CARD TO STUDY</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-number">16</div>
+                <div class="stat-label">TOPIC MODULES</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="totalResources">25</div>
+                <div class="stat-label">EXTERNAL RESOURCES</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="freeResources">23</div>
+                <div class="stat-label">FREE RESOURCES</div>
+            </div>
+        </div>
+
+        <!-- Core Forensic Psychology Modules -->
+        <div class="section-header">
+            <div>
+                <div class="section-title">Core Forensic Psychology</div>
+                <div class="section-subtitle">Essential topics for forensic psychology mastery</div>
+            </div>
+        </div>
+
+        <div class="modules-grid">
+            <div class="module-card" onclick="window.location.href='poster1-brain.html'">
+                <div class="module-category">CORE FORENSIC</div>
+                <div class="module-title">Brain & Neuroscience</div>
+                <div class="module-description">The biological foundation of behavior, emotion, and criminal mind.</div>
+                <a href="poster1-brain.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='poster2-dsm5.html'">
+                <div class="module-category">CORE FORENSIC</div>
+                <div class="module-title">DSM-5 Diagnostic Reference</div>
+                <div class="module-description">Mental disorder classification system used in forensic evaluations.</div>
+                <a href="poster2-dsm5.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='poster3-theorists.html'">
+                <div class="module-category">CORE FORENSIC</div>
+                <div class="module-title">Theorists Timeline</div>
+                <div class="module-description">From Freud to modern forensic psychology pioneers.</div>
+                <a href="poster3-theorists.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='poster4-research.html'">
+                <div class="module-category">CORE FORENSIC</div>
+                <div class="module-title">Research Methods & Statistics</div>
+                <div class="module-description">Scientific foundation of psychological research.</div>
+                <a href="poster4-research.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='poster5-defense.html'">
+                <div class="module-category">CORE FORENSIC</div>
+                <div class="module-title">Defense Mechanisms</div>
+                <div class="module-description">Psychological defenses relevant to criminal behavior analysis.</div>
+                <a href="poster5-defense.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='poster6-development.html'">
+                <div class="module-category">CORE FORENSIC</div>
+                <div class="module-title">Human Development</div>
+                <div class="module-description">Lifespan development theories critical to forensic assessment.</div>
+                <a href="poster6-development.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='poster7-biases.html'">
+                <div class="module-category">CORE FORENSIC</div>
+                <div class="module-title">Cognitive Biases</div>
+                <div class="module-description">How thinking errors affect judgment, perception, and testimony.</div>
+                <a href="poster7-biases.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='poster8-ethics.html'">
+                <div class="module-category">CORE FORENSIC</div>
+                <div class="module-title">APA Ethics Code</div>
+                <div class="module-description">Professional ethical obligations guiding all psychologists.</div>
+                <a href="poster8-ethics.html" class="module-link">STUDY →</a>
+            </div>
+        </div>
+
+        <!-- Supporting Coursework Modules -->
+        <div class="section-header">
+            <div>
+                <div class="section-title">Supporting Coursework</div>
+                <div class="section-subtitle">Interdisciplinary knowledge for well-rounded expertise</div>
+            </div>
+        </div>
+
+        <div class="modules-grid">
+            <div class="module-card" onclick="window.location.href='support1-biology.html'">
+                <div class="module-category">SUPPORTING COURSE</div>
+                <div class="module-title">Biology & Physiology</div>
+                <div class="module-description">Body systems that support psychological function.</div>
+                <a href="support1-biology.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='support2-sociology.html'">
+                <div class="module-category">SUPPORTING COURSE</div>
+                <div class="module-title">Sociology & Social Theory</div>
+                <div class="module-description">Social forces shaping criminal behavior and justice.</div>
+                <a href="support2-sociology.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='support3-philosophy.html'">
+                <div class="module-category">SUPPORTING COURSE</div>
+                <div class="module-title">Philosophy of Mind</div>
+                <div class="module-description">Consciousness, free will, and moral responsibility.</div>
+                <a href="support3-philosophy.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='support4-pharmacology.html'">
+                <div class="module-category">SUPPORTING COURSE</div>
+                <div class="module-title">Pharmacology Basics</div>
+                <div class="module-description">Psychoactive substances and their behavioral effects.</div>
+                <a href="support4-pharmacology.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='support5-law.html'">
+                <div class="module-category">SUPPORTING COURSE</div>
+                <div class="module-title">Law & Psychology Interface</div>
+                <div class="module-description">How psychological science enters the legal system.</div>
+                <a href="support5-law.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='support6-comm-write-admin.html'">
+                <div class="module-category">SUPPORTING COURSE</div>
+                <div class="module-title">Communication & Academic Writing</div>
+                <div class="module-description">Research paper and report writing standards for psychology.</div>
+                <a href="support6-comm-write-admin.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='sloan-forensic-stats.html'">
+                <div class="module-category">SUPPORTING COURSE</div>
+                <div class="module-title">Law & Psychology Interface</div>
+                <div class="module-description">How psychological science enters the legal system.</div>
+                <a href="sloan-forensic-stats.html" class="module-link">STUDY →</a>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='forensic-psych-reference.html'">
+                <div class="module-category">SUPPORTING COURSE</div>
+                <div class="module-title">Academic Writing</div>
+                <div class="module-description">Research paper and report writing standards for psychology.</div>
+                <a href="forensic-psych-reference.html" class="module-link">STUDY →</a>
+            </div>
+        </div>
+
+        <!-- Resource Collection Section -->
+        <div class="section-header" style="margin-top: 60px;">
+            <div>
+                <div class="section-title">Resource Collection</div>
+                <div class="section-subtitle">Textbooks, videos, courses & study materials</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <div class="filter-label">🔍 Search</div>
+                <input type="text" class="search-input" id="searchBox" placeholder="Search by title, author, or description...">
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">📂 Category</div>
+                <div class="filter-chips" id="categoryFilters">
+                    <div class="filter-chip active" data-category="all">All Categories</div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">🏷️ Tags</div>
+                <div class="filter-chips" id="tagFilters">
+                    <div class="filter-chip active" data-tag="all">All Tags</div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-label">💰 Cost</div>
+                <div class="filter-chips">
+                    <div class="filter-chip active" data-cost="all" onclick="filterByCost('all')">All</div>
+                    <div class="filter-chip" data-cost="free" onclick="filterByCost('free')">Free Only</div>
+                    <div class="filter-chip" data-cost="paid" onclick="filterByCost('paid')">Paid</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Container -->
+        <div id="resourcesContainer">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading resource collection...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://lkjhqlwkflvqkypmdlne.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxramhxbHdrZmx2cWt5cG1kbG5lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg0NTI2MDksImV4cCI6MjA1NDAyODYwOX0.v_bV6EbnLF-kVPxGv5CQcbTK4_BqbLUbE35dCxzp7FM';
+        
+        let supabase;
+        if (!window.sloanmeliaSupabase) {
+            window.sloanmeliaSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        supabase = window.sloanmeliaSupabase;
+
+        let allResources = [];
+        let allCategories = [];
+        let allTags = [];
+        let currentFilters = {
+            category: 'all',
+            tag: 'all',
+            cost: 'all',
+            search: ''
+        };
+
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        async function loadCategories() {
+            const { data, error } = await supabase
+                .from('resource_categories')
+                .select('*')
+                .order('display_order');
+
+            if (error) {
+                console.error('Error loading categories:', error);
+                return;
+            }
+
+            allCategories = data;
+            renderCategoryFilters();
+        }
+
+        async function loadTags() {
+            const { data, error } = await supabase
+                .from('resource_tags')
+                .select('*')
+                .order('name');
+
+            if (error) {
+                console.error('Error loading tags:', error);
+                return;
+            }
+
+            allTags = data;
+            renderTagFilters();
+        }
+
+        async function loadResources() {
+            const { data: { user } } = await supabase.auth.getUser();
+
+            const { data, error } = await supabase
+                .from('resources')
+                .select(`
+                    *,
+                    category:resource_categories(name, icon, color),
+                    tags:resource_tag_assignments(
+                        tag:resource_tags(name, description)
+                    )
+                `)
+                .eq('user_id', user.id)
+                .eq('is_active', true)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading resources:', error);
+                document.getElementById('resourcesContainer').innerHTML = `
+                    <div class="no-results">
+                        <h3>Error loading resources</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            allResources = data;
+            updateStats();
+            renderResources();
+        }
+
+        function renderCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            const allChip = container.querySelector('[data-category="all"]');
+            
+            allCategories.forEach(category => {
+                const chip = document.createElement('div');
+                chip.className = 'filter-chip';
+                chip.dataset.category = category.id;
+                chip.textContent = category.name;
+                chip.onclick = () => filterByCategory(category.id);
+                container.appendChild(chip);
+            });
+        }
+
+        function renderTagFilters() {
+            const container = document.getElementById('tagFilters');
+            const allChip = container.querySelector('[data-tag="all"]');
+            
+            allTags.forEach(tag => {
+                const chip = document.createElement('div');
+                chip.className = 'filter-chip';
+                chip.dataset.tag = tag.id;
+                chip.textContent = tag.name.replace(/-/g, ' ');
+                chip.onclick = () => filterByTag(tag.id);
+                container.appendChild(chip);
+            });
+        }
+
+        function filterByCategory(categoryId) {
+            currentFilters.category = categoryId;
+            updateFilterUI('category', categoryId);
+            renderResources();
+        }
+
+        function filterByTag(tagId) {
+            currentFilters.tag = tagId;
+            updateFilterUI('tag', tagId);
+            renderResources();
+        }
+
+        function filterByCost(cost) {
+            currentFilters.cost = cost;
+            updateFilterUI('cost', cost);
+            renderResources();
+        }
+
+        function updateFilterUI(filterType, value) {
+            const chips = document.querySelectorAll(`[data-${filterType}]`);
+            chips.forEach(chip => {
+                chip.classList.remove('active');
+                if (chip.dataset[filterType] === value) {
+                    chip.classList.add('active');
+                }
+            });
+        }
+
+        function renderResources() {
+            const container = document.getElementById('resourcesContainer');
+            
+            let filtered = allResources.filter(resource => {
+                if (currentFilters.category !== 'all' && resource.category_id !== currentFilters.category) {
+                    return false;
+                }
+
+                if (currentFilters.tag !== 'all') {
+                    const hasTag = resource.tags.some(t => t.tag.id === currentFilters.tag);
+                    if (!hasTag) return false;
+                }
+
+                if (currentFilters.cost === 'free' && !resource.is_free) return false;
+                if (currentFilters.cost === 'paid' && resource.is_free) return false;
+
+                if (currentFilters.search) {
+                    const searchLower = currentFilters.search.toLowerCase();
+                    const matchesTitle = resource.title.toLowerCase().includes(searchLower);
+                    const matchesDescription = resource.description?.toLowerCase().includes(searchLower);
+                    const matchesAuthor = resource.author_creator?.toLowerCase().includes(searchLower);
+                    
+                    if (!matchesTitle && !matchesDescription && !matchesAuthor) return false;
+                }
+
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <h3>No resources found</h3>
+                        <p>Try adjusting your filters or search terms</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'resources-grid';
+
+            filtered.forEach(resource => {
+                grid.appendChild(createResourceCard(resource));
+            });
+
+            container.innerHTML = '';
+            container.appendChild(grid);
+        }
+
+        function createResourceCard(resource) {
+            const card = document.createElement('div');
+            card.className = 'resource-card';
+
+            const tags = resource.tags.map(t => 
+                `<span class="tag">${t.tag.name.replace(/-/g, ' ')}</span>`
+            ).join('');
+
+            const meta = [];
+            if (resource.author_creator) meta.push(`👤 ${resource.author_creator}`);
+            if (resource.publication_year) meta.push(`📅 ${resource.publication_year}`);
+            if (resource.duration_minutes) {
+                const hours = Math.floor(resource.duration_minutes / 60);
+                const mins = resource.duration_minutes % 60;
+                const duration = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+                meta.push(`⏱️ ${duration}`);
+            }
+
+            card.innerHTML = `
+                <button class="bookmark-btn ${resource.is_bookmarked ? 'active' : ''}" 
+                        onclick="toggleBookmark('${resource.id}', ${resource.is_bookmarked})">
+                    ${resource.is_bookmarked ? '★' : '☆'}
+                </button>
+                <div class="resource-category">${resource.resource_type}</div>
+                <h3 class="resource-title">${resource.title}</h3>
+                <p class="resource-description">${resource.description || 'No description available'}</p>
+                ${meta.length > 0 ? `<div class="resource-meta">${meta.join(' • ')}</div>` : ''}
+                ${tags ? `<div class="resource-tags">${tags}</div>` : ''}
+                <div class="resource-footer">
+                    <span class="${resource.is_free ? 'free-badge' : 'paid-badge'}">
+                        ${resource.is_free ? '✓ FREE' : '$ PAID'}
+                    </span>
+                    <a href="${resource.url}" target="_blank" class="study-link">STUDY →</a>
+                </div>
+            `;
+
+            return card;
+        }
+
+        async function toggleBookmark(resourceId, currentState) {
+            const newState = !currentState;
+            
+            const { error } = await supabase
+                .from('resources')
+                .update({ is_bookmarked: newState })
+                .eq('id', resourceId);
+
+            if (error) {
+                console.error('Error toggling bookmark:', error);
+                return;
+            }
+
+            const resource = allResources.find(r => r.id === resourceId);
+            if (resource) {
+                resource.is_bookmarked = newState;
+            }
+
+            updateStats();
+            renderResources();
+        }
+
+        function updateStats() {
+            document.getElementById('totalResources').textContent = allResources.length;
+            document.getElementById('freeResources').textContent = allResources.filter(r => r.is_free).length;
+        }
+
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            currentFilters.search = e.target.value;
+            renderResources();
+        });
+
+        async function init() {
+            if (await checkAuth()) {
+                await Promise.all([
+                    loadCategories(),
+                    loadTags(),
+                    loadResources()
+                ]);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
