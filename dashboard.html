@@ -275,16 +275,6 @@ function daysUntil(dateStr) {
 }
 
 // ── SIDEBAR ──────────────────────────────────────────────────────────────────
-const NAV_ITEMS = [
-  { id:'home', icon:'🏠', label:'Home' },
-  { id:'library', icon:'📚', label:'Study Library' },
-  { id:'vault', icon:'📁', label:'Document Vault' },
-  { id:'tracker', icon:'🎓', label:'College Tracker' },
-  { id:'achievements', icon:'⭐', label:'Achievements' },
-  { id:'financial', icon:'💰', label:'Financial Aid' },
-  { id:'coach', icon:'🤖', label:'Coach', special:true },
-];
-
 function Sidebar({ page, onNav, user, onSignOut }) {
   return (
     <div className="sidebar">
@@ -294,12 +284,40 @@ function Sidebar({ page, onNav, user, onSignOut }) {
         <div className="app-sub">College Command Center</div>
       </div>
       <nav className="sidebar-nav">
-        {NAV_ITEMS.map(item => (
-          <div key={item.id} className={`nav-item${page===item.id?' active':''}${item.special?' coach-nav':''}`} onClick={()=>onNav(item.id)}>
-            <span className="nav-icon">{item.icon}</span>
-            <span className="nav-label">{item.label}</span>
-          </div>
-        ))}
+        <div className={`nav-item${page==='home'?' active':''}`} onClick={()=>onNav('home')}>
+          <span className="nav-icon">🏠</span>
+          <span className="nav-label">HOME</span>
+        </div>
+        
+        <a href="study-library.html" className="nav-item" style={{textDecoration:'none',color:'inherit'}}>
+          <span className="nav-icon">📚</span>
+          <span className="nav-label">STUDY LIBRARY</span>
+        </a>
+        
+        <div className={`nav-item${page==='vault'?' active':''}`} onClick={()=>onNav('vault')}>
+          <span className="nav-icon">📁</span>
+          <span className="nav-label">DOCUMENT VAULT</span>
+        </div>
+        
+        <div className={`nav-item${page==='tracker'?' active':''}`} onClick={()=>onNav('tracker')}>
+          <span className="nav-icon">🎓</span>
+          <span className="nav-label">COLLEGE TRACKER</span>
+        </div>
+        
+        <div className={`nav-item${page==='achievements'?' active':''}`} onClick={()=>onNav('achievements')}>
+          <span className="nav-icon">⭐</span>
+          <span className="nav-label">ACHIEVEMENTS</span>
+        </div>
+        
+        <div className={`nav-item${page==='financial'?' active':''}`} onClick={()=>onNav('financial')}>
+          <span className="nav-icon">💰</span>
+          <span className="nav-label">FINANCIAL AID</span>
+        </div>
+        
+        <div className={`nav-item${page==='coach'?' active':''} coach-nav`} onClick={()=>onNav('coach')}>
+          <span className="nav-icon">🤖</span>
+          <span className="nav-label">COACH</span>
+        </div>
       </nav>
       <div className="sidebar-footer">
         <div className="sidebar-user">{user?.email}</div>
@@ -362,84 +380,6 @@ function HomeModule({ onNav, user }) {
           Senior Year (now) → Bachelor's in Psychology (2026–2030) → Master's Degree (2030–2032) → PhD in Forensic Psychology (2032–2036) → Licensed Forensic Psychologist
         </div>
       </div>
-    </div>
-  );
-}
-
-// ── STUDY LIBRARY ─────────────────────────────────────────────────────────────
-const STUDY_TOPICS = [
-  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',desc:'The biological foundation of behavior, emotion, and criminal mind.',concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
-  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',desc:'Mental disorder classification system used in forensic evaluations.',concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
-  {id:3,title:'Theorists Timeline',cat:'Core Forensic',desc:'From Freud to modern forensic psychology pioneers.',concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
-  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',desc:'Scientific foundation of psychological research.',concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
-  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',desc:'Psychological defenses relevant to criminal behavior analysis.',concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
-  {id:6,title:'Human Development',cat:'Core Forensic',desc:'Lifespan development theories critical to forensic assessment.',concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
-  {id:7,title:'Cognitive Biases',cat:'Core Forensic',desc:'How thinking errors affect judgment, perception, and testimony.',concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
-  {id:8,title:'APA Ethics Code',cat:'Core Forensic',desc:'Professional ethical obligations guiding all psychologists.',concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
-  {id:9,title:'Biology & Physiology',cat:'Supporting',desc:'Body systems that support psychological function.',concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
-  {id:10,title:'Sociology & Social Theory',cat:'Supporting',desc:'Social forces shaping criminal behavior and justice.',concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
-  {id:11,title:'Philosophy of Mind',cat:'Supporting',desc:'Consciousness, free will, and moral responsibility.',concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
-  {id:12,title:'Pharmacology Basics',cat:'Supporting',desc:'Psychoactive substances and their behavioral effects.',concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
-  {id:13,title:'Law & Psychology Interface',cat:'Supporting',desc:'How psychological science enters the legal system.',concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
-  {id:14,title:'Communication & Testimony',cat:'Supporting',desc:'Expert witness skills and forensic report writing.',concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
-  {id:15,title:'Academic Writing',cat:'Supporting',desc:'Research paper and report writing standards for psychology.',concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
-  {id:16,title:'Program Administration',cat:'Supporting',desc:'Clinical and forensic program management fundamentals.',concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
-];
-
-function LibraryModule({ onNav, coachUrl }) {
-  const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState(null);
-  const filtered = STUDY_TOPICS.filter(t => t.title.toLowerCase().includes(search.toLowerCase()) || t.cat.toLowerCase().includes(search.toLowerCase()));
-
-  return (
-    <div>
-      <div className="page-header">
-        <div className="page-title serif">Study <em style={{color:'var(--gold)'}}>Library</em></div>
-        <div className="page-sub">16 forensic psychology topic modules · Click any card to study</div>
-      </div>
-      <div className="page-content">
-        <div style={{marginBottom:'1rem'}}>
-          <input className="input" placeholder="Search topics..." value={search} onChange={e=>setSearch(e.target.value)}/>
-        </div>
-
-        <div className="section-label">Core Forensic Psychology</div>
-        <div className="grid3" style={{marginBottom:'1.5rem'}}>
-          {filtered.filter(t=>t.cat==='Core Forensic').map(t=>(
-            <div key={t.id} className="card" style={{borderTop:'3px solid var(--ink)',cursor:'pointer'}} onClick={()=>setSelected(t)}>
-              <span className="card-label">Core Forensic</span>
-              <div className="card-title">{t.title}</div>
-              <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
-              <button className="btn btn-ghost btn-sm" style={{marginTop:'0.7rem',paddingLeft:0}}>Study →</button>
-            </div>
-          ))}
-        </div>
-
-        <div className="section-label">Supporting Coursework</div>
-        <div className="grid3">
-          {filtered.filter(t=>t.cat==='Supporting').map(t=>(
-            <div key={t.id} className="card" style={{borderTop:'3px solid var(--gold)',cursor:'pointer'}} onClick={()=>setSelected(t)}>
-              <span className="card-label" style={{color:'var(--teal)'}}>Supporting Course</span>
-              <div className="card-title">{t.title}</div>
-              <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
-              <button className="btn btn-ghost btn-sm" style={{marginTop:'0.7rem',paddingLeft:0}}>Study →</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <Modal open={!!selected} onClose={()=>setSelected(null)} title={selected?.title}>
-        {selected && <>
-          <span className="badge badge-teal" style={{marginBottom:'1rem'}}>{selected.cat}</span>
-          <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem'}}>{selected.desc}</p>
-          <div className="section-label">Key Concepts</div>
-          <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
-            {selected.concepts.map((c,i)=><li key={i} style={{marginBottom:'0.4rem',fontSize:'0.88rem'}}>{c}</li>)}
-          </ul>
-          <button className="btn btn-gold" onClick={()=>{setSelected(null);onNav('coach');}}>
-            🤖 Ask Coach About This Topic
-          </button>
-        </>}
-      </Modal>
     </div>
   );
 }
@@ -1143,7 +1083,6 @@ Rules: Always use her real data. Format form fields as FIELD: answer. For essays
 }
 
 // ── ROOT APP ──────────────────────────────────────────────────────────────────
-// Hardwired credentials — no setup screen needed
 const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
 
@@ -1155,19 +1094,13 @@ function App() {
   const coachUrl = 'https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach';
 
   useEffect(()=>{
-    // Initialize Supabase with hardwired credentials
     const sb = getSupabase();
-
-    // Check if magic link token is in the URL hash
     const hasToken = window.location.hash && window.location.hash.includes('access_token');
 
     if(hasToken) {
-      // Let Supabase process the token via onAuthStateChange
-      // Don't redirect — wait for the session to be established
       sb.auth.onAuthStateChange((_,session)=>{
         if(session?.user) {
           setUser(session.user);
-          // Clean the URL hash
           window.history.replaceState(null, '', '/dashboard.html');
         } else {
           window.location.href = '/login.html';
@@ -1175,7 +1108,6 @@ function App() {
         setAuthLoading(false);
       });
     } else {
-      // Normal flow — check existing session
       sb.auth.getSession().then(({data:{session}})=>{
         if(session?.user) {
           setUser(session.user);
@@ -1198,7 +1130,7 @@ function App() {
   };
 
   if(authLoading) return <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#faf7f2'}}><div className="typing"><span/><span/><span/></div></div>;
-  if(!user) return null; // Redirecting...
+  if(!user) return null;
 
   const moduleProps = { user, toast, coachUrl };
 
@@ -1208,7 +1140,6 @@ function App() {
       <Sidebar page={page} onNav={setPage} user={user} onSignOut={signOut}/>
       <div className="main-area" style={{flex:1}}>
         {page==='home'         && <HomeModule {...moduleProps} onNav={setPage}/>}
-        {page==='library'      && <LibraryModule {...moduleProps} onNav={setPage}/>}
         {page==='vault'        && <VaultModule {...moduleProps}/>}
         {page==='tracker'      && <TrackerModule {...moduleProps}/>}
         {page==='achievements' && <AchievementsModule {...moduleProps}/>}
@@ -1224,3 +1155,4 @@ root.render(<App/>);
 </script>
 </body>
 </html>
+```
