@@ -725,7 +725,36 @@
             renderTagFilters();
         }
 
-        function renderCategoryFilters() {
+                async function loadResources() {
+            const { data, error } = await supabase
+                .from('resources')
+                .select(`
+                    *,
+                    category:resource_categories(name, icon, color),
+                    tags:resource_tag_assignments(
+                        tag:resource_tags(name, description)
+                    )
+                `)
+                .eq('is_active', true)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading resources:', error);
+                document.getElementById('resourcesContainer').innerHTML = `
+                    <div class="no-results">
+                        <h3>Error loading resources</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            allResources = data;
+            updateStats();
+            renderResources();
+        }
+
+ renderCategoryFilters() {
             const container = document.getElementById('categoryFilters');
             const allChip = container.querySelector('[data-category="all"]');
             
