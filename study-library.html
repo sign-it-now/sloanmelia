@@ -725,38 +725,6 @@
             renderTagFilters();
         }
 
-        async function loadResources() {
-            const { data: { user } } = await supabase.auth.getUser();
-
-            const { data, error } = await supabase
-                .from('resources')
-                .select(`
-                    *,
-                    category:resource_categories(name, icon, color),
-                    tags:resource_tag_assignments(
-                        tag:resource_tags(name, description)
-                    )
-                `)
-                .eq('user_id', user.id)
-                .eq('is_active', true)
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error('Error loading resources:', error);
-                document.getElementById('resourcesContainer').innerHTML = `
-                    <div class="no-results">
-                        <h3>Error loading resources</h3>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-                return;
-            }
-
-            allResources = data;
-            updateStats();
-            renderResources();
-        }
-
         function renderCategoryFilters() {
             const container = document.getElementById('categoryFilters');
             const allChip = container.querySelector('[data-category="all"]');
