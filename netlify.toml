@@ -1,4 +1,14 @@
 [[redirects]]
+  from = "/study-library.html"
+  to = "/dashboard"
+  status = 302
+
+[[redirects]]
+  from = "/studylibrary.html"
+  to = "/dashboard"
+  status = 302
+
+[[redirects]]
   from = "/studylibrary"
   to = "/dashboard"
   status = 302
