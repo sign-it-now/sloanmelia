@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -610,15 +609,15 @@
 
             <div class="module-card" onclick="window.location.href='sloan-forensic-stats.html'">
                 <div class="module-category">SUPPORTING COURSE</div>
-                <div class="module-title">Law & Psychology Interface</div>
-                <div class="module-description">How psychological science enters the legal system.</div>
+                <div class="module-title">Forensic Statistics</div>
+                <div class="module-description">Statistical methods and data analysis in forensic psychology.</div>
                 <a href="sloan-forensic-stats.html" class="module-link">STUDY →</a>
             </div>
 
             <div class="module-card" onclick="window.location.href='forensic-psych-reference.html'">
                 <div class="module-category">SUPPORTING COURSE</div>
-                <div class="module-title">Academic Writing</div>
-                <div class="module-description">Research paper and report writing standards for psychology.</div>
+                <div class="module-title">Forensic Psychology Reference</div>
+                <div class="module-description">Comprehensive reference guide for forensic psychology concepts.</div>
                 <a href="forensic-psych-reference.html" class="module-link">STUDY →</a>
             </div>
         </div>
@@ -641,14 +640,14 @@
             <div class="filter-group">
                 <div class="filter-label">📂 Category</div>
                 <div class="filter-chips" id="categoryFilters">
-                    <div class="filter-chip active" data-category="all">All Categories</div>
+                    <div class="filter-chip active" data-category="all" onclick="filterByCategory('all')">All Categories</div>
                 </div>
             </div>
 
             <div class="filter-group">
                 <div class="filter-label">🏷️ Tags</div>
                 <div class="filter-chips" id="tagFilters">
-                    <div class="filter-chip active" data-tag="all">All Tags</div>
+                    <div class="filter-chip active" data-tag="all" onclick="filterByTag('all')">All Tags</div>
                 </div>
             </div>
 
@@ -674,8 +673,9 @@
     <script>
         const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
-        
-       const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let allResources = [];
         let allCategories = [];
         let allTags = [];
@@ -725,7 +725,7 @@
             renderTagFilters();
         }
 
-                async function loadResources() {
+        async function loadResources() {
             const { data, error } = await supabase
                 .from('resources')
                 .select(`
@@ -754,10 +754,9 @@
             renderResources();
         }
 
- function renderCategoryFilters() {
+        function renderCategoryFilters() {
             const container = document.getElementById('categoryFilters');
-            const allChip = container.querySelector('[data-category="all"]');
-            
+
             allCategories.forEach(category => {
                 const chip = document.createElement('div');
                 chip.className = 'filter-chip';
@@ -770,8 +769,7 @@
 
         function renderTagFilters() {
             const container = document.getElementById('tagFilters');
-            const allChip = container.querySelector('[data-tag="all"]');
-            
+
             allTags.forEach(tag => {
                 const chip = document.createElement('div');
                 chip.className = 'filter-chip';
@@ -812,7 +810,7 @@
 
         function renderResources() {
             const container = document.getElementById('resourcesContainer');
-            
+
             let filtered = allResources.filter(resource => {
                 if (currentFilters.category !== 'all' && resource.category_id !== currentFilters.category) {
                     return false;
@@ -831,7 +829,7 @@
                     const matchesTitle = resource.title.toLowerCase().includes(searchLower);
                     const matchesDescription = resource.description?.toLowerCase().includes(searchLower);
                     const matchesAuthor = resource.author_creator?.toLowerCase().includes(searchLower);
-                    
+
                     if (!matchesTitle && !matchesDescription && !matchesAuthor) return false;
                 }
 
@@ -863,7 +861,7 @@
             const card = document.createElement('div');
             card.className = 'resource-card';
 
-            const tags = resource.tags.map(t => 
+            const tags = resource.tags.map(t =>
                 `<span class="tag">${t.tag.name.replace(/-/g, ' ')}</span>`
             ).join('');
 
@@ -878,7 +876,7 @@
             }
 
             card.innerHTML = `
-                <button class="bookmark-btn ${resource.is_bookmarked ? 'active' : ''}" 
+                <button class="bookmark-btn ${resource.is_bookmarked ? 'active' : ''}"
                         onclick="toggleBookmark('${resource.id}', ${resource.is_bookmarked})">
                     ${resource.is_bookmarked ? '★' : '☆'}
                 </button>
@@ -900,7 +898,7 @@
 
         async function toggleBookmark(resourceId, currentState) {
             const newState = !currentState;
-            
+
             const { error } = await supabase
                 .from('resources')
                 .update({ is_bookmarked: newState })
