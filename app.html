@@ -197,6 +197,13 @@ textarea.input{resize:vertical;min-height:80px;}
 ::-webkit-scrollbar-track{background:var(--faint);}
 ::-webkit-scrollbar-thumb{background:var(--dim);}
 
+/* MOBILE HEADER / HAMBURGER */
+.mobile-header{display:none;align-items:center;gap:0.8rem;padding:0.6rem 1rem;border-bottom:1px solid var(--faint);background:var(--bg);position:sticky;top:0;z-index:90;}
+.hamburger-btn{background:none;border:1px solid var(--faint);padding:0.3rem 0.7rem;cursor:pointer;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);line-height:1.6;}
+.hamburger-btn:hover{background:var(--cream);}
+.mobile-header-title{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;font-style:italic;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(14,12,9,0.55);z-index:99;}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%);transition:transform 0.25s;}
@@ -205,6 +212,8 @@ textarea.input{resize:vertical;min-height:80px;}
   .login-screen{grid-template-columns:1fr;}
   .login-left{display:none;}
   .grid2{grid-template-columns:1fr;}
+  .mobile-header{display:flex;}
+  .sidebar-overlay{display:block;}
 }
 
 .divider{border:none;border-top:1px solid var(--faint);margin:1.2rem 0;}
@@ -621,10 +630,15 @@ function Sidebar({
   page,
   onNav,
   user,
-  onSignOut
+  onSignOut,
+  isOpen,
+  onClose
 }) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "sidebar"
+  return /*#__PURE__*/React.createElement(React.Fragment, null, isOpen && /*#__PURE__*/React.createElement("div", {
+    className: "sidebar-overlay",
+    onClick: onClose
+  }), /*#__PURE__*/React.createElement("div", {
+    className: `sidebar${isOpen ? ' open' : ''}`
   }, /*#__PURE__*/React.createElement("div", {
     className: "sidebar-logo"
   }, /*#__PURE__*/React.createElement("div", {
@@ -638,7 +652,10 @@ function Sidebar({
   }, NAV_ITEMS.map(item => /*#__PURE__*/React.createElement("div", {
     key: item.id,
     className: `nav-item${page === item.id ? ' active' : ''}${item.special ? ' coach-nav' : ''}`,
-    onClick: () => onNav(item.id)
+    onClick: () => {
+      onNav(item.id);
+      if (onClose) onClose();
+    }
   }, /*#__PURE__*/React.createElement("span", {
     className: "nav-icon"
   }, item.icon), /*#__PURE__*/React.createElement("span", {
@@ -655,7 +672,7 @@ function Sidebar({
       paddingLeft: 0
     },
     onClick: onSignOut
-  }, "Sign Out")));
+  }, "Sign Out"))));
 }
 
 // ── HOME MODULE ────────────────────────────────────────────────────────────────
@@ -887,6 +904,37 @@ function LibraryModule({
 }) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
+  const [studyLoading, setStudyLoading] = useState(false);
+  const [studyNotes, setStudyNotes] = useState('');
+  useEffect(() => {
+    setStudyNotes('');
+    setStudyLoading(false);
+  }, [selected]);
+  const generateNotes = async () => {
+    if (!coachUrl || !selected) return;
+    setStudyLoading(true);
+    setStudyNotes('');
+    try {
+      const res = await fetch(coachUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messages: [{
+            role: 'user',
+            content: `Generate comprehensive study notes for the forensic psychology topic: "${selected.title}". Cover all of these concepts in depth: ${selected.concepts.join(', ')}. For each concept include: a clear definition, how it applies specifically in forensic psychology contexts, and one real-world example. End with 3 practice exam questions with answers. Use clear section headers.`
+          }],
+          vaultContext: ''
+        })
+      });
+      const data = await res.json();
+      setStudyNotes(data.content?.[0]?.text || 'No response from coach.');
+    } catch (e) {
+      setStudyNotes('Error generating notes. Make sure your Coach URL is set in Settings.');
+    }
+    setStudyLoading(false);
+  };
   const filtered = STUDY_TOPICS.filter(t => t.title.toLowerCase().includes(search.toLowerCase()) || t.cat.toLowerCase().includes(search.toLowerCase()));
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "page-header"
@@ -1001,13 +1049,36 @@ function LibraryModule({
       marginBottom: '0.4rem',
       fontSize: '0.88rem'
     }
-  }, c))), /*#__PURE__*/React.createElement("button", {
+  }, c))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: '0.5rem',
+      flexWrap: 'wrap',
+      marginBottom: '0.8rem'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
     className: "btn btn-gold",
+    disabled: studyLoading || !coachUrl,
+    onClick: generateNotes
+  }, studyLoading ? '\u23F3 Generating...' : '\uD83E\uDDE0 Generate Study Notes'), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-ghost",
     onClick: () => {
       setSelected(null);
       onNav('coach');
     }
-  }, "\uD83E\uDD16 Ask Coach About This Topic"))));
+  }, "\uD83E\uDD16 Ask Coach")), studyNotes && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: 'var(--cream)',
+      border: '1px solid var(--faint)',
+      padding: '1rem 1.2rem',
+      fontSize: '0.84rem',
+      lineHeight: 1.75,
+      whiteSpace: 'pre-wrap',
+      maxHeight: '420px',
+      overflowY: 'auto',
+      fontFamily: "'Jost',sans-serif"
+    }
+  }, studyNotes))));
 }
 
 // ── DOCUMENT VAULT ────────────────────────────────────────────────────────────
@@ -2585,6 +2656,7 @@ function App() {
   const [config, setConfig] = useState(null);
   const [user, setUser] = useState(null);
   const [page, setPage] = useState('home');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   useEffect(() => {
     const url = localStorage.getItem('sm_url');
@@ -2661,15 +2733,27 @@ function App() {
     toasts: toasts
   }), /*#__PURE__*/React.createElement(Sidebar, {
     page: page,
-    onNav: setPage,
+    onNav: p => {
+      setPage(p);
+      setSidebarOpen(false);
+    },
     user: user,
-    onSignOut: signOut
+    onSignOut: signOut,
+    isOpen: sidebarOpen,
+    onClose: () => setSidebarOpen(false)
   }), /*#__PURE__*/React.createElement("div", {
     className: "main-area",
     style: {
       flex: 1
     }
-  }, page === 'home' && /*#__PURE__*/React.createElement(HomeModule, _extends({}, moduleProps, {
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mobile-header"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "hamburger-btn",
+    onClick: () => setSidebarOpen(s => !s)
+  }, "\u2630 Menu"), /*#__PURE__*/React.createElement("span", {
+    className: "mobile-header-title"
+  }, "SloanMelia")), page === 'home' && /*#__PURE__*/React.createElement(HomeModule, _extends({}, moduleProps, {
     onNav: setPage
   })), page === 'library' && /*#__PURE__*/React.createElement(LibraryModule, _extends({}, moduleProps, {
     onNav: setPage
