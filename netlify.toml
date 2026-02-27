@@ -1,0 +1,9 @@
+[[redirects]]
+  from = "/studylibrary"
+  to = "/dashboard"
+  status = 302
+
+[[redirects]]
+  from = "/study-library"
+  to = "/dashboard"
+  status = 302
