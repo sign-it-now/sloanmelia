@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Financial Aid - SloanMelia</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f5f0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #1a1a1a;
+            color: white;
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo { text-align: center; margin-bottom: 10px; }
+
+        .logo-box {
+            background-color: #d4a574;
+            color: #1a1a1a;
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .brand-name { font-style: italic; font-size: 1.3em; margin-bottom: 5px; }
+        .tagline { font-size: 0.7em; letter-spacing: 2px; color: #888; }
+
+        .nav-menu { margin-top: 40px; }
+
+        .nav-item {
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .nav-item:hover { background-color: #2a2a2a; }
+
+        .nav-item.active {
+            background-color: rgba(212,165,116,0.15);
+            border-left: 3px solid #d4a574;
+            color: #f0d090;
+        }
+
+        .main-content { margin-left: 250px; flex: 1; padding: 50px; }
+
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 2.2em; color: #333; margin-bottom: 10px; }
+        .page-header h1 .highlight { font-style: italic; color: #d4a574; }
+        .page-subtitle { font-size: 0.82em; color: #888; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* Stats */
+        .stats-row { display: flex; gap: 20px; margin-bottom: 36px; flex-wrap: wrap; }
+
+        .stat-box {
+            background: white;
+            padding: 22px;
+            border: 1px solid #e0e0e0;
+            flex: 1;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        .stat-number { font-size: 2em; color: #d4a574; font-weight: bold; margin-bottom: 5px; }
+        .stat-label { font-size: 0.78em; color: #666; letter-spacing: 1.5px; text-transform: uppercase; }
+
+        /* Sections */
+        .section { background: white; border: 1px solid #e0e0e0; padding: 28px; margin-bottom: 24px; }
+
+        .section-label {
+            font-size: 0.72em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #d4a574;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::before { content: ''; display: block; width: 20px; height: 1px; background: #d4a574; }
+
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        .field-wrap { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .field-label { font-size: 0.72em; letter-spacing: 1.5px; text-transform: uppercase; color: #888; }
+        .field-input {
+            padding: 10px 14px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Georgia', serif;
+            font-size: 0.9em;
+            background: #fafaf8;
+            outline: none;
+            color: #333;
+            width: 100%;
+        }
+        .field-input:focus { border-color: #d4a574; }
+
+        .save-btn {
+            background: #d4a574;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 22px;
+            cursor: pointer;
+            font-size: 0.72em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: 'Georgia', serif;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+        .save-btn:hover { background: #c09050; }
+
+        /* Scholarship list */
+        .scholarship-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .scholarship-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 14px 16px;
+            background: #fafaf8;
+            border: 1px solid #e8e0d0;
+            gap: 16px;
+        }
+
+        .sch-name { font-weight: 600; color: #333; margin-bottom: 4px; font-size: 0.92em; }
+        .sch-meta { font-size: 0.78em; color: #888; }
+
+        .sch-amount {
+            font-size: 1em;
+            font-weight: bold;
+            color: #d4a574;
+            white-space: nowrap;
+        }
+
+        .sch-badge {
+            font-size: 0.65em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 3px 9px;
+            border: 1px solid;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .sch-badge.open { color: #1a6a2a; border-color: #1a6a2a; background: rgba(26,106,42,0.08); }
+        .sch-badge.applied { color: #1a3a7a; border-color: #1a3a7a; background: rgba(26,58,122,0.08); }
+        .sch-badge.closed { color: #888; border-color: #ccc; background: rgba(0,0,0,0.04); }
+
+        /* Key insights */
+        .insight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+        .insight-card {
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            background: #fafaf8;
+        }
+
+        .insight-icon { font-size: 1.6em; margin-bottom: 10px; }
+        .insight-title { font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.92em; }
+        .insight-text { font-size: 0.85em; color: #555; line-height: 1.7; }
+        .insight-highlight { color: #d4a574; font-weight: bold; }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 12px 20px;
+            font-size: 0.82em;
+            letter-spacing: 1px;
+            z-index: 999;
+        }
+        .toast-success { background: #1a6a2a; color: white; }
+        .toast-error { background: #9a1a1a; color: white; }
+        .toast-warn { background: #d4a574; color: #1a1a1a; }
+
+        @media(max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding: 24px 18px; }
+            .grid2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <div class="logo-box">SM</div>
+        <div class="brand-name">SloanMelia</div>
+        <div class="tagline">COLLEGE COMMAND CENTER</div>
+    </div>
+    <div class="nav-menu">
+        <a href="dashboard.html" class="nav-item"><span>🏠</span> HOME</a>
+        <a href="study-library.html" class="nav-item"><span>📚</span> STUDY LIBRARY</a>
+        <a href="documents.html" class="nav-item"><span>📄</span> DOCUMENT VAULT</a>
+        <a href="dashboard.html#colleges" class="nav-item"><span>🎓</span> COLLEGE TRACKER</a>
+        <a href="dashboard.html#achievements" class="nav-item"><span>⭐</span> ACHIEVEMENTS</a>
+        <a href="financial-aid.html" class="nav-item active"><span>💰</span> FINANCIAL AID</a>
+        <a href="coach.html" class="nav-item"><span>🤖</span> COACH</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="page-header">
+        <h1>Financial <span class="highlight">Aid</span></h1>
+        <p class="page-subtitle">529 Tracker · FAFSA Guide · Scholarship Database</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="stat-number" id="balanceStat">—</div>
+            <div class="stat-label">529 Balance</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number" id="scholarshipCount">—</div>
+            <div class="stat-label">Scholarships Tracked</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number" id="openCount">—</div>
+            <div class="stat-label">Open Applications</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">5.64%</div>
+            <div class="stat-label">529 EFC Rate</div>
+        </div>
+    </div>
+
+    <!-- Key Insights -->
+    <div class="section">
+        <div class="section-label">Key Financial Aid Facts</div>
+        <div class="insight-grid">
+            <div class="insight-card">
+                <div class="insight-icon">🔑</div>
+                <div class="insight-title">529 Plan Advantage</div>
+                <div class="insight-text">Your 529 savings count toward Expected Family Contribution at only <span class="insight-highlight">5.64%</span> — compared to 20% for student-owned assets. Most families don't know they're standing on a lever.</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-icon">📋</div>
+                <div class="insight-title">FAFSA Priority</div>
+                <div class="insight-text">File FAFSA as early as possible after October 1 each year. Many state and institutional aid programs are first-come, first-served. Late filing costs real money.</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-icon">🎯</div>
+                <div class="insight-title">Illinois Deduction</div>
+                <div class="insight-text">Illinois residents can deduct up to <span class="insight-highlight">$10,000</span> per year ($20,000 joint) in 529 contributions from state income taxes. Contribute before year-end to capture the deduction.</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-icon">🏆</div>
+                <div class="insight-title">Scholarship Stack</div>
+                <div class="insight-text">Scholarships are not mutually exclusive. Apply to all eligible awards — institutional, departmental, community, and national. The Patient Enrichment Program is a compelling essay centerpiece for community service awards.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 529 Tracker -->
+    <div class="section">
+        <div class="section-label">Illinois 529 Tracker</div>
+        <div class="grid2">
+            <div>
+                <div class="field-wrap">
+                    <label class="field-label">Current 529 Balance ($)</label>
+                    <input type="number" class="field-input" id="balance529" placeholder="e.g. 45000">
+                </div>
+                <div class="field-wrap">
+                    <label class="field-label">Annual Contribution Goal ($)</label>
+                    <input type="number" class="field-input" id="contribGoal" placeholder="e.g. 10000">
+                </div>
+                <div class="field-wrap">
+                    <label class="field-label">Target School Annual Cost ($)</label>
+                    <input type="number" class="field-input" id="targetCost" placeholder="e.g. 55000">
+                </div>
+                <button class="save-btn" onclick="save529()">Save 529 Data</button>
+            </div>
+            <div id="balanceCalc" style="padding:16px;background:#fafaf8;border:1px solid #e8e0d0;font-size:0.88em;line-height:1.9;color:#555;">
+                Enter your 529 balance to see your financial position.
+            </div>
+        </div>
+    </div>
+
+    <!-- Scholarships -->
+    <div class="section">
+        <div class="section-label">Scholarship Database</div>
+        <div id="scholarshipList" style="margin-bottom:20px;">
+            <div style="font-size:0.85em;color:#aaa;font-style:italic;">Sign in via app.html to load your scholarship database. Default scholarships shown below.</div>
+        </div>
+
+        <!-- Default scholarship suggestions -->
+        <div class="scholarship-list" id="defaultScholarships">
+            <div class="scholarship-row">
+                <div>
+                    <div class="sch-name">APA Foundation Scholarship</div>
+                    <div class="sch-meta">Psychology undergrad/grad · Requires APA membership</div>
+                    <span class="sch-badge open">Open</span>
+                </div>
+                <div class="sch-amount">$2,500</div>
+            </div>
+            <div class="scholarship-row">
+                <div>
+                    <div class="sch-name">Golden Apple Foundation</div>
+                    <div class="sch-meta">Illinois residents · Leadership + service focus</div>
+                    <span class="sch-badge open">Open</span>
+                </div>
+                <div class="sch-amount">$2,000/yr</div>
+            </div>
+            <div class="scholarship-row">
+                <div>
+                    <div class="sch-name">Illinois Student Assistance Commission</div>
+                    <div class="sch-meta">Illinois resident · FAFSA required · Needs-based</div>
+                    <span class="sch-badge open">Apply via FAFSA</span>
+                </div>
+                <div class="sch-amount">Varies</div>
+            </div>
+            <div class="scholarship-row">
+                <div>
+                    <div class="sch-name">Mu Alpha Theta Scholarship</div>
+                    <div class="sch-meta">Math Honor Society members · 3.0+ GPA required</div>
+                    <span class="sch-badge open">Open</span>
+                </div>
+                <div class="sch-amount">$500–3,000</div>
+            </div>
+            <div class="scholarship-row">
+                <div>
+                    <div class="sch-name">Salvation Army Community Service Award</div>
+                    <div class="sch-meta">Documented volunteer service · Essay required</div>
+                    <span class="sch-badge open">Open</span>
+                </div>
+                <div class="sch-amount">$1,000</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAFSA Quick Guide -->
+    <div class="section">
+        <div class="section-label">FAFSA Quick Guide</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+            <div class="insight-card">
+                <div class="insight-title">Student Income &amp; Assets</div>
+                <div class="insight-text">Student assets count at <strong>20%</strong> toward EFC. Keep savings in a parent-owned 529 or parent savings account to minimize impact. Student checking/savings accounts are assessed more heavily.</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-title">Parent Income</div>
+                <div class="insight-text">Parent income is the largest factor. The EFC formula assesses parent income at rates from 22–47%. Lower adjusted gross income through pre-tax contributions (401k, FSA) where possible before filing.</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-title">Professional Judgment</div>
+                <div class="insight-text">If your family's financial situation changed significantly (job loss, medical expenses, divorce), you can request a Professional Judgment review from the financial aid office. They can adjust your EFC manually.</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-title">Award Letter Comparison</div>
+                <div class="insight-text">Compare offers by calculating <em>net cost</em>: Total Cost − Grants − Scholarships = Net Cost. Do not count loans as aid. A school with a higher sticker price but more grants may cost less than a "cheaper" school.</div>
+            </div>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:rgba(212,165,116,0.08);border:1px solid #d4a574;font-size:0.85em;line-height:1.7;color:#5a3a10;">
+            <strong style="font-size:0.72em;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:6px;">Ask Your AI Coach</strong>
+            Need help understanding a specific FAFSA field or comparing award letters? Go to <a href="coach.html" style="color:#d4a574;">coach.html</a> and ask. The coach knows your full financial profile and can explain every field in plain English.
+        </div>
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
+
+const sbUrl = localStorage.getItem('sm_url') || SUPABASE_URL;
+const sbKey = localStorage.getItem('sm_key') || SUPABASE_KEY;
+const sb = window.supabase.createClient(sbUrl, sbKey);
+
+let currentUser = null;
+
+async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+        currentUser = session.user;
+        loadScholarships();
+    }
+    load529();
+}
+
+function load529() {
+    const balance = localStorage.getItem('fa_529_balance') || '';
+    const goal = localStorage.getItem('fa_529_goal') || '';
+    const cost = localStorage.getItem('fa_529_cost') || '';
+    if (balance) document.getElementById('balance529').value = balance;
+    if (goal) document.getElementById('contribGoal').value = goal;
+    if (cost) document.getElementById('targetCost').value = cost;
+    if (balance) {
+        document.getElementById('balanceStat').textContent = '$' + Number(balance).toLocaleString();
+        updateCalc(balance, goal, cost);
+    }
+}
+
+function save529() {
+    const balance = document.getElementById('balance529').value;
+    const goal = document.getElementById('contribGoal').value;
+    const cost = document.getElementById('targetCost').value;
+    localStorage.setItem('fa_529_balance', balance);
+    localStorage.setItem('fa_529_goal', goal);
+    localStorage.setItem('fa_529_cost', cost);
+    if (balance) document.getElementById('balanceStat').textContent = '$' + Number(balance).toLocaleString();
+    updateCalc(balance, goal, cost);
+    showToast('529 data saved.', 'success');
+}
+
+function updateCalc(balance, goal, cost) {
+    const calc = document.getElementById('balanceCalc');
+    const b = Number(balance) || 0;
+    const g = Number(goal) || 0;
+    const c = Number(cost) || 0;
+    const efcImpact = (b * 0.0564).toFixed(0);
+    const ilDeduction = Math.min(g, 10000);
+    const coverage = c > 0 ? Math.round((b / c) * 100) : 0;
+    calc.innerHTML = `
+        <strong style="font-size:0.72em;letter-spacing:1.5px;text-transform:uppercase;display:block;color:#d4a574;margin-bottom:10px;">529 Analysis</strong>
+        Current Balance: <strong>$${b.toLocaleString()}</strong><br>
+        EFC Impact (5.64%): <strong>$${Number(efcImpact).toLocaleString()}/yr</strong><br>
+        ${c > 0 ? `Coverage of Annual Cost: <strong>${coverage}%</strong> of $${c.toLocaleString()}<br>` : ''}
+        ${g > 0 ? `Illinois State Tax Deduction: <strong>$${ilDeduction.toLocaleString()}</strong><br>` : ''}
+        <br><em style="font-size:0.9em;color:#aaa;">529 funds count at just 5.64% toward EFC vs. 20% for student assets.</em>
+    `;
+}
+
+async function loadScholarships() {
+    const { data, error } = await sb.from('scholarships').select('*').eq('user_id', currentUser.id).order('deadline', { ascending: true });
+    if (error || !data || !data.length) return;
+
+    const container = document.getElementById('scholarshipList');
+    container.innerHTML = '';
+
+    const list = document.createElement('div');
+    list.className = 'scholarship-list';
+
+    data.forEach(s => {
+        const row = document.createElement('div');
+        row.className = 'scholarship-row';
+        const amount = s.amount_min && s.amount_max ? `$${Number(s.amount_min).toLocaleString()}–$${Number(s.amount_max).toLocaleString()}` : s.amount_min ? `$${Number(s.amount_min).toLocaleString()}+` : '—';
+        const deadline = s.deadline ? new Date(s.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Rolling';
+        const statusClass = s.status === 'applied' ? 'applied' : s.status === 'closed' ? 'closed' : 'open';
+        row.innerHTML = `
+            <div>
+                <div class="sch-name">${s.name}</div>
+                <div class="sch-meta">Deadline: ${deadline}${s.requirements ? ' · ' + s.requirements : ''}</div>
+                <span class="sch-badge ${statusClass}">${s.status || 'Open'}</span>
+            </div>
+            <div class="sch-amount">${amount}</div>
+        `;
+        list.appendChild(row);
+    });
+
+    container.appendChild(list);
+    document.getElementById('scholarshipCount').textContent = data.length;
+    const open = data.filter(s => !s.status || s.status === 'open').length;
+    document.getElementById('openCount').textContent = open;
+    document.getElementById('defaultScholarships').style.display = 'none';
+}
+
+function showToast(msg, type = 'success') {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = `toast toast-${type}`;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+init();
+</script>
+</body>
+</html>

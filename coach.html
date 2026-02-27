@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>AI Coach - SloanMelia</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f5f0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #1a1a1a;
+            color: white;
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo { text-align: center; margin-bottom: 10px; }
+
+        .logo-box {
+            background-color: #d4a574;
+            color: #1a1a1a;
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .brand-name { font-style: italic; font-size: 1.3em; margin-bottom: 5px; }
+        .tagline { font-size: 0.7em; letter-spacing: 2px; color: #888; }
+
+        .nav-menu { margin-top: 40px; }
+
+        .nav-item {
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .nav-item:hover { background-color: #2a2a2a; }
+
+        .nav-item.active {
+            background-color: rgba(212,165,116,0.15);
+            border-left: 3px solid #d4a574;
+            color: #f0d090;
+        }
+
+        /* Main */
+        .main-content { margin-left: 250px; flex: 1; padding: 50px; display: flex; flex-direction: column; }
+
+        .page-header { margin-bottom: 32px; }
+
+        .page-header h1 { font-size: 2.2em; color: #333; margin-bottom: 10px; }
+        .page-header h1 .highlight { font-style: italic; color: #d4a574; }
+        .page-subtitle { font-size: 0.82em; color: #888; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* Coach intro badge */
+        .coach-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(212,165,116,0.12);
+            border: 1px solid #d4a574;
+            padding: 6px 14px;
+            font-size: 0.72em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #a07030;
+            margin-bottom: 28px;
+        }
+
+        /* Chat layout */
+        .chat-wrap {
+            background: white;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 520px;
+            max-height: calc(100vh - 280px);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .msg {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+        }
+
+        .msg.user { align-self: flex-end; }
+        .msg.coach { align-self: flex-start; }
+
+        .msg-label {
+            font-size: 0.65em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .msg.user .msg-label { text-align: right; }
+
+        .msg-bubble {
+            padding: 12px 16px;
+            line-height: 1.7;
+            font-size: 0.9em;
+        }
+
+        .msg.user .msg-bubble {
+            background: #1a1a1a;
+            color: #f5f5f0;
+        }
+
+        .msg.coach .msg-bubble {
+            background: #f9f7f2;
+            color: #1a1a1a;
+            border: 1px solid #e8e0d0;
+            white-space: pre-wrap;
+        }
+
+        /* Typing indicator */
+        .typing-wrap {
+            align-self: flex-start;
+            padding: 12px 16px;
+            background: #f9f7f2;
+            border: 1px solid #e8e0d0;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #d4a574;
+            animation: bounce 1.2s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-6px); }
+        }
+
+        /* Input row */
+        .chat-input-row {
+            display: flex;
+            border-top: 1px solid #e0e0e0;
+            gap: 0;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: none;
+            outline: none;
+            font-family: 'Georgia', serif;
+            font-size: 0.9em;
+            background: white;
+            resize: none;
+            min-height: 52px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .send-btn {
+            background: #d4a574;
+            color: #1a1a1a;
+            border: none;
+            padding: 14px 24px;
+            cursor: pointer;
+            font-size: 0.75em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: 'Georgia', serif;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .send-btn:hover { background: #c09050; }
+        .send-btn:disabled { background: #ccc; cursor: default; }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            font-size: 0.72em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            color: #888;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            margin-bottom: -1px;
+        }
+
+        .tab.active { color: #333; border-bottom-color: #d4a574; }
+        .tab:hover:not(.active) { color: #333; }
+
+        /* Tab panels */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: flex; flex-direction: column; flex: 1; }
+
+        /* Form analyzer / Essay coach */
+        .tool-panel {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .tool-label {
+            font-size: 0.72em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #888;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        textarea.tool-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Georgia', serif;
+            font-size: 0.88em;
+            line-height: 1.65;
+            resize: vertical;
+            outline: none;
+            background: #fafaf8;
+            min-height: 100px;
+        }
+
+        textarea.tool-input:focus { border-color: #d4a574; }
+
+        .tool-btn {
+            align-self: flex-start;
+            background: #d4a574;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 22px;
+            cursor: pointer;
+            font-size: 0.72em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: 'Georgia', serif;
+            transition: background 0.2s;
+        }
+
+        .tool-btn:hover { background: #c09050; }
+        .tool-btn:disabled { background: #ccc; cursor: default; }
+
+        .tool-result {
+            background: #f9f7f2;
+            border: 1px solid #e8e0d0;
+            padding: 16px;
+            font-size: 0.88em;
+            line-height: 1.75;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 320px;
+            display: none;
+        }
+
+        /* Setup warning */
+        .setup-notice {
+            background: rgba(212,165,116,0.08);
+            border: 1px solid #d4a574;
+            padding: 20px 24px;
+            margin: 0 24px 20px;
+            font-size: 0.88em;
+            line-height: 1.7;
+            color: #5a3a10;
+        }
+
+        .setup-notice strong { display: block; font-size: 0.75em; letter-spacing: 1.5px; text-transform: uppercase; color: #d4a574; margin-bottom: 6px; }
+        .setup-notice a { color: #d4a574; text-decoration: none; }
+        .setup-notice a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding: 24px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="logo">
+        <div class="logo-box">SM</div>
+        <div class="brand-name">SloanMelia</div>
+        <div class="tagline">COLLEGE COMMAND CENTER</div>
+    </div>
+    <div class="nav-menu">
+        <a href="dashboard.html" class="nav-item"><span>🏠</span> HOME</a>
+        <a href="study-library.html" class="nav-item"><span>📚</span> STUDY LIBRARY</a>
+        <a href="documents.html" class="nav-item"><span>📄</span> DOCUMENT VAULT</a>
+        <a href="dashboard.html#colleges" class="nav-item"><span>🎓</span> COLLEGE TRACKER</a>
+        <a href="dashboard.html#achievements" class="nav-item"><span>⭐</span> ACHIEVEMENTS</a>
+        <a href="financial-aid.html" class="nav-item"><span>💰</span> FINANCIAL AID</a>
+        <a href="coach.html" class="nav-item active"><span>🤖</span> COACH</a>
+    </div>
+</div>
+
+<!-- Main -->
+<div class="main-content">
+    <div class="page-header">
+        <h1>AI <span class="highlight">Coach</span></h1>
+        <p class="page-subtitle">Powered by Truth AI™ Cognitive Fusion · Knows your full profile and vault</p>
+    </div>
+
+    <div class="coach-badge">🧠 Truth AI™ Cognitive Fusion — Active</div>
+
+    <div id="setupNotice" class="setup-notice" style="display:none">
+        <strong>Coach URL Not Configured</strong>
+        Your Supabase Edge Function URL isn't set yet. Open <a href="app.html">app.html</a>, go to Settings, and add your Coach URL. It will be saved in your browser and work here automatically.
+    </div>
+
+    <!-- Chat wrapper with tabs -->
+    <div class="chat-wrap">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('chat', this)">Chat</div>
+            <div class="tab" onclick="switchTab('form', this)">Form Analyzer</div>
+            <div class="tab" onclick="switchTab('essay', this)">Essay Coach</div>
+        </div>
+
+        <!-- CHAT TAB -->
+        <div id="tab-chat" class="tab-panel active">
+            <div class="chat-messages" id="chatMessages">
+                <!-- messages injected by JS -->
+            </div>
+            <div class="chat-input-row">
+                <textarea class="chat-input" id="chatInput" placeholder="Ask anything — forms, essays, financial aid, forensic psychology..." rows="1" onkeydown="handleKey(event)"></textarea>
+                <button class="send-btn" id="sendBtn" onclick="sendChat()">Send →</button>
+            </div>
+        </div>
+
+        <!-- FORM ANALYZER TAB -->
+        <div id="tab-form" class="tab-panel">
+            <div class="tool-panel">
+                <div>
+                    <label class="tool-label">Paste College Application Form Text</label>
+                    <textarea class="tool-input" id="formInput" rows="6" placeholder="Paste the full form text here — the coach will read your vault and fill every field with your real information."></textarea>
+                </div>
+                <button class="tool-btn" id="formBtn" onclick="analyzeForm()">🔍 Analyze &amp; Fill Form</button>
+                <div class="tool-result" id="formResult"></div>
+            </div>
+        </div>
+
+        <!-- ESSAY COACH TAB -->
+        <div id="tab-essay" class="tab-panel">
+            <div class="tool-panel">
+                <div>
+                    <label class="tool-label">Essay Type</label>
+                    <select id="essayType" style="width:100%;padding:10px 12px;border:1px solid #e0e0e0;font-family:'Georgia',serif;font-size:0.88em;background:#fafaf8;outline:none;color:#333;margin-bottom:4px;">
+                        <option>Common App Personal Statement (650 words)</option>
+                        <option>Why This School Essay</option>
+                        <option>Extracurricular Activity Essay</option>
+                        <option>Scholarship Essay</option>
+                        <option>Short Answer Response</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="tool-label">Essay Prompt (optional)</label>
+                    <textarea class="tool-input" id="essayPrompt" rows="2" placeholder="Paste the specific essay prompt here..."></textarea>
+                </div>
+                <div>
+                    <label class="tool-label">Your Draft (optional — leave blank for outline)</label>
+                    <textarea class="tool-input" id="essayDraft" rows="5" placeholder="Paste your draft here for feedback, or leave blank to generate an outline."></textarea>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="tool-btn" onclick="essayHelp('outline')">📋 Generate Outline</button>
+                    <button class="tool-btn" style="background:#1a1a1a;color:white;" onclick="essayHelp('review')">✏️ Review Draft</button>
+                </div>
+                <div class="tool-result" id="essayResult"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
+
+let sb = null;
+let coachUrl = '';
+let chatHistory = [];
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+    // Read coach URL from localStorage (same key as app.html)
+    coachUrl = localStorage.getItem('sm_coach') || '';
+
+    if (!coachUrl) {
+        document.getElementById('setupNotice').style.display = 'block';
+    }
+
+    // Init Supabase for vault context
+    const sbUrl = localStorage.getItem('sm_url') || SUPABASE_URL;
+    const sbKey = localStorage.getItem('sm_key') || SUPABASE_KEY;
+    sb = window.supabase.createClient(sbUrl, sbKey);
+
+    // Seed opening message
+    addMessage('coach', "Hi Sloan — I'm your Truth AI Coach, powered by the Cognitive Fusion Framework. I hold your full profile: GPA, courses, every activity from the Patient Enrichment Program through Mu Alpha Theta, and everything in your Document Vault. Paste a college application form and I'll fill every field using your real data. Ask about financial aid and I'll show you exactly which levers matter. What do you need right now?");
+});
+
+// ── VAULT CONTEXT ──────────────────────────────────────────────────────────────
+async function getVaultContext() {
+    if (!sb) return '';
+    try {
+        const { data: { session } } = await sb.auth.getSession();
+        const uid = session?.user?.id;
+        if (!uid) return '';
+        const [{ data: docs }, { data: achs }] = await Promise.all([
+            sb.from('documents').select('name,category').eq('user_id', uid),
+            sb.from('achievements').select('title,role,impact').eq('user_id', uid)
+        ]);
+        const docStr = docs?.length ? 'Uploaded documents: ' + docs.map(d => `${d.name} (${d.category})`).join(', ') : 'No documents uploaded yet.';
+        const achStr = achs?.length ? 'Achievements: ' + achs.map(a => `${a.title} (${a.role})`).join(', ') : '';
+        return docStr + (achStr ? '\n' + achStr : '');
+    } catch (e) {
+        return '';
+    }
+}
+
+// ── CALL COACH ─────────────────────────────────────────────────────────────────
+async function callCoach(messages) {
+    if (!coachUrl) {
+        return 'Coach URL not configured. Open app.html → Settings and add your Edge Function URL. It will be saved and used here automatically.';
+    }
+    const vaultContext = await getVaultContext();
+    const res = await fetch(coachUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, vaultContext })
+    });
+    const data = await res.json();
+    return data.content?.[0]?.text || 'No response.';
+}
+
+// ── CHAT ───────────────────────────────────────────────────────────────────────
+function addMessage(role, text) {
+    const container = document.getElementById('chatMessages');
+    const wrap = document.createElement('div');
+    wrap.className = `msg ${role}`;
+
+    const label = document.createElement('div');
+    label.className = 'msg-label';
+    label.textContent = role === 'user' ? 'You' : 'Truth AI Coach';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = text;
+
+    wrap.appendChild(label);
+    wrap.appendChild(bubble);
+    container.appendChild(wrap);
+    container.scrollTop = container.scrollHeight;
+}
+
+function showTyping() {
+    const container = document.getElementById('chatMessages');
+    const wrap = document.createElement('div');
+    wrap.id = 'typingIndicator';
+    wrap.className = 'typing-wrap';
+    for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'typing-dot';
+        wrap.appendChild(dot);
+    }
+    container.appendChild(wrap);
+    container.scrollTop = container.scrollHeight;
+}
+
+function removeTyping() {
+    const el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+}
+
+async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage('user', text);
+    chatHistory.push({ role: 'user', content: text });
+    input.value = '';
+    input.style.height = 'auto';
+
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true;
+    showTyping();
+
+    try {
+        const reply = await callCoach(chatHistory.filter((m, i) => m.role !== 'assistant' || i > 0));
+        removeTyping();
+        addMessage('coach', reply);
+        chatHistory.push({ role: 'assistant', content: reply });
+    } catch (e) {
+        removeTyping();
+        addMessage('coach', 'Error reaching coach: ' + e.message);
+    }
+
+    btn.disabled = false;
+    input.focus();
+}
+
+function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChat();
+    }
+    // Auto-resize textarea
+    const ta = e.target;
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+}
+
+// ── FORM ANALYZER ──────────────────────────────────────────────────────────────
+async function analyzeForm() {
+    const formText = document.getElementById('formInput').value.trim();
+    if (!formText) return;
+
+    const btn = document.getElementById('formBtn');
+    const result = document.getElementById('formResult');
+    btn.disabled = true;
+    btn.textContent = '⏳ Analyzing...';
+    result.style.display = 'none';
+
+    try {
+        const reply = await callCoach([{
+            role: 'user',
+            content: `Analyze this college application form and generate answers for each field using Sloan's real information. Format as:\n[FIELD NAME]\nAnswer: [generated answer]\n\nForm:\n${formText}`
+        }]);
+        result.textContent = reply;
+        result.style.display = 'block';
+    } catch (e) {
+        result.textContent = 'Error: ' + e.message;
+        result.style.display = 'block';
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🔍 Analyze & Fill Form';
+}
+
+// ── ESSAY COACH ────────────────────────────────────────────────────────────────
+async function essayHelp(mode) {
+    const essayType = document.getElementById('essayType').value;
+    const prompt = document.getElementById('essayPrompt').value.trim();
+    const draft = document.getElementById('essayDraft').value.trim();
+    const result = document.getElementById('essayResult');
+
+    const content = mode === 'outline'
+        ? `Generate a structured essay outline for Sloan using her real background. Essay type: ${essayType}. Prompt: ${prompt || '(general personal statement)'}`
+        : `Review this essay draft and give specific, actionable feedback. Essay type: ${essayType}. Prompt: ${prompt}.\n\nDraft:\n${draft}`;
+
+    if (mode === 'review' && !draft) {
+        result.textContent = 'Please paste your draft in the field above.';
+        result.style.display = 'block';
+        return;
+    }
+
+    const btns = document.querySelectorAll('#tab-essay .tool-btn');
+    btns.forEach(b => { b.disabled = true; });
+    result.style.display = 'none';
+
+    try {
+        const reply = await callCoach([{ role: 'user', content }]);
+        result.textContent = reply;
+        result.style.display = 'block';
+    } catch (e) {
+        result.textContent = 'Error: ' + e.message;
+        result.style.display = 'block';
+    }
+
+    btns.forEach(b => { b.disabled = false; });
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────────
+function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+}
+</script>
+</body>
+</html>
