@@ -645,7 +645,7 @@ body::before{content:'';position:fixed;inset:0;
     <div class="coach-hero">
       <div class="coach-eyebrow">🧠 Truth AI™ Cognitive Fusion — Build Coach</div>
       <div class="coach-headline">Your Personal Progress Coach</div>
-      <p class="coach-intro">Think of this coach like a GPS that already knows every road. It reads your progress, tells you exactly what to do next, and gets smarter as you build more. The more you check off, the more precise its guidance becomes.</p>
+      <p class="coach-intro">The Truth AI Cognitive Fusion Framework runs two parallel intelligence streams on every update — analytical (tracking exactly where you are, what's complete, what's blocked) and creative (understanding what each completed task unlocks, and why the next one matters). The result is guidance that is both precisely accurate and genuinely motivating. Check off tasks in the Roadmap tab. The coach reads your progress and updates in real time.</p>
     </div>
 
     <!-- LIVE STATUS -->
@@ -955,59 +955,59 @@ function updateCoach(done, total, pct) {
   let next = '';
 
   if (done === 0) {
-    msg = "Welcome, daddy boy! We're building Sloan's digital headquarters — from a simple profile page today to a full AI-powered academic platform. Start with Phase 1: registering sloanmelia.com. It takes 5 minutes and costs ~$12. That URL will open doors for years.";
-    next = "→ Go to namecheap.com, search 'sloanmelia', and register the .com domain. Then come back and check off Task 1.";
+    msg = "Welcome. What you're building is not a website — it's a permanent record of who Sloan is, made searchable, accessible, and intelligent. Every admissions officer who Googles her name will find it. Every scholarship reviewer who asks for a portfolio will get a link. Every forensic psychology program she applies to in three years will see it evolve with her. That future starts with one $12 decision: registering sloanmelia.com. Five minutes from now, the foundation exists. Start there.";
+    next = "→ Go to namecheap.com, search 'sloanmelia', register the .com domain for ~$12/yr. Come back and check off Task 1 — the coach will update in real time.";
   } else if (pct === 100) {
-    msg = "🎉 MISSION COMPLETE! All 5 phases built. sloanmelia.com is live, the AI coach is active, the financial hub is tracking, and the platform will grow with Sloan from senior year to Dr. Melia. This is a legacy gift. Well done.";
-    next = "→ Run a full system test: visit sloanmelia.com publicly, log in to the dashboard, paste a form into the AI analyzer, and confirm everything works on her iPhone 14.";
+    msg = "All five phases complete. sloanmelia.com is live, secured, and intelligent — a public profile that finds her, a private command centre that organises her, an AI coach that knows her, a financial navigator that protects her, and a publication tracker that will follow her all the way to Dr. Melia. You didn't build a student website. You built the infrastructure for a career. That's the difference between a project and a legacy.";
+    next = "→ Final system test: visit sloanmelia.com publicly, log in to the dashboard, paste a real application form into the Form Analyzer, and confirm everything loads cleanly on her iPhone 14. If it all works — it's done.";
   } else if (p1done < 5) {
     const p1tasks = [
-      "Register sloanmelia.com at namecheap.com (~$12/yr)",
-      "Create a free Netlify account at netlify.com",
-      "Ask Claude to build the HTML profile page with bio, photo, goals, and contact info",
-      "Deploy to Netlify and connect sloanmelia.com to your Netlify account",
-      "Set up sloan@sloanmelia.com via zoho.com/mail (free forever)"
+      "Register sloanmelia.com at namecheap.com (~$12/yr) — this is the address everything else is built on",
+      "Create a free Netlify account at netlify.com — this is where the site will live and auto-deploy from GitHub",
+      "Ask Claude to build the public HTML profile page: bio, photo, forensic psychology goal, contact info, achievements summary",
+      "Deploy to Netlify and connect the sloanmelia.com domain — the profile goes from local file to live URL",
+      "Set up sloan@sloanmelia.com at zoho.com/mail (free forever) — every application she submits uses this address"
     ];
-    msg = `Phase 1 in progress — ${p1done}/5 tasks done. You're planting the flag right now. Think of it this way: every college admissions officer who Googles her name will land on sloanmelia.com. That first impression is built here, in Phase 1.`;
+    msg = `Phase 1 in progress — ${p1done}/5 tasks done. Think of this phase as laying the foundation before the house goes up. Every subsequent task — the secure dashboard, the AI coach, the financial hub — stands on what you build here. The profile page is the public face. The domain is the permanent address. Both exist before Phase 2 opens. You're building in the right order.`;
     next = '→ Next: ' + p1tasks[p1done];
   } else if (p2done < 5) {
     const p2tasks = [
-      "Go to supabase.com, create a project called 'sloanmelia-app', save the URL and anon key",
-      "Ask Claude to build a login page connected to Supabase with email/password and Google SSO",
-      "Ask Claude to build the Document Vault — file upload, tags, PDF preview, Supabase Storage",
-      "Ask Claude to build the Study Library displaying all 16 forensic psych posters with search/filter",
-      "Push to GitHub → Netlify auto-deploys. Test on iPhone 14 — mobile must work."
+      "Go to supabase.com, create a project called 'sloanmelia-app', save the project URL and anon key — you'll need both for every subsequent build step",
+      "Ask Claude to build a login page connected to Supabase auth — email/password plus Google SSO, protected route to the dashboard",
+      "Ask Claude to build the Document Vault — file upload with category tags, PDF preview, Supabase Storage backend",
+      "Ask Claude to build the Study Library — all 16 forensic psychology posters displayed with search and category filter",
+      "Push to GitHub and confirm Netlify auto-deploys. Test every page on iPhone 14 — if it breaks on mobile, it's not done."
     ];
-    msg = `Phase 1 complete — sloanmelia.com is live! 🌐 Now we build the private back room. Phase 2 turns a static profile into a secure personal command centre. The Document Vault you build here is the brain of the entire app — everything else feeds from it. ${p2done}/5 tasks done.`;
+    msg = `Phase 1 complete — sloanmelia.com is live and public. Now the platform becomes private. Phase 2 is the architectural shift from visible to secured: the Document Vault, the login system, the Study Library. The Vault is the most important thing you build in this phase — it's not just storage, it's the memory of the AI coach. Every document Sloan uploads makes every future coach response more specific and more useful. Build it first. Build it well. ${p2done}/5 tasks done.`;
     next = '→ Next: ' + p2tasks[p2done];
   } else if (p3done < 5) {
     const p3tasks = [
-      "Go to console.anthropic.com → API Keys → Create Key named 'sloanmelia-coach' → copy it immediately",
-      "Ask Claude to build the Achievements Log with structured entry fields and character counters",
-      "Ask Claude to build the College Application Tracker with school database and deadline calendar",
-      "Ask Claude to build the Form Analyzer — paste form text → AI reads vault → generates pre-filled answers",
-      "Ask Claude to add Essay Coach in the tracker and Study Chat in the library using the Claude API"
+      "Go to console.anthropic.com → API Keys → Create a key named 'sloanmelia-coach' → copy it immediately, it won't show again",
+      "Ask Claude to build the Achievements Log — structured entry fields with character counters for Common App formatting",
+      "Ask Claude to build the College Application Tracker — school database, deadline calendar, application status per school",
+      "Ask Claude to build the Form Analyzer — paste any college application form, the AI reads the Vault and Achievements, fills every field with Sloan's real data",
+      "Ask Claude to add Essay Coach to the tracker and Study Chat to the library — both powered by Claude API with her full profile context"
     ];
-    msg = `Phase 2 complete — the dashboard is live and secure! 🔐 Now we activate the AI. Phase 3 is where the platform earns its worth — Sloan pastes any college application form and the coach fills it using her own data. No more retyping the same things for the 15th school. ${p3done}/5 tasks done.`;
+    msg = `Phase 2 complete — the dashboard is live and the Vault is ready. Now the platform wakes up. Phase 3 is where everything you've built so far becomes an input. The Form Analyzer is the centrepiece: Sloan pastes any application form — any school, any scholarship, any program — and the coach reads everything she's uploaded and fills every field using her real data. The difference between Phase 2 and Phase 3 is the difference between a filing cabinet and a research assistant. ${p3done}/5 tasks done.`;
     next = '→ Next: ' + p3tasks[p3done];
   } else if (p4done < 4) {
     const p4tasks = [
-      "Ask Claude to build a FAFSA walkthrough module with field-by-field plain English explanations",
-      "Ask Claude to build the Illinois 529 tracker with balance, qualified expenses, and tax deduction alerts",
-      "Curate and add 10+ scholarships to the database (psychology, women in STEM, IL resident, pre-doctoral)",
-      "Ask Claude to build the financial aid award comparator — net cost side-by-side across schools"
+      "Ask Claude to build the FAFSA Walkthrough — field-by-field plain English explanations, with notes on which fields have the highest EFC impact",
+      "Ask Claude to build the Illinois 529 Tracker — current balance, qualified expense categories, annual contribution limit, Illinois state tax deduction calculator",
+      "Curate and add 10+ scholarships to the database — target: forensic psychology, women in STEM, Illinois resident, pre-doctoral, community service",
+      "Ask Claude to build the Financial Aid Award Comparator — net cost side-by-side across all tracked schools, with true cost calculation after grants and loans"
     ];
-    msg = `Phase 3 complete — the AI coach is active! 🤖 The Form Analyzer is live and the essay coach knows forensic psychology. Now we build the money module. Financial aid is where most families leave thousands on the table. The 529 tracker, FAFSA guide, and scholarship database change that. ${p4done}/4 tasks done.`;
+    msg = `Phase 3 complete — the AI coach is active and the Form Analyzer is live. The platform now understands Sloan well enough to fill out her applications for her. Phase 4 addresses the other half of the college decision: the money. Most families leave aid on the table not because it doesn't exist, but because no one showed them the lever. The 529 tracker, the FAFSA guide, and the scholarship database are that lever. ${p4done}/4 tasks done.`;
     next = '→ Next: ' + p4tasks[p4done];
   } else if (p5done < 5) {
     const p5tasks = [
-      "Ask Claude to build a WYSIWYG profile editor that publishes updates to sloanmelia.com with one click",
-      "Ask Claude to add a Resume PDF export feature pulling from Profile + Achievements Log data",
-      "Ask Claude to build an Academic CV builder (education, publications, research experience format)",
-      "Ask Claude to build a Professional Network section — contacts, mentors, potential references",
-      "Ask Claude to add a Publication Tracker for future research papers, journals, and citations"
+      "Ask Claude to build a profile editor — WYSIWYG editing of the public sloanmelia.com page, with one-click publish to Netlify via GitHub",
+      "Ask Claude to add Resume PDF export — pulls from Profile and Achievements Log, generates a clean ATS-formatted PDF on demand",
+      "Ask Claude to build an Academic CV builder — education timeline, research experience, publications, honours — the format PhD programs expect",
+      "Ask Claude to build a Professional Network section — contacts, mentors, potential recommendation letter writers, with notes and relationship context",
+      "Ask Claude to add a Publication Tracker — journals, research papers, citations; starts empty now and fills as her academic career develops"
     ];
-    msg = `Phase 4 complete — the financial hub is live! 💰 The 529 is tracked, FAFSA is guided, scholarships are organised. One phase left. Phase 5 is the forever layer — profile control, resume export, academic CV, and the publication tracker she'll use all the way to her PhD. ${p5done}/5 tasks done.`;
+    msg = `Phase 4 complete — the financial hub is built and the money is tracked. One phase remains, and it's the one that matters longest. Phase 5 is the forever infrastructure: the profile she controls and updates herself, the resume she generates in thirty seconds, the academic CV that grows from student to researcher to Dr. Melia. Every tool in Phase 5 is something she'll still be using ten years from now. You're not finishing a project. You're handing her the controls. ${p5done}/5 tasks done.`;
     next = '→ Next: ' + p5tasks[p5done];
   }
 
