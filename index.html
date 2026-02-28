@@ -578,14 +578,11 @@
       const {data: grades} = await sb.from('grades').select('grade_points,credit_hours').eq('user_id', p.user_id);
       const liveGpa = calcGPA(grades);
       if(liveGpa !== null) {
-        set('profile-gpa', liveGpa.toFixed(2));
-        // Also update any mentions of GPA in bio if it still has old value
-        const bioEl = document.getElementById('profile-bio');
-        if(bioEl) {
-          bioEl.textContent = bioEl.textContent
-            .replace(/3\.6[0-9]+/g, liveGpa.toFixed(2))
-            .replace(/3\.8[0-9]+/g, liveGpa.toFixed(2));
-        }
+        const gpaDisplay = liveGpa.toFixed(2);
+        // Update all three GPA display spots from same source
+        set('profile-gpa',          gpaDisplay);   // hero stat bar
+        set('profile-gpa-academic', gpaDisplay);   // academic highlights section
+        set('profile-gpa-bio',      gpaDisplay);   // bio paragraph
       }
     }
   } catch(e) {
@@ -621,7 +618,7 @@
     </h1>
     <p class="hero-tagline" id="profile-tagline">Aspiring Forensic Psychologist &amp; Community Builder</p>
     <p class="hero-bio" id="profile-bio">
-      I'm a senior at Alton High School with a 3.684 GPA, a passion for understanding the human mind, and a clear mission: to earn my PhD in Forensic Psychology and apply science in service of justice and healing. Outside the classroom, I'm building things — programs, communities, and a body of work that reflects who I am and where I'm going.
+      I'm a senior at Alton High School with a <strong id="profile-gpa-bio">3.84</strong> cumulative GPA, a passion for understanding the human mind, and a clear mission: to earn my PhD in Forensic Psychology and apply science in service of justice and healing. Outside the classroom, I'm building things — programs, communities, and a body of work that reflects who I am and where I'm going.
     </p>
     <div class="hero-cta-row">
       <a href="#contact" class="btn-primary">Get In Touch</a>
@@ -654,7 +651,7 @@
   <h2 class="section-title">The Numbers &amp; The<br><em>Coursework Behind Them</em></h2>
   <div class="stats-row">
     <div class="stat-cell">
-      <span class="big">3.68</span>
+      <span class="big" id="profile-gpa-academic">3.84</span>
       <span class="label">Cumulative GPA</span>
     </div>
     <div class="stat-cell">
