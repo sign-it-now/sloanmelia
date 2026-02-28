@@ -1,19 +1,24 @@
 [[redirects]]
   from = "/study-library.html"
-  to = "/dashboard"
+  to = "/sloanmelia-app.html"
   status = 302
 
 [[redirects]]
   from = "/studylibrary.html"
-  to = "/dashboard"
+  to = "/sloanmelia-app.html"
   status = 302
 
 [[redirects]]
   from = "/studylibrary"
-  to = "/dashboard"
+  to = "/sloanmelia-app.html"
   status = 302
 
 [[redirects]]
   from = "/study-library"
-  to = "/dashboard"
+  to = "/sloanmelia-app.html"
+  status = 302
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/sloanmelia-app.html"
   status = 302
