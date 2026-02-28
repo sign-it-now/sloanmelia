@@ -531,151 +531,317 @@ function HomeModule({ onNav, user }) {
 
 // ── STUDY LIBRARY ─────────────────────────────────────────────────────────────
 const STUDY_TOPICS = [
-  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',desc:'The biological foundation of behavior, emotion, and criminal mind.',
+  // ── CORE FORENSIC (8) ──────────────────────────────────────────
+  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',
+   color:'#7c3aed',bg:'#f5f3ff',
+   desc:'The biological foundation of behavior, emotion, and the criminal mind.',
    poster:'https://sloanmelia.com/poster1-brain.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/3-1-human-genetics',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 3: Biopsychology',
+   openstaxLabel:'Psychology 2e · Ch 3: Biopsychology',
    concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
-  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',desc:'Mental disorder classification system used in forensic evaluations.',
+  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',
+   color:'#dc2626',bg:'#fef2f2',
+   desc:'Mental disorder classification system used in forensic evaluations.',
    poster:'https://sloanmelia.com/poster2-dsm5.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/15-1-what-are-psychological-disorders',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 15: Psychological Disorders',
+   openstaxLabel:'Psychology 2e · Ch 15: Psychological Disorders',
    concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
-  {id:3,title:'Theorists Timeline',cat:'Core Forensic',desc:'From Freud to modern forensic psychology pioneers.',
+  {id:3,title:'Theorists Timeline',cat:'Core Forensic',
+   color:'#d97706',bg:'#fffbeb',
+   desc:'From Freud to modern forensic psychology pioneers.',
    poster:'https://sloanmelia.com/poster3-theorists.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/1-2-history-of-psychology',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 1: History of Psychology',
+   openstaxLabel:'Psychology 2e · Ch 1: History of Psychology',
    concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
-  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',desc:'Scientific foundation of psychological research.',
+  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',
+   color:'#0369a1',bg:'#f0f9ff',
+   desc:'Scientific foundation of psychological research.',
    poster:'https://sloanmelia.com/poster4-research.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/2-1-why-is-research-important',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 2: Research Methods',
+   openstaxLabel:'Psychology 2e · Ch 2: Research Methods',
    concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
-  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',desc:'Psychological defenses relevant to criminal behavior analysis.',
+  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',
+   color:'#be185d',bg:'#fdf2f8',
+   desc:'Psychological defenses relevant to criminal behavior analysis.',
    poster:'https://sloanmelia.com/poster5-defense.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/11-3-defense-mechanisms',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 11: Personality · Defense Mechanisms',
+   openstaxLabel:'Psychology 2e · Ch 11: Defense Mechanisms',
    concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
-  {id:6,title:'Human Development',cat:'Core Forensic',desc:'Lifespan development theories critical to forensic assessment.',
+  {id:6,title:'Human Development',cat:'Core Forensic',
+   color:'#059669',bg:'#f0fdf4',
+   desc:'Lifespan development theories critical to forensic assessment.',
    poster:'https://sloanmelia.com/poster6-development.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/9-1-what-is-lifespan-development',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 9: Lifespan Development',
+   openstaxLabel:'Psychology 2e · Ch 9: Lifespan Development',
    concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
-  {id:7,title:'Cognitive Biases',cat:'Core Forensic',desc:'How thinking errors affect judgment, perception, and testimony.',
+  {id:7,title:'Cognitive Biases',cat:'Core Forensic',
+   color:'#9333ea',bg:'#faf5ff',
+   desc:'How thinking errors affect judgment, perception, and testimony.',
    poster:'https://sloanmelia.com/poster7-biases.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/7-3-problem-solving',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 7: Thinking & Intelligence',
+   openstaxLabel:'Psychology 2e · Ch 7: Thinking & Intelligence',
    concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
-  {id:8,title:'APA Ethics Code',cat:'Core Forensic',desc:'Professional ethical obligations guiding all psychologists.',
+  {id:8,title:'APA Ethics Code',cat:'Core Forensic',
+   color:'#1d4ed8',bg:'#eff6ff',
+   desc:'Professional ethical obligations guiding all psychologists.',
    poster:'https://sloanmelia.com/poster8-ethics.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/1-3-contemporary-psychology',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 1: Ethics in Psychology',
+   openstaxLabel:'Psychology 2e · Ch 1: Ethics in Psychology',
    concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
-  {id:9,title:'Biology & Physiology',cat:'Supporting',desc:'Body systems that support psychological function.',
+  // ── SUPPORTING COURSEWORK (8) ────────────────────────────────────
+  {id:9,title:'Biology & Physiology',cat:'Supporting',
+   color:'#0d9488',bg:'#f0fdfa',
+   desc:'Body systems that support psychological function.',
    poster:'https://sloanmelia.com/support1-biology.html',
    openstax:'https://openstax.org/books/anatomy-and-physiology-2e/pages/1-introduction',
-   openstaxLabel:'OpenStax Anatomy & Physiology 2e',
+   openstaxLabel:'Anatomy & Physiology 2e · Full Textbook',
    concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
-  {id:10,title:'Sociology & Social Theory',cat:'Supporting',desc:'Social forces shaping criminal behavior and justice.',
+  {id:10,title:'Sociology & Social Theory',cat:'Supporting',
+   color:'#c2410c',bg:'#fff7ed',
+   desc:'Social forces shaping criminal behavior and justice.',
    poster:'https://sloanmelia.com/support2-sociology.html',
    openstax:'https://openstax.org/books/introduction-sociology-3e/pages/1-introduction',
-   openstaxLabel:'OpenStax Introduction to Sociology 3e',
+   openstaxLabel:'Introduction to Sociology 3e · Full Textbook',
    concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
-  {id:11,title:'Philosophy of Mind',cat:'Supporting',desc:'Consciousness, free will, and moral responsibility.',
+  {id:11,title:'Philosophy of Mind',cat:'Supporting',
+   color:'#6d28d9',bg:'#f5f3ff',
+   desc:'Consciousness, free will, and moral responsibility.',
    poster:'https://sloanmelia.com/support3-philosophy.html',
    openstax:'https://openstax.org/books/introduction-philosophy/pages/1-introduction',
-   openstaxLabel:'OpenStax Introduction to Philosophy',
+   openstaxLabel:'Introduction to Philosophy · Full Textbook',
    concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
-  {id:12,title:'Pharmacology Basics',cat:'Supporting',desc:'Psychoactive substances and their behavioral effects.',
+  {id:12,title:'Pharmacology Basics',cat:'Supporting',
+   color:'#0f766e',bg:'#f0fdfa',
+   desc:'Psychoactive substances and their behavioral effects.',
    poster:'https://sloanmelia.com/support4-pharmacology.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/16-3-approaches-to-treating-psychological-disorders',
-   openstaxLabel:'OpenStax Psychology 2e · Ch 16: Treatment & Biomedical Therapy',
+   openstaxLabel:'Psychology 2e · Ch 16: Biomedical Therapy',
    concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
-  {id:13,title:'Law & Psychology Interface',cat:'Supporting',desc:'How psychological science enters the legal system.',
+  {id:13,title:'Law & Psychology Interface',cat:'Supporting',
+   color:'#1e40af',bg:'#eff6ff',
+   desc:'How psychological science enters the legal system.',
    poster:'https://sloanmelia.com/support5-law.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/1-introduction',
-   openstaxLabel:'OpenStax Psychology 2e · Forensic Applications',
+   openstaxLabel:'Psychology 2e · Forensic Applications',
    concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
-  {id:14,title:'Communication & Writing',cat:'Supporting',desc:'Expert witness skills, forensic report writing, and administration.',
+  {id:14,title:'Communication & Testimony',cat:'Supporting',
+   color:'#9f1239',bg:'#fff1f2',
+   desc:'Expert witness skills and forensic report writing.',
    poster:'https://sloanmelia.com/support6-comm-write-admin.html',
    openstax:'https://openstax.org/books/psychology-2e/pages/1-introduction',
-   openstaxLabel:'OpenStax Psychology 2e · Professional Communication',
+   openstaxLabel:'Psychology 2e · Professional Communication',
    concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
+  {id:15,title:'Academic Writing',cat:'Supporting',
+   color:'#065f46',bg:'#f0fdf4',
+   desc:'Research paper and report writing standards for psychology.',
+   poster:'https://sloanmelia.com/support6-comm-write-admin.html',
+   openstax:'https://openstax.org/books/writing-guide/pages/1-unit-introduction',
+   openstaxLabel:'Writing Guide with Handbook · Full Textbook',
+   concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
+  {id:16,title:'Program Administration',cat:'Supporting',
+   color:'#374151',bg:'#f9fafb',
+   desc:'Clinical and forensic program management fundamentals.',
+   poster:'https://sloanmelia.com/support6-comm-write-admin.html',
+   openstax:'https://openstax.org/books/introduction-business/pages/1-introduction',
+   openstaxLabel:'Introduction to Business · Org Management',
+   concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
 ];
 
 function LibraryModule({ onNav, coachUrl }) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
-  const filtered = STUDY_TOPICS.filter(t => t.title.toLowerCase().includes(search.toLowerCase()) || t.cat.toLowerCase().includes(search.toLowerCase()));
+  const [activeTab, setActiveTab] = useState('all');
+  const filtered = STUDY_TOPICS.filter(t =>
+    (activeTab === 'all' || t.cat === activeTab) &&
+    (t.title.toLowerCase().includes(search.toLowerCase()) ||
+     t.cat.toLowerCase().includes(search.toLowerCase()) ||
+     t.desc.toLowerCase().includes(search.toLowerCase()))
+  );
 
   return (
     <div>
       <div className="page-header">
         <div className="page-title serif">Study <em style={{color:'var(--gold)'}}>Library</em></div>
-        <div className="page-sub">16 forensic psychology topic modules · Click any card to study</div>
+        <div className="page-sub">16 forensic psychology modules · Click any card to study · OpenStax textbooks linked</div>
       </div>
       <div className="page-content">
-        <div style={{marginBottom:'1rem'}}>
-          <input className="input" placeholder="Search topics..." value={search} onChange={e=>setSearch(e.target.value)}/>
+
+        {/* Search + filter */}
+        <div style={{display:'flex',gap:'0.6rem',marginBottom:'1.2rem',flexWrap:'wrap',alignItems:'center'}}>
+          <input className="input" style={{flex:1,minWidth:'180px'}}
+            placeholder="Search topics, concepts, keywords..."
+            value={search} onChange={e=>setSearch(e.target.value)}/>
+          <div style={{display:'flex',gap:'0.4rem'}}>
+            {['all','Core Forensic','Supporting'].map(tab=>(
+              <button key={tab} onClick={()=>setActiveTab(tab)}
+                className="btn btn-sm"
+                style={{
+                  background: activeTab===tab ? 'var(--ink)' : 'transparent',
+                  color: activeTab===tab ? 'var(--cream)' : 'var(--dim)',
+                  border: '1px solid var(--border)',
+                  fontSize:'0.78rem'
+                }}>
+                {tab === 'all' ? 'All 16' : tab === 'Core Forensic' ? '🔬 Core (8)' : '📖 Supporting (8)'}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="section-label">Core Forensic Psychology</div>
-        <div className="grid3" style={{marginBottom:'1.5rem'}}>
-          {filtered.filter(t=>t.cat==='Core Forensic').map(t=>(
-            <div key={t.id} className="card" style={{borderTop:'3px solid var(--ink)',cursor:'pointer'}} onClick={()=>setSelected(t)}>
-              <span className="card-label">Core Forensic</span>
-              <div className="card-title">{t.title}</div>
-              <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
-              <button className="btn btn-ghost btn-sm" style={{marginTop:'0.7rem',paddingLeft:0}}>Study →</button>
+        {/* Core Forensic section */}
+        {(activeTab === 'all' || activeTab === 'Core Forensic') && filtered.filter(t=>t.cat==='Core Forensic').length > 0 && (
+          <>
+            <div className="section-label" style={{marginBottom:'0.6rem'}}>
+              🔬 Core Forensic Psychology
             </div>
-          ))}
-        </div>
+            <div className="grid3" style={{marginBottom:'1.8rem'}}>
+              {filtered.filter(t=>t.cat==='Core Forensic').map(t=>(
+                <div key={t.id}
+                  className="card"
+                  style={{
+                    borderTop:`4px solid ${t.color}`,
+                    background:t.bg,
+                    cursor:'pointer',
+                    transition:'transform 0.15s,box-shadow 0.15s'
+                  }}
+                  onClick={()=>setSelected(t)}
+                  onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow=`0 6px 20px ${t.color}25`;}}
+                  onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='';}}
+                >
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'0.4rem'}}>
+                    <span className="card-label" style={{color:t.color,fontWeight:700}}>Core Forensic</span>
+                    <span style={{fontSize:'0.68rem',background:`${t.color}15`,color:t.color,padding:'2px 6px',borderRadius:'4px',fontFamily:'monospace',fontWeight:600}}>
+                      #{t.id.toString().padStart(2,'0')}
+                    </span>
+                  </div>
+                  <div className="card-title" style={{color:'var(--ink)',marginBottom:'0.3rem'}}>{t.title}</div>
+                  <div style={{fontSize:'0.8rem',color:'var(--dim)',lineHeight:1.5,marginBottom:'0.6rem'}}>{t.desc}</div>
+                  <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginTop:'auto'}}>
+                    <span style={{fontSize:'0.7rem',background:t.color,color:'#fff',padding:'2px 7px',borderRadius:'3px',fontWeight:600}}>
+                      📖 OpenStax
+                    </span>
+                    <span style={{fontSize:'0.7rem',background:'var(--ink)',color:'var(--cream)',padding:'2px 7px',borderRadius:'3px'}}>
+                      Study →
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
-        <div className="section-label">Supporting Coursework</div>
-        <div className="grid3">
-          {filtered.filter(t=>t.cat==='Supporting').map(t=>(
-            <div key={t.id} className="card" style={{borderTop:'3px solid var(--gold)',cursor:'pointer'}} onClick={()=>setSelected(t)}>
-              <span className="card-label" style={{color:'var(--teal)'}}>Supporting Course</span>
-              <div className="card-title">{t.title}</div>
-              <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
-              <button className="btn btn-ghost btn-sm" style={{marginTop:'0.7rem',paddingLeft:0}}>Study →</button>
+        {/* Supporting section */}
+        {(activeTab === 'all' || activeTab === 'Supporting') && filtered.filter(t=>t.cat==='Supporting').length > 0 && (
+          <>
+            <div className="section-label" style={{marginBottom:'0.6rem'}}>
+              📖 Supporting Coursework
             </div>
-          ))}
-        </div>
+            <div className="grid3">
+              {filtered.filter(t=>t.cat==='Supporting').map(t=>(
+                <div key={t.id}
+                  className="card"
+                  style={{
+                    borderTop:`4px solid ${t.color}`,
+                    background:t.bg,
+                    cursor:'pointer',
+                    transition:'transform 0.15s,box-shadow 0.15s'
+                  }}
+                  onClick={()=>setSelected(t)}
+                  onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow=`0 6px 20px ${t.color}25`;}}
+                  onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='';}}
+                >
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'0.4rem'}}>
+                    <span className="card-label" style={{color:t.color,fontWeight:700}}>Supporting</span>
+                    <span style={{fontSize:'0.68rem',background:`${t.color}15`,color:t.color,padding:'2px 6px',borderRadius:'4px',fontFamily:'monospace',fontWeight:600}}>
+                      #{t.id.toString().padStart(2,'0')}
+                    </span>
+                  </div>
+                  <div className="card-title" style={{color:'var(--ink)',marginBottom:'0.3rem'}}>{t.title}</div>
+                  <div style={{fontSize:'0.8rem',color:'var(--dim)',lineHeight:1.5,marginBottom:'0.6rem'}}>{t.desc}</div>
+                  <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginTop:'auto'}}>
+                    <span style={{fontSize:'0.7rem',background:t.color,color:'#fff',padding:'2px 7px',borderRadius:'3px',fontWeight:600}}>
+                      📖 OpenStax
+                    </span>
+                    <span style={{fontSize:'0.7rem',background:'var(--ink)',color:'var(--cream)',padding:'2px 7px',borderRadius:'3px'}}>
+                      Study →
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {filtered.length === 0 && (
+          <div style={{textAlign:'center',padding:'3rem',color:'var(--dim)'}}>
+            No topics match your search. Try a different keyword.
+          </div>
+        )}
+
       </div>
 
+      {/* Detail Modal */}
       <Modal open={!!selected} onClose={()=>setSelected(null)} title={selected?.title}>
-        {selected && <>
-          <span className="badge badge-teal" style={{marginBottom:'1rem'}}>{selected.cat}</span>
-          <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem'}}>{selected.desc}</p>
-          <div className="section-label">Key Concepts</div>
-          <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
-            {selected.concepts.map((c,i)=><li key={i} style={{marginBottom:'0.4rem',fontSize:'0.88rem'}}>{c}</li>)}
-          </ul>
-          <div style={{display:'flex',gap:'0.6rem',flexWrap:'wrap',marginBottom:'1rem'}}>
-            {selected.poster && (
-              <a href={selected.poster} target="_blank" rel="noopener noreferrer" className="btn btn-gold" style={{textDecoration:'none'}}>
-                📄 View Full Poster
-              </a>
-            )}
-            {selected.openstax && (
-              <a href={selected.openstax} target="_blank" rel="noopener noreferrer" className="btn btn-ghost" style={{textDecoration:'none',fontSize:'0.82rem'}}>
-                📚 {selected.openstaxLabel || 'OpenStax Textbook'}
-              </a>
-            )}
-          </div>
-          <button className="btn" style={{background:'var(--ink)',color:'var(--cream)',border:'none'}} onClick={()=>{setSelected(null);onNav('coach');}}>
-            🤖 Ask Coach About This Topic
-          </button>
-        </>}
+        {selected && (
+          <>
+            {/* Color accent bar */}
+            <div style={{height:'4px',background:selected.color,borderRadius:'2px',marginBottom:'1rem',marginLeft:'-1.5rem',marginRight:'-1.5rem',width:'calc(100% + 3rem)'}}/>
+
+            <div style={{display:'flex',gap:'0.5rem',marginBottom:'1rem',flexWrap:'wrap'}}>
+              <span style={{fontSize:'0.75rem',background:`${selected.color}15`,color:selected.color,padding:'3px 10px',borderRadius:'12px',fontWeight:700}}>
+                {selected.cat}
+              </span>
+              <span style={{fontSize:'0.75rem',background:'var(--cream)',color:'var(--dim)',padding:'3px 10px',borderRadius:'12px',border:'1px solid var(--border)'}}>
+                Module #{selected.id.toString().padStart(2,'0')}
+              </span>
+            </div>
+
+            <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem',lineHeight:1.6}}>{selected.desc}</p>
+
+            <div className="section-label" style={{color:selected.color}}>Key Concepts</div>
+            <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
+              {selected.concepts.map((c,i)=>(
+                <li key={i} style={{marginBottom:'0.5rem',fontSize:'0.88rem',lineHeight:1.5}}>
+                  <span style={{color:selected.color,fontWeight:600}}>›</span> {c}
+                </li>
+              ))}
+            </ul>
+
+            <div className="section-label">Resources</div>
+            <div style={{display:'flex',gap:'0.6rem',flexWrap:'wrap',marginBottom:'0.8rem',marginTop:'0.5rem'}}>
+              {selected.poster && (
+                <a href={selected.poster} target="_blank" rel="noopener noreferrer"
+                  style={{
+                    textDecoration:'none',display:'inline-flex',alignItems:'center',gap:'0.4rem',
+                    background:selected.color,color:'#fff',
+                    padding:'0.45rem 1rem',borderRadius:'6px',fontSize:'0.83rem',fontWeight:600
+                  }}>
+                  📄 View Reference Poster
+                </a>
+              )}
+              {selected.openstax && (
+                <a href={selected.openstax} target="_blank" rel="noopener noreferrer"
+                  style={{
+                    textDecoration:'none',display:'inline-flex',alignItems:'center',gap:'0.4rem',
+                    background:`${selected.color}15`,color:selected.color,
+                    border:`1px solid ${selected.color}40`,
+                    padding:'0.45rem 1rem',borderRadius:'6px',fontSize:'0.83rem',fontWeight:600
+                  }}>
+                  📚 {selected.openstaxLabel || 'OpenStax Textbook'}
+                </a>
+              )}
+            </div>
+            <button
+              className="btn"
+              style={{background:'var(--ink)',color:'var(--cream)',border:'none',width:'100%',marginTop:'0.4rem'}}
+              onClick={()=>{setSelected(null);onNav('coach');}}>
+              🤖 Ask Coach About This Topic
+            </button>
+          </>
+        )}
       </Modal>
     </div>
   );
 }
-
-// ── DOCUMENT VAULT ────────────────────────────────────────────────────────────
-const DOC_CATS = ['Transcript','Recommendation Letter','Resume','Test Scores','Certificate','Financial Aid','Other'];
-const CAT_BADGE = {Transcript:'badge-teal','Recommendation Letter':'badge-gold',Resume:'badge-ink','Test Scores':'badge-purple',Certificate:'badge-green','Financial Aid':'badge-blue',Other:'badge-gray'};
 
 function VaultModule({ user, toast }) {
   const [docs, setDocs] = useState([]);
