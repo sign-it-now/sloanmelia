@@ -217,7 +217,15 @@ textarea.input{resize:vertical;min-height:80px;}
 <body>
 <div id="root"></div>
 
-<script type="text/babel">
+<script>
+window.onerror = function(msg, src, line, col, err) {
+  document.getElementById('root').innerHTML = 
+    '<div style="padding:2rem;font-family:monospace;color:red;background:#fff;">' +
+    '<strong>App Error:</strong><br>' + msg + '<br>Line: ' + line +
+    '<br><br>Please hard-refresh (Cmd+Shift+R)</div>';
+};
+</script>
+<script type="text/babel" data-presets="react">
 const { useState, useEffect, useRef, useCallback } = React;
 
 // ── SUPABASE CLIENT ──────────────────────────────────────────────────────────
@@ -562,22 +570,75 @@ function LibraryModule({ onNav, coachUrl }) {
     window.open(t.textbook, '_blank', 'noopener');
   };
 
-  const catColors = {'Core Forensic':'var(--ink)','Supporting':'var(--gold)','College Foundations':'var(--teal)'};
-  const catLabelColors = {'Core Forensic':'var(--gold)','Supporting':'var(--teal)','College Foundations':'#c8922a'};
-  const catBadgeText = {'Core Forensic':'Core Forensic','Supporting':'Supporting Course','College Foundations':'College Foundations'};
+  // OpenStax-inspired academic color system
+  const CAT = {
+    'Core Forensic':      { border:'#1a3a5c', badgeBg:'#e8f0f8', badgeText:'#1a3a5c', chipBg:'#c8ddf0', headerBg:'#1a3a5c', label:'Core Forensic',      studyBtnBg:'#1a3a5c' },
+    'Supporting':         { border:'#6b3f8b', badgeBg:'#f3e8f8', badgeText:'#6b3f8b', chipBg:'#ddc8f0', headerBg:'#5c2d7a', label:'Supporting Course',   studyBtnBg:'#6b3f8b' },
+    'College Foundations':{ border:'#1a5c48', badgeBg:'#e8f5ef', badgeText:'#1a5c48', chipBg:'#b8e0d0', headerBg:'#1a5c48', label:'College Foundations', studyBtnBg:'#1a5c48' },
+  };
 
-  const renderCard = (t) => (
-    <div key={t.id} className="card" style={{borderTop:`3px solid ${catColors[t.cat]}`,cursor:'pointer'}} onClick={()=>setSelected(t)}>
-      <span className="card-label" style={{color:catLabelColors[t.cat]}}>{catBadgeText[t.cat]}</span>
-      <div className="card-title">{t.title}</div>
-      <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
-      <div style={{display:'flex',gap:'0.5rem',marginTop:'0.8rem',flexWrap:'wrap'}}>
-        <button className="btn btn-ghost btn-sm" style={{paddingLeft:0}} onClick={(e)=>{e.stopPropagation();setSelected(t);}}>Preview →</button>
-        {t.poster && <button className="btn btn-primary btn-sm" onClick={(e)=>openPoster(t,e)}>📖 Full Guide</button>}
-        <button className="btn btn-outline btn-sm" onClick={(e)=>openTextbook(t,e)}>📚 Textbook</button>
+  const renderCard = (t) => {
+    const cs = CAT[t.cat] || CAT['Core Forensic'];
+    return (
+      <div key={t.id} onClick={()=>setSelected(t)} style={{
+        background:'#fff', border:'1px solid #e5ddd0', borderTop:`4px solid ${cs.border}`,
+        padding:'1.1rem', cursor:'pointer', display:'flex', flexDirection:'column', gap:'0',
+        transition:'box-shadow 0.18s, transform 0.18s',
+        boxShadow:'0 1px 3px rgba(0,0,0,0.06)',
+      }}
+        onMouseEnter={e=>{e.currentTarget.style.boxShadow='0 6px 20px rgba(0,0,0,0.12)';e.currentTarget.style.transform='translateY(-2px)';}}
+        onMouseLeave={e=>{e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.06)';e.currentTarget.style.transform='translateY(0)';}}
+      >
+        {/* Header row: category badge + chapter number */}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'0.55rem'}}>
+          <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.5rem',letterSpacing:'0.12em',textTransform:'uppercase',
+            background:cs.badgeBg,color:cs.badgeText,padding:'0.18rem 0.6rem',border:`1px solid ${cs.border}33`}}>
+            {cs.label}
+          </span>
+          <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.7rem',color:cs.border,fontWeight:500,opacity:0.5,letterSpacing:'0.05em'}}>
+            {String(t.id).padStart(2,'0')}
+          </span>
+        </div>
+        {/* Title */}
+        <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.05rem',fontWeight:700,color:'#0e0c09',lineHeight:1.25,marginBottom:'0.35rem'}}>
+          {t.title}
+        </div>
+        {/* Description */}
+        <div style={{fontSize:'0.8rem',color:'#7a7060',lineHeight:1.55,marginBottom:'0.6rem',flex:1}}>
+          {t.desc}
+        </div>
+        {/* Key concept chips — first 3 */}
+        <div style={{display:'flex',gap:'0.3rem',flexWrap:'wrap',marginBottom:'0.65rem'}}>
+          {t.concepts.slice(0,3).map((c,i)=>(
+            <span key={i} style={{fontFamily:'DM Mono,monospace',fontSize:'0.48rem',background:cs.chipBg,color:cs.badgeText,
+              padding:'0.15rem 0.45rem',letterSpacing:'0.04em',whiteSpace:'nowrap',maxWidth:'160px',overflow:'hidden',textOverflow:'ellipsis',display:'inline-block'}}>
+              {c}
+            </span>
+          ))}
+        </div>
+        {/* Action buttons */}
+        <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',borderTop:'1px solid #ede5d8',paddingTop:'0.6rem'}}>
+          {t.poster && (
+            <button onClick={(e)=>{e.stopPropagation();openPoster(t,e);}} style={{
+              fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.1em',textTransform:'uppercase',
+              background:cs.studyBtnBg,color:'#fff',border:'none',padding:'0.32rem 0.8rem',cursor:'pointer'}}>
+              Study Guide
+            </button>
+          )}
+          <button onClick={(e)=>{e.stopPropagation();setSelected(t);}} style={{
+            fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.1em',textTransform:'uppercase',
+            background:'transparent',color:cs.border,border:`1px solid ${cs.border}`,padding:'0.32rem 0.8rem',cursor:'pointer'}}>
+            Overview →
+          </button>
+          <button onClick={(e)=>{e.stopPropagation();openTextbook(t,e);}} style={{
+            fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.1em',textTransform:'uppercase',
+            background:'transparent',color:'#7a7060',border:'1px solid #c8c0b0',padding:'0.32rem 0.8rem',cursor:'pointer'}}>
+            OpenStax
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div>
@@ -591,31 +652,40 @@ function LibraryModule({ onNav, coachUrl }) {
         </div>
 
         {(search==='' || filtered.some(t=>t.cat==='Core Forensic')) && <>
-          <div className="section-label" style={{marginBottom:'0.75rem'}}>
-            Core Forensic Psychology
-            <span style={{marginLeft:'0.75rem',fontFamily:'DM Mono,monospace',fontSize:'0.52rem',color:'var(--dim)'}}>8 modules</span>
+          <div style={{background:'#1a3a5c',color:'#fff',padding:'0.65rem 1.1rem',display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem',marginTop:'0.5rem'}}>
+            <div>
+              <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.5rem',letterSpacing:'0.18em',textTransform:'uppercase',opacity:0.55,marginBottom:'0.1rem'}}>Study Library · Section 01</div>
+              <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.05rem',fontWeight:700}}>Core Forensic Psychology</div>
+            </div>
+            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',opacity:0.6}}>8 modules</span>
           </div>
-          <div className="grid3" style={{marginBottom:'2rem'}}>
+          <div className="grid3" style={{marginBottom:'2.5rem'}}>
             {filtered.filter(t=>t.cat==='Core Forensic').map(renderCard)}
           </div>
         </>}
 
         {(search==='' || filtered.some(t=>t.cat==='Supporting')) && <>
-          <div className="section-label" style={{marginBottom:'0.75rem'}}>
-            Supporting Coursework
-            <span style={{marginLeft:'0.75rem',fontFamily:'DM Mono,monospace',fontSize:'0.52rem',color:'var(--dim)'}}>8 modules</span>
+          <div style={{background:'#5c2d7a',color:'#fff',padding:'0.65rem 1.1rem',display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem'}}>
+            <div>
+              <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.5rem',letterSpacing:'0.18em',textTransform:'uppercase',opacity:0.55,marginBottom:'0.1rem'}}>Study Library · Section 02</div>
+              <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.05rem',fontWeight:700}}>Supporting Coursework</div>
+            </div>
+            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',opacity:0.6}}>8 modules</span>
           </div>
-          <div className="grid3" style={{marginBottom:'2rem'}}>
+          <div className="grid3" style={{marginBottom:'2.5rem'}}>
             {filtered.filter(t=>t.cat==='Supporting').map(renderCard)}
           </div>
         </>}
 
         {(search==='' || filtered.some(t=>t.cat==='College Foundations')) && <>
-          <div className="section-label" style={{marginBottom:'0.75rem',color:'var(--teal)'}}>
-            College Foundations
-            <span style={{marginLeft:'0.75rem',fontFamily:'DM Mono,monospace',fontSize:'0.52rem',color:'var(--dim)'}}>13 modules · All free via OpenStax</span>
+          <div style={{background:'#1a5c48',color:'#fff',padding:'0.65rem 1.1rem',display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem'}}>
+            <div>
+              <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.5rem',letterSpacing:'0.18em',textTransform:'uppercase',opacity:0.55,marginBottom:'0.1rem'}}>Study Library · Section 03 · All Free via OpenStax</div>
+              <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.05rem',fontWeight:700}}>College Foundations</div>
+            </div>
+            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',opacity:0.6}}>13 modules</span>
           </div>
-          <div className="grid3" style={{marginBottom:'2rem'}}>
+          <div className="grid3" style={{marginBottom:'2.5rem'}}>
             {filtered.filter(t=>t.cat==='College Foundations').map(renderCard)}
           </div>
         </>}
@@ -630,31 +700,55 @@ function LibraryModule({ onNav, coachUrl }) {
       </div>
 
       <Modal open={!!selected} onClose={()=>setSelected(null)} title={selected?.title} wide={true}>
-        {selected && <>
-          <span className={`badge ${selected.cat==='Core Forensic'?'badge-ink':selected.cat==='Supporting'?'badge-gold':'badge-teal'}`} style={{marginBottom:'1rem'}}>{selected.cat}</span>
-          <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem'}}>{selected.desc}</p>
-          <div className="section-label">Key Concepts</div>
-          <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
-            {selected.concepts.map((c,i)=><li key={i} style={{marginBottom:'0.4rem',fontSize:'0.88rem'}}>{c}</li>)}
-          </ul>
-          <div style={{background:'var(--cream)',border:'1px solid var(--faint)',padding:'0.75rem 1rem',marginBottom:'1.2rem',borderLeft:'3px solid var(--teal)'}}>
-            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'var(--teal)',display:'block',marginBottom:'0.2rem'}}>Free College Textbook</span>
-            <span style={{fontSize:'0.85rem',color:'var(--ink)'}}>{selected.textbookLabel}</span>
-          </div>
-          <div style={{display:'flex',gap:'0.75rem',flexWrap:'wrap'}}>
-            {selected.poster && (
-              <button className="btn btn-primary" onClick={()=>openPoster(selected,null)}>
-                📖 Open Full Study Guide
+        {selected && (()=>{
+          const cs = CAT[selected.cat] || CAT['Core Forensic'];
+          return <>
+            {/* Category bar */}
+            <div style={{background:cs.headerBg,color:'#fff',padding:'0.5rem 0.8rem',display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem',marginTop:'-0.5rem'}}>
+              <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.14em',textTransform:'uppercase',opacity:0.85}}>{cs.label}</span>
+              <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',opacity:0.5}}>Module {String(selected.id).padStart(2,'0')}</span>
+            </div>
+            <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem',lineHeight:1.65}}>{selected.desc}</p>
+            {/* Key concepts */}
+            <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.15em',textTransform:'uppercase',
+              color:cs.badgeText,display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'0.7rem'}}>
+              <span style={{display:'block',width:16,height:2,background:cs.border}}></span>
+              Key Concepts
+            </div>
+            <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginBottom:'1.4rem'}}>
+              {selected.concepts.map((c,i)=>(
+                <span key={i} style={{fontFamily:'DM Mono,monospace',fontSize:'0.54rem',background:cs.chipBg,color:cs.badgeText,
+                  padding:'0.25rem 0.65rem',border:`1px solid ${cs.border}22`,letterSpacing:'0.03em'}}>
+                  {c}
+                </span>
+              ))}
+            </div>
+            {/* Textbook reference */}
+            <div style={{background:cs.badgeBg,border:`1px solid ${cs.border}33`,borderLeft:`3px solid ${cs.border}`,padding:'0.7rem 1rem',marginBottom:'1.2rem'}}>
+              <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.12em',textTransform:'uppercase',color:cs.badgeText,display:'block',marginBottom:'0.2rem'}}>Free OpenStax Textbook</span>
+              <span style={{fontSize:'0.85rem',color:'var(--ink)'}}>{selected.textbookLabel}</span>
+            </div>
+            <div style={{display:'flex',gap:'0.75rem',flexWrap:'wrap'}}>
+              {selected.poster && (
+                <button style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',
+                  background:cs.studyBtnBg,color:'#fff',border:'none',padding:'0.5rem 1.2rem',cursor:'pointer'}}
+                  onClick={()=>openPoster(selected,null)}>
+                  Open Study Guide
+                </button>
+              )}
+              <button style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',
+                background:'transparent',color:cs.border,border:`1px solid ${cs.border}`,padding:'0.5rem 1.2rem',cursor:'pointer'}}
+                onClick={()=>openTextbook(selected,null)}>
+                Read Textbook
               </button>
-            )}
-            <button className="btn btn-outline" onClick={()=>openTextbook(selected,null)}>
-              📚 Read Textbook Chapter
-            </button>
-            <button className="btn btn-gold" onClick={()=>{setSelected(null);onNav('coach');}}>
-              🤖 Ask Coach
-            </button>
-          </div>
-        </>}
+              <button style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',
+                background:'var(--gold)',color:'#fff',border:'none',padding:'0.5rem 1.2rem',cursor:'pointer'}}
+                onClick={()=>{setSelected(null);onNav('coach');}}>
+                Ask Coach
+              </button>
+            </div>
+          </>;
+        })()}
       </Modal>
     </div>
   );
