@@ -1300,7 +1300,7 @@ function App() {
     sb.auth.getSession().then(({data:{session}})=>{
       if(session?.user) setUser(session.user);
       setAuthLoading(false);
-    });
+    }).catch(()=>{ setAuthLoading(false); });
     sb.auth.onAuthStateChange((_,session)=>{
       setUser(session?.user||null);
     });
@@ -1340,6 +1340,8 @@ function App() {
   );
 }
 
+// Pre-init Supabase before React renders
+initSupabase('https://gpktuflimoqeyxtwadsy.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U');
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App/>);
 </script>
