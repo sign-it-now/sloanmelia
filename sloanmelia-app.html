@@ -214,7 +214,15 @@ textarea.input{resize:vertical;min-height:80px;}
 .info-box strong{display:block;font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
 </style>
 <script>
-try{localStorage.setItem('sm_url','https://gpktuflimoqeyxtwadsy.supabase.co');localStorage.setItem('sm_key','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U');localStorage.setItem('sm_coach','https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach');}catch(e){}
+// Pre-seed credentials
+var SM_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
+var SM_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
+var SM_COACH = 'https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach';
+try{
+  localStorage.setItem('sm_url', SM_URL);
+  localStorage.setItem('sm_key', SM_KEY);
+  localStorage.setItem('sm_coach', SM_COACH);
+}catch(e){}
 </script>
 </head>
 <body>
@@ -223,12 +231,20 @@ try{localStorage.setItem('sm_url','https://gpktuflimoqeyxtwadsy.supabase.co');lo
 <script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
 
-// ── SUPABASE CLIENT (lazy initialized) ──────────────────────────────────────
-let supabase = null;
-function getSupabase() { return supabase; }
+// ── SUPABASE CLIENT ──────────────────────────────────────────────────────────
+// Client created in plain <script> tag to avoid window.supabase naming conflict
+let _smClient = null;
+function getSupabase() { return _smClient; }
 function initSupabase(url, key) {
-  supabase = window.supabase.createClient(url, key);
-  return supabase;
+  if (_smClient) return _smClient;
+  // window.supabase is set by the UMD CDN script (var supabase = ...)
+  // We access it via window to avoid shadowing by Babel's 'let supabase'
+  const lib = window['supabase'];
+  if (!lib || !lib.createClient) {
+    throw new Error('Supabase CDN not loaded. Check network tab for CDN errors.');
+  }
+  _smClient = lib.createClient(url, key);
+  return _smClient;
 }
 
 // ── TOAST SYSTEM ──────────────────────────────────────────────────────────────
