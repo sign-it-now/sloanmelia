@@ -578,11 +578,25 @@
       const {data: grades} = await sb.from('grades').select('grade_points,credit_hours').eq('user_id', p.user_id);
       const liveGpa = calcGPA(grades);
       if(liveGpa !== null) {
-        const gpaDisplay = liveGpa.toFixed(2);
-        // Update all three GPA display spots from same source
-        set('profile-gpa',          gpaDisplay);   // hero stat bar
-        set('profile-gpa-academic', gpaDisplay);   // academic highlights section
-        set('profile-gpa-bio',      gpaDisplay);   // bio paragraph
+        // Weighted GPA calculation (AP+1.0, Honors+0.5, cap 5.0)
+        function calcWeighted(g) {
+          const elig = (g||[]).filter(x=>x.grade_points!=null && x.credit_hours>0);
+          if(!elig.length) return null;
+          const pts = elig.reduce((s,x)=>{
+            const bonus = x.is_ap ? 1.0 : x.is_honors ? 0.5 : 0;
+            return s + (Math.min(parseFloat(x.grade_points)+bonus,5.0)*parseFloat(x.credit_hours));
+          },0);
+          const cr = elig.reduce((s,x)=>s+parseFloat(x.credit_hours),0);
+          return cr>0 ? Math.round((pts/cr)*1000)/1000 : null;
+        }
+        const liveWeighted = calcWeighted(grades);
+        const gpaUW = liveGpa.toFixed(2);
+        const gpaW  = liveWeighted ? liveWeighted.toFixed(2) : liveGpa.toFixed(2);
+
+        set('profile-gpa',          gpaW);    // hero stat bar (weighted is headline)
+        set('profile-gpa-weighted', gpaW);    // academic stats weighted
+        set('profile-gpa-academic', gpaUW);   // academic stats unweighted
+        set('profile-gpa-bio',      gpaUW);   // bio paragraph (unweighted in prose)
       }
     }
   } catch(e) {
@@ -651,8 +665,12 @@
   <h2 class="section-title">The Numbers &amp; The<br><em>Coursework Behind Them</em></h2>
   <div class="stats-row">
     <div class="stat-cell">
+      <span class="big" id="profile-gpa-weighted">3.84</span>
+      <span class="label">Weighted GPA <span style="font-size:0.55em;display:block;opacity:0.6;">AP+1.0 · Honors+0.5</span></span>
+    </div>
+    <div class="stat-cell">
       <span class="big" id="profile-gpa-academic">3.84</span>
-      <span class="label">Cumulative GPA</span>
+      <span class="label">Unweighted GPA <span style="font-size:0.55em;display:block;opacity:0.6;">4.0 Scale</span></span>
     </div>
     <div class="stat-cell">
       <span class="big">3</span>
