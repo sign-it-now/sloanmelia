@@ -1710,8 +1710,12 @@ function GpaModule({ user, toast }) {
   const [pasteText, setPasteText] = useState('');
   const [parsing, setParsing] = useState(false);
   const [tab, setTab] = useState('view'); // 'view','add','parse'
+  const [vaultDocs, setVaultDocs] = useState([]);
+  const [selectedDocs, setSelectedDocs] = useState([]);
+  const [parseMode, setParseMode] = useState('vault'); // 'vault' | 'paste'
   const coachUrl = localStorage.getItem('sm_coach')||'';
   const anonKey = localStorage.getItem('sm_key')||'';
+  const SUPA_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
 
   const load = async () => {
     setLoading(true);
@@ -1721,7 +1725,16 @@ function GpaModule({ user, toast }) {
     setLoading(false);
   };
 
-  useEffect(()=>{ load(); },[user]);
+  useEffect(()=>{
+    load();
+    // Load transcript docs from vault
+    const sb = getSupabase();
+    sb.from('documents').select('id,name,category,file_path')
+      .eq('user_id', user.id)
+      .in('category', ['Transcript','Test Scores'])
+      .order('created_at', {ascending:false})
+      .then(({data}) => setVaultDocs(data||[]));
+  },[user]);
 
   const gpaUnweighted = calcGPA(grades);
   const gpaWeighted   = calcWeightedGPA(grades);
@@ -1765,62 +1778,107 @@ function GpaModule({ user, toast }) {
     toast('Removed');
   };
 
-  const parseTranscript = async () => {
-    if(!pasteText.trim()) { toast('Paste your transcript text first'); return; }
-    if(!coachUrl) { toast('Coach URL not set'); return; }
+  // ── Helper: save parsed rows to DB ──────────────────────────────
+  const saveParsedRows = async (parsed) => {
+    if(!Array.isArray(parsed) || parsed.length === 0) {
+      toast('No courses found — check the transcript and try again');
+      return false;
+    }
+    const sb = getSupabase();
+    const rows = parsed.map(r=>({
+      user_id: user.id,
+      course_name: r.course_name,
+      grade_letter: r.grade_letter,
+      grade_points: gradeToPoints(r.grade_letter),
+      credit_hours: parseFloat(r.credit_hours)||1,
+      semester: r.semester||'Unknown',
+      grade_year: parseInt((r.semester||'2025').split(' ').pop())||2025,
+      is_ap: !!r.is_ap,
+      is_honors: !!r.is_honors,
+      source: 'parsed'
+    }));
+    const {error} = await sb.from('grades').insert(rows);
+    if(error) { toast('Save error: '+error.message); return false; }
+    toast(`✅ Imported ${rows.length} courses! GPA updated.`);
+    setTab('view');
+    await load();
+    return true;
+  };
+
+  const PARSE_PROMPT = `You are reading a high school transcript. Extract every course and return ONLY a valid JSON array with no explanation.
+Each item must have exactly these fields:
+- course_name (string)
+- grade_letter (A, A-, B+, B, B-, C+, C, C-, D, F — exactly as shown)
+- credit_hours (number, use 1.0 if not shown)
+- semester ("Fall 2022", "Spring 2023", "Fall 2023", "Spring 2024", "Fall 2024", "Spring 2025", "Fall 2025", or "Spring 2026")
+- is_ap (true if course name contains AP, false otherwise)
+- is_honors (true if course name contains H, Honors, or CP, false otherwise)
+Include ALL courses from ALL years shown. Return ONLY the JSON array.`;
+
+  // ── Parse from vault images ───────────────────────────────────────
+  const parseFromVault = async () => {
+    if(selectedDocs.length === 0) { toast('Select at least one transcript from your vault'); return; }
+    if(!coachUrl) { toast('Coach URL not configured'); return; }
     setParsing(true);
     try {
-      const prompt = `Parse this transcript and return ONLY a JSON array. Each item must have:
-- course_name (string)
-- grade_letter (A, A-, B+, B, B-, C+, C, etc.)
-- credit_hours (number, default 1 if not shown)
-- semester (e.g. "Fall 2024")
-- is_ap (true/false — look for AP in course name)
-- is_honors (true/false — look for H, Honors, or CP in course name)
-
-Transcript:
-${pasteText}
-
-Return ONLY the JSON array, no other text.`;
+      const sb = getSupabase();
+      // Build image content blocks for each selected doc
+      const imageBlocks = [];
+      for(const docId of selectedDocs) {
+        const doc = vaultDocs.find(d=>d.id===docId);
+        if(!doc) continue;
+        const {data: signedData} = await sb.storage.from('documents').createSignedUrl(doc.file_path, 300);
+        if(!signedData?.signedUrl) continue;
+        // Fetch image and convert to base64
+        const imgRes = await fetch(signedData.signedUrl);
+        const blob = await imgRes.blob();
+        const b64 = await new Promise(res=>{
+          const r = new FileReader();
+          r.onload = ()=>res(r.result.split(',')[1]);
+          r.readAsDataURL(blob);
+        });
+        const mediaType = blob.type || 'image/jpeg';
+        imageBlocks.push({type:'image', source:{type:'base64', media_type:mediaType, data:b64}});
+      }
+      if(imageBlocks.length === 0) { toast('Could not load images — try paste mode'); setParsing(false); return; }
+      imageBlocks.push({type:'text', text: PARSE_PROMPT});
 
       const res = await fetch(coachUrl, {
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+anonKey},
-        body: JSON.stringify({messages:[{role:'user',content:prompt}]})
+        body: JSON.stringify({messages:[{role:'user',content:imageBlocks}]})
       });
       const data = await res.json();
       const text = data.content?.[0]?.text || '';
       const cleaned = text.replace(/```json|```/g,'').trim();
       const parsed = JSON.parse(cleaned);
-
-      if(!Array.isArray(parsed) || parsed.length === 0) {
-        toast('Could not parse transcript — try adding courses manually');
-        setParsing(false);
-        return;
-      }
-
-      const sb = getSupabase();
-      const rows = parsed.map(r=>({
-        user_id: user.id,
-        course_name: r.course_name,
-        grade_letter: r.grade_letter,
-        grade_points: gradeToPoints(r.grade_letter),
-        credit_hours: parseFloat(r.credit_hours)||1,
-        semester: r.semester||'Unknown',
-        grade_year: parseInt((r.semester||'2025').split(' ').pop())||2025,
-        is_ap: !!r.is_ap,
-        is_honors: !!r.is_honors,
-        source: 'parsed'
-      }));
-
-      const {error} = await sb.from('grades').insert(rows);
-      if(error) { toast('Save error: '+error.message); setParsing(false); return; }
-      toast(`✅ Imported ${rows.length} courses from transcript!`);
-      setPasteText('');
-      setTab('view');
-      await load();
+      await saveParsedRows(parsed);
     } catch(e) {
-      toast('Parse failed — try manual entry');
+      console.error(e);
+      toast('Image parse failed — try paste mode below');
+    }
+    setParsing(false);
+  };
+
+  // ── Parse from pasted text ────────────────────────────────────────
+  const parseFromPaste = async () => {
+    if(!pasteText.trim()) { toast('Paste your transcript text first'); return; }
+    if(!coachUrl) { toast('Coach URL not configured'); return; }
+    setParsing(true);
+    try {
+      const res = await fetch(coachUrl, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+anonKey},
+        body: JSON.stringify({messages:[{role:'user',content: PARSE_PROMPT + '\n\nTranscript text:\n' + pasteText}]})
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text || '';
+      const cleaned = text.replace(/```json|```/g,'').trim();
+      const parsed = JSON.parse(cleaned);
+      await saveParsedRows(parsed);
+      setPasteText('');
+    } catch(e) {
+      toast('Parse failed — check transcript format and try again');
     }
     setParsing(false);
   };
@@ -1980,20 +2038,93 @@ Return ONLY the JSON array, no other text.`;
         {/* PARSE TAB */}
         {tab==='parse' && (
           <div>
-            <div className="info-box" style={{marginBottom:'1rem'}}>
-              <strong>📋 Import from Transcript</strong><br/>
-              Copy and paste your transcript text below. The AI Coach will automatically extract all courses, grades, and credit hours and add them to your GPA tracker.
+            {/* Mode toggle */}
+            <div style={{display:'flex',gap:'0.5rem',marginBottom:'1rem'}}>
+              <button onClick={()=>setParseMode('vault')} className="btn btn-sm"
+                style={{background:parseMode==='vault'?'#059669':'transparent',color:parseMode==='vault'?'#fff':'var(--dim)',border:'1px solid var(--border)'}}>
+                📁 From Document Vault {vaultDocs.length>0 && `(${vaultDocs.length} transcripts)`}
+              </button>
+              <button onClick={()=>setParseMode('paste')} className="btn btn-sm"
+                style={{background:parseMode==='paste'?'var(--ink)':'transparent',color:parseMode==='paste'?'var(--cream)':'var(--dim)',border:'1px solid var(--border)'}}>
+                📋 Paste Text
+              </button>
             </div>
-            <textarea
-              className="input"
-              style={{minHeight:'200px',resize:'vertical',fontFamily:'monospace',fontSize:'0.82rem'}}
-              value={pasteText}
-              onChange={e=>setPasteText(e.target.value)}
-              placeholder="Paste your transcript text here...&#10;&#10;Example:&#10;Fall 2024&#10;AP Psychology  A  1.0&#10;AP Statistics  B+  1.0&#10;English 4 AP  A-  1.0"
-            />
-            <button className="btn btn-gold" style={{marginTop:'0.8rem',width:'100%'}} onClick={parseTranscript} disabled={parsing}>
-              {parsing ? '🤖 Parsing transcript...' : '🤖 Import with AI Coach'}
-            </button>
+
+            {/* VAULT MODE */}
+            {parseMode==='vault' && (
+              <div>
+                {vaultDocs.length === 0 ? (
+                  <div className="info-box">
+                    No transcripts found in your Document Vault. Upload your transcript images in the <strong>Document Vault</strong> under the "Transcript" category, then come back here.
+                  </div>
+                ) : (
+                  <div>
+                    <div className="info-box" style={{marginBottom:'1rem'}}>
+                      <strong>📁 Select transcript pages from your vault</strong><br/>
+                      The AI Coach will read each image and extract all courses, grades, and semesters automatically.
+                    </div>
+                    <div style={{display:'grid',gap:'0.5rem',marginBottom:'1rem'}}>
+                      {vaultDocs.map(doc=>(
+                        <label key={doc.id} style={{
+                          display:'flex',alignItems:'center',gap:'0.8rem',
+                          padding:'0.7rem 1rem',border:'1px solid var(--border)',
+                          borderRadius:'6px',cursor:'pointer',
+                          background: selectedDocs.includes(doc.id) ? '#f0fdf4' : 'var(--cream)',
+                          borderColor: selectedDocs.includes(doc.id) ? '#059669' : 'var(--border)'
+                        }}>
+                          <input type="checkbox"
+                            checked={selectedDocs.includes(doc.id)}
+                            onChange={e=>{
+                              if(e.target.checked) setSelectedDocs(p=>[...p,doc.id]);
+                              else setSelectedDocs(p=>p.filter(id=>id!==doc.id));
+                            }}
+                          />
+                          <span style={{fontSize:'1.2rem'}}>
+                            {doc.name.match(/\.(png|jpg|jpeg)/i) ? '🖼️' : '📄'}
+                          </span>
+                          <div style={{flex:1}}>
+                            <div style={{fontWeight:600,fontSize:'0.88rem'}}>{doc.name}</div>
+                            <div style={{fontSize:'0.75rem',color:'var(--dim)'}}>{doc.category}</div>
+                          </div>
+                          {selectedDocs.includes(doc.id) && <span style={{color:'#059669',fontWeight:700}}>✓</span>}
+                        </label>
+                      ))}
+                    </div>
+                    <div style={{display:'flex',gap:'0.5rem',marginBottom:'0.5rem'}}>
+                      <button className="btn btn-sm" style={{fontSize:'0.75rem'}}
+                        onClick={()=>setSelectedDocs(vaultDocs.map(d=>d.id))}>Select All</button>
+                      <button className="btn btn-sm" style={{fontSize:'0.75rem'}}
+                        onClick={()=>setSelectedDocs([])}>Clear</button>
+                    </div>
+                    <button className="btn btn-gold" style={{width:'100%',padding:'0.8rem',marginTop:'0.5rem'}}
+                      onClick={parseFromVault} disabled={parsing||selectedDocs.length===0}>
+                      {parsing
+                        ? `🤖 Reading ${selectedDocs.length} image${selectedDocs.length>1?'s':''}...`
+                        : `🤖 Read & Import ${selectedDocs.length} Selected Transcript${selectedDocs.length!==1?'s':''}`}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* PASTE MODE */}
+            {parseMode==='paste' && (
+              <div>
+                <div className="info-box" style={{marginBottom:'1rem'}}>
+                  Copy and paste transcript text below. The AI Coach extracts all courses, grades, credit hours, and semesters.
+                </div>
+                <textarea
+                  className="input"
+                  style={{minHeight:'200px',resize:'vertical',fontFamily:'monospace',fontSize:'0.82rem'}}
+                  value={pasteText}
+                  onChange={e=>setPasteText(e.target.value)}
+                  placeholder="Paste transcript text here...&#10;&#10;Fall 2024&#10;AP Psychology  A  1.0&#10;AP Statistics  B+  1.0"
+                />
+                <button className="btn btn-gold" style={{marginTop:'0.8rem',width:'100%'}} onClick={parseFromPaste} disabled={parsing}>
+                  {parsing ? '🤖 Parsing...' : '🤖 Import with AI Coach'}
+                </button>
+              </div>
+            )}
           </div>
         )}
 
