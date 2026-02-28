@@ -1,3 +1,16 @@
+# Default page — redirect root to the app
+[[redirects]]
+  from = "/"
+  to = "/sloanmelia-app.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index.html"
+  to = "/sloanmelia-app.html"
+  status = 302
+  force = true
+
 [[redirects]]
   from = "/study-library.html"
   to = "/sloanmelia-app.html"
