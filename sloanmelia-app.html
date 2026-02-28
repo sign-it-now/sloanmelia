@@ -213,12 +213,13 @@ textarea.input{resize:vertical;min-height:80px;}
 .info-box{background:var(--cream);border-left:4px solid var(--gold);padding:1rem 1.2rem;font-size:0.88rem;line-height:1.65;margin-bottom:1rem;}
 .info-box strong{display:block;font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
 </style>
+<script>
+try{localStorage.setItem('sm_url','https://gpktuflimoqeyxtwadsy.supabase.co');localStorage.setItem('sm_key','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U');localStorage.setItem('sm_coach','https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach');}catch(e){}
+</script>
 </head>
 <body>
 <div id="root"></div>
 
-<script>try{localStorage.setItem('sm_url','https://gpktuflimoqeyxtwadsy.supabase.co');localStorage.setItem('sm_key','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U');localStorage.setItem('sm_coach','https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach');}catch(e){}
-</script>
 <script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
 
@@ -930,11 +931,11 @@ const SCHOLARSHIPS_SEED = [
   {name:'Women in STEM Scholarships',amount_min:500,amount_max:5000,status:'researching',url:'https://www.fastweb.com',requirements:'Female student in STEM or social science'},
 ];
 const FAFSA_SECTIONS = [
-  {title:'Before You Start — What to Gather', items:['Prior year tax returns for parents AND student','W-2 forms','Bank account balances for parents and student','Investment account balances','Social Security numbers for student and parents','FSA ID — create at studentaid.gov (this IS your signature, do it early)','List of schools to add to FAFSA']},
-  {title:'Key FAFSA Facts', items:['FAFSA opens October 1 each year for the following academic year','Illinois priority deadline: typically late January — check isac.org each year','The new Student Aid Index (SAI) replaced EFC starting 2024-2025','Lower SAI = more aid eligible','Most schools use FAFSA for ALL financial aid including institutional scholarships','FAFSA is FREE — never pay to file it']},
-  {title:'What Counts as Assets (and What Does Not)', items:['Parent assets counted at max 5.64% toward SAI — low impact','Student assets counted at 20% — higher impact, keep student balances low','Parent-owned 529 plan: only 5.64% counts toward SAI — very favorable','Primary home equity does NOT count on FAFSA','Retirement accounts do NOT count on FAFSA','Small businesses under 100 employees owned by parents may be excluded']},
-  {title:'Illinois-Specific Aid', items:['MAP Grant: up to $5,968/year for IL residents with financial need','Requires FAFSA completion by the Illinois state deadline — check isac.org','MAP Grant applies to SIUE, UIS, and SLU','Award is renewable each year if you re-file FAFSA and maintain academic progress']},
-  {title:'Understanding Your Award Letter', items:['Schools send award letters after you apply','Award letters mix grants (free money), loans (pay back), and work-study','Net price = total cost minus GRANTS ONLY — do not include loans','Compare net prices across schools, not sticker prices','Contact financial aid offices to negotiate — it is allowed and common']},
+  {title:'Before You Start — What to Gather',content:<ul><li>Prior year tax returns for parents AND student</li><li>W-2 forms</li><li>Bank account balances for parents and student</li><li>Investment account balances</li><li>Social Security numbers for student and parents</li><li>FSA ID — create at <strong>studentaid.gov</strong> (this IS your signature, do it early)</li><li>Sloan's Alton High School student ID number</li><li>List of schools to add to FAFSA</li></ul>},
+  {title:'Key FAFSA Facts',content:<ul><li>FAFSA opens <strong>October 1</strong> each year for the following academic year</li><li>Illinois priority deadline: typically <strong>late January</strong> — check isac.org each year</li><li>The new <strong>Student Aid Index (SAI)</strong> replaced EFC starting 2024-2025</li><li>Lower SAI = more aid eligible</li><li>Most schools use FAFSA for ALL financial aid including institutional scholarships</li><li>FAFSA is FREE — never pay to file it</li></ul>},
+  {title:'What Counts as Assets (and What Doesn\'t)',content:<ul><li>Parent assets counted at max <strong>5.64%</strong> toward SAI — low impact</li><li>Student assets counted at <strong>20%</strong> — higher impact, keep student balances low</li><li>Parent-owned <strong>529 plan: only 5.64% counts</strong> toward SAI — very favorable</li><li><strong>Primary home equity: does NOT count</strong> on FAFSA</li><li><strong>Retirement accounts: do NOT count</strong> on FAFSA</li><li>Small businesses (under 100 employees) owned by parents may be excluded</li></ul>},
+  {title:'Illinois-Specific Aid',content:<ul><li><strong>MAP Grant</strong> (Monetary Award Program): up to $5,968/year for IL residents with financial need</li><li>Requires FAFSA completion by the Illinois state deadline — check isac.org for current year</li><li>MAP Grant applies to eligible Illinois colleges — SIUE, UIS, and SLU all have MAP-eligible programs</li><li>Award is renewable each year if you re-file FAFSA and maintain academic progress</li></ul>},
+  {title:'Understanding Your Award Letter',content:<ul><li>Schools send award letters after you apply — may arrive at different times</li><li>Award letters may mix <strong>grants (free money)</strong>, <strong>loans (pay back)</strong>, and work-study</li><li><strong>Net price = total cost minus GRANTS ONLY</strong> — do not include loans in your calculation</li><li>Compare net prices across schools, not sticker prices</li><li>Contact financial aid offices to negotiate — it is allowed and common</li></ul>},
 ];
 
 function FinancialModule({ user, toast, coachUrl }) {
@@ -998,7 +999,7 @@ function FinancialModule({ user, toast, coachUrl }) {
                   {s.title}
                   <span>{openSection===i?'▲':'▼'}</span>
                 </div>
-                {openSection===i && <div className="accordion-body"><ul>{s.items.map((item,j)=><li key={j}>{item}</li>)}</ul></div>}
+                {openSection===i && <div className="accordion-body">{s.content}</div>}
               </div>
             ))}
           </div>
@@ -1148,20 +1149,29 @@ function CoachModule({ user, coachUrl, toast }) {
     setEssayLoading(false);
   };
 
-  const EDGE_FN_CODE = [
-    'import { serve } from "https://deno.land/std@0.168.0/http/server.ts"',
-    'const ANTHROPIC_KEY = Deno.env.get("ANTHROPIC_API_KEY")',
-    'serve(async (req) => {',
-    '  const h = {"Access-Control-Allow-Origin":"*","Content-Type":"application/json"}',
-    '  if (req.method==="OPTIONS") return new Response("ok",{headers:h})',
-    '  const {messages,vaultContext} = await req.json()',
-    '  const sys = "You are Sloan Smith college coach. GPA:3.84. Alton HS. PhD Forensic Psych goal. VAULT:"+vaultContext',
-    '  const r = await fetch("https://api.anthropic.com/v1/messages",{method:"POST",',
-    '    headers:{"x-api-key":ANTHROPIC_KEY,"anthropic-version":"2023-06-01","content-type":"application/json"},',
-    '    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:2048,system:sys,messages})})',
-    '  return new Response(JSON.stringify(await r.json()),{headers:h})',
-    '})'
-  ].join('\n');
+  const EDGE_FN_CODE = `import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+const ANTHROPIC_KEY = Deno.env.get('ANTHROPIC_API_KEY')
+serve(async (req) => {
+  const headers = { 'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, content-type',
+    'Content-Type': 'application/json' }
+  if (req.method === 'OPTIONS') return new Response('ok', { headers })
+  const { messages, vaultContext } = await req.json()
+  const systemPrompt = \`You are Sloan Smith's personal college application coach embedded in sloanmelia.com.
+SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 | Goal: PhD in Forensic Psychology
+SENIOR YEAR: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2
+KEY ACTIVITY: Patient Enrichment Program — FOUNDER. Annual hospital donation drive. This is her CENTERPIECE story.
+Others: Mu Alpha Theta (Math Honor Society), Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring
+VAULT: \${vaultContext}
+Rules: Always use her real data. Format form fields as FIELD: answer. For essays, lead with Patient Enrichment Program.\`
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 2048, system: systemPrompt, messages })
+  })
+  const data = await response.json()
+  return new Response(JSON.stringify(data), { headers })
+})`;
 
   return (
     <div>
