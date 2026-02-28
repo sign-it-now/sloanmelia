@@ -436,6 +436,12 @@
         (hCount > 0 ? ` · ${hCount} Honors` : '') +
         ' · Cumulative all years'
       );
+    } else {
+      // No courses entered yet — show known GPA as fallback
+      set('r-gpa-w',    '3.84');
+      set('r-gpa-uw',   '3.84');
+      set('r-gpa-core', '3.84');
+      set('r-gpa-note', 'Cumulative GPA · Alton High School · Course-by-course tracking in progress');
     }
 
     // ── Achievements ────────────────────────────────────────────────
