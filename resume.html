@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sloan Smith — Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  :root {
+    --ink: #0e0c09;
+    --gold: #c8872a;
+    --dim: #5a5040;
+    --faint: #e8e0d0;
+    --paper: #ffffff;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    color: var(--ink);
+    background: #f0ead8;
+  }
+
+  /* ── PRINT BUTTON (screen only) ── */
+  .print-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: var(--ink);
+    color: #fff;
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    gap: 1rem;
+  }
+  .print-bar span { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.08em; opacity: 0.7; }
+  .print-btn {
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .print-btn:hover { background: #b07020; }
+
+  /* ── LOADING ── */
+  #loading {
+    position: fixed;
+    inset: 0;
+    background: rgba(240,234,216,0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    z-index: 200;
+  }
+
+  /* ── RESUME PAGE ── */
+  .page {
+    width: 8.5in;
+    min-height: 11in;
+    margin: 80px auto 3rem;
+    background: var(--paper);
+    box-shadow: 0 4px 40px rgba(0,0,0,0.15);
+    padding: 0.6in 0.65in 0.6in 0.65in;
+  }
+
+  /* ── HEADER ── */
+  .r-header {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 0.18in;
+    margin-bottom: 0.18in;
+  }
+  .r-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32pt;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .r-name em { color: var(--gold); font-style: italic; font-weight: 400; }
+  .r-title {
+    font-family: 'Jost', sans-serif;
+    font-size: 10pt;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-top: 3px;
+  }
+  .r-contact {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8pt;
+    color: var(--dim);
+    flex-wrap: wrap;
+  }
+  .r-contact a { color: var(--dim); text-decoration: none; }
+
+  /* ── GPA ROW ── */
+  .gpa-row {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0.12in 0;
+    padding: 0.1in 0.15in;
+    background: #faf7f0;
+    border-left: 3px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+  }
+  .gpa-cell { text-align: center; }
+  .gpa-cell .gpa-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17pt;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .gpa-cell .gpa-lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: 6.5pt;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    display: block;
+    margin-top: 2px;
+  }
+  .gpa-divider { width: 1px; background: var(--faint); }
+  .gpa-note {
+    flex: 1;
+    font-size: 8.5pt;
+    color: var(--dim);
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+    padding-left: 0.5rem;
+  }
+
+  /* ── SECTION ── */
+  .r-section { margin-bottom: 0.18in; }
+  .r-section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5pt;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--faint);
+    padding-bottom: 3px;
+    margin-bottom: 0.1in;
+  }
+
+  /* ── BIO ── */
+  .r-bio { font-size: 9.5pt; line-height: 1.65; color: #2a2010; max-width: 6.5in; }
+
+  /* ── EDUCATION ── */
+  .edu-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+  .edu-school { font-weight: 600; font-size: 10.5pt; }
+  .edu-date { font-family: 'DM Mono', monospace; font-size: 8pt; color: var(--dim); }
+  .edu-detail { font-size: 9pt; color: var(--dim); }
+
+  /* ── ACHIEVEMENTS ── */
+  .ach-item { margin-bottom: 0.1in; page-break-inside: avoid; }
+  .ach-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .ach-title { font-weight: 600; font-size: 10pt; }
+  .ach-role { font-family: 'DM Mono', monospace; font-size: 7.5pt; color: var(--gold); letter-spacing: 0.08em; }
+  .ach-desc { font-size: 9pt; color: #3a3020; line-height: 1.55; margin-top: 1px; }
+  .ach-impact { font-size: 8pt; color: var(--dim); font-style: italic; margin-top: 1px; }
+
+  /* ── COURSES ── */
+  .courses-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 1rem; }
+  .course-item { font-size: 8.5pt; line-height: 1.4; }
+  .course-item .c-tag { color: var(--gold); font-family: 'DM Mono', monospace; font-size: 7pt; }
+
+  /* ── GOALS ── */
+  .goals-list { display: flex; flex-direction: column; gap: 5px; }
+  .goal-item { display: flex; gap: 0.8rem; align-items: baseline; font-size: 9pt; }
+  .goal-year { font-family: 'DM Mono', monospace; font-size: 7.5pt; color: var(--gold); min-width: 70px; }
+  .goal-text { color: #2a2010; }
+  .goal-text strong { font-weight: 600; }
+
+  /* ── FOOTER ── */
+  .r-footer {
+    margin-top: 0.2in;
+    padding-top: 0.1in;
+    border-top: 1px solid var(--faint);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 7pt;
+    color: #c0b090;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── TWO COLUMN LAYOUT ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25in; }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    body { background: white; font-size: 10pt; }
+    .print-bar { display: none; }
+    #loading { display: none; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      width: 100%;
+      padding: 0.5in 0.6in;
+    }
+    .r-name { font-size: 28pt; }
+  }
+
+  @page {
+    margin: 0;
+    size: letter;
+  }
+</style>
+</head>
+<body>
+
+<div id="loading">⟳ &nbsp; LOADING PROFILE DATA...</div>
+
+<!-- Print bar (screen only) -->
+<div class="print-bar">
+  <span>sloanmelia.com/resume — ready to print or save as PDF</span>
+  <button class="print-btn" onclick="window.print()">⬇ Print / Save as PDF</button>
+</div>
+
+<!-- Resume Page -->
+<div class="page" id="resume">
+
+  <!-- HEADER -->
+  <div class="r-header">
+    <div class="r-name" id="r-name">Sloan <strong>Smith</strong> <em>— Future Dr. Sloan Smith</em></div>
+    <div class="r-title" id="r-title">Aspiring Forensic Psychologist · Alton High School · Class of 2026</div>
+    <div class="r-contact">
+      <a href="mailto:sloan@sloanmelia.com" id="r-email">sloan@sloanmelia.com</a>
+      <span>Alton, Illinois</span>
+      <a href="https://sloanmelia.com" target="_blank">sloanmelia.com</a>
+      <span id="r-linkedin" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- GPA ROW -->
+  <div class="gpa-row">
+    <div class="gpa-cell">
+      <div class="gpa-num" id="r-gpa-w">—</div>
+      <span class="gpa-lbl">Weighted GPA</span>
+    </div>
+    <div class="gpa-divider"></div>
+    <div class="gpa-cell">
+      <div class="gpa-num" id="r-gpa-uw">—</div>
+      <span class="gpa-lbl">Unweighted GPA</span>
+    </div>
+    <div class="gpa-divider"></div>
+    <div class="gpa-cell">
+      <div class="gpa-num" id="r-gpa-core">—</div>
+      <span class="gpa-lbl">Core Academic GPA</span>
+    </div>
+    <div class="gpa-note" id="r-gpa-note">Cumulative · all years · calculated from course history</div>
+  </div>
+
+  <!-- OBJECTIVE / BIO -->
+  <div class="r-section">
+    <div class="r-section-title">Profile</div>
+    <p class="r-bio" id="r-bio">
+      I'm a senior at Alton High School with a passion for understanding the human mind and a clear mission: to earn my PhD in Forensic Psychology and apply science in service of justice and healing.
+    </p>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="r-section">
+    <div class="r-section-title">Education</div>
+    <div class="edu-row">
+      <span class="edu-school" id="r-school">Alton High School · Alton, Illinois</span>
+      <span class="edu-date" id="r-gradyear">Expected May 2026</span>
+    </div>
+    <div class="edu-detail">High School Diploma · Concentration in Biomedical & Behavioral Sciences</div>
+    <div class="edu-detail" style="margin-top:3px;" id="r-course-summary">Senior Year: AP Psychology · AP Statistics · Human Body Systems PLTW 2 · Biomedical Internship · Sociology · Environmental Science · Spanish</div>
+  </div>
+
+  <!-- TWO COLUMN: ACTIVITIES + GOALS -->
+  <div class="two-col">
+
+    <!-- ACTIVITIES & HONORS -->
+    <div class="r-section">
+      <div class="r-section-title">Activities, Leadership & Service</div>
+      <div id="r-achievements">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- CAREER GOALS -->
+    <div class="r-section">
+      <div class="r-section-title">Academic & Career Roadmap</div>
+      <div class="goals-list">
+        <div class="goal-item"><span class="goal-year">Now · 2026</span><span class="goal-text"><strong>Senior Year</strong> — Building the foundation. Applying to universities with strong psychology programs.</span></div>
+        <div class="goal-item"><span class="goal-year">2026–2030</span><span class="goal-text"><strong>B.S. Psychology</strong> — Undergraduate focus: statistics, neuroscience, research methods. Seeking lab and clinical internship experience.</span></div>
+        <div class="goal-item"><span class="goal-year">2030–2032</span><span class="goal-text"><strong>Master's Degree</strong> — Clinical or Forensic Psychology. Supervised clinical hours. Specializing in criminal behavior and mental health.</span></div>
+        <div class="goal-item"><span class="goal-year">2032–2036</span><span class="goal-text"><strong>PhD · Forensic Psychology</strong> — Doctoral research, APA internship, postdoctoral fellowship. Violence risk evaluation and criminal responsibility.</span></div>
+        <div class="goal-item"><span class="goal-year">2036+</span><span class="goal-text"><strong>Dr. Sloan Smith</strong> — Licensed forensic psychologist. Evaluations, expert testimony, and advancing justice through science.</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SENIOR YEAR COURSES -->
+  <div class="r-section">
+    <div class="r-section-title">Senior Year Coursework · 2025–2026</div>
+    <div class="courses-grid">
+      <div class="course-item"><span class="c-tag">AP · Psychology</span><br>AP Psychology</div>
+      <div class="course-item"><span class="c-tag">AP · Mathematics</span><br>AP Statistics</div>
+      <div class="course-item"><span class="c-tag">AP · English</span><br>CP English 4 AP</div>
+      <div class="course-item"><span class="c-tag">PLTW · Biomedical</span><br>Human Body Systems 2</div>
+      <div class="course-item"><span class="c-tag">Internship · Biomedical</span><br>Biomedical Internship</div>
+      <div class="course-item"><span class="c-tag">Social Science</span><br>Sociology</div>
+      <div class="course-item"><span class="c-tag">Science</span><br>Environmental Science</div>
+      <div class="course-item"><span class="c-tag">World Language · Year 4</span><br>Spanish 2A & 2B</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="r-footer">
+    <span>SLOAN SMITH · ALTON HIGH SCHOOL · CLASS OF 2026</span>
+    <span id="r-updated">sloanmelia.com</span>
+  </div>
+
+</div>
+
+<script>
+(async function() {
+  const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function set(id, text) {
+    const el = document.getElementById(id);
+    if(el && text !== null && text !== undefined) el.textContent = text;
+  }
+  function show(id) { const el = document.getElementById(id); if(el) el.style.display=''; }
+
+  // ── GPA Calculations ──────────────────────────────────────────────
+  const CORE_KW = ['english','math','algebra','geometry','calculus','statistics','biology',
+    'chemistry','physics','science','history','social','geography','spanish','french',
+    'language','ap ','psychology','sociology','economics','government','writing','literature'];
+
+  function calcUW(grades) {
+    const e = (grades||[]).filter(g=>g.grade_points!=null && g.credit_hours>0);
+    if(!e.length) return null;
+    const pts = e.reduce((s,g)=>s+(parseFloat(g.grade_points)*parseFloat(g.credit_hours)),0);
+    const cr  = e.reduce((s,g)=>s+parseFloat(g.credit_hours),0);
+    return cr>0 ? Math.round((pts/cr)*1000)/1000 : null;
+  }
+  function calcW(grades) {
+    const e = (grades||[]).filter(g=>g.grade_points!=null && g.credit_hours>0);
+    if(!e.length) return null;
+    const pts = e.reduce((s,g)=>{
+      const b = g.is_ap?1.0:g.is_honors?0.5:0;
+      return s+(Math.min(parseFloat(g.grade_points)+b,5.0)*parseFloat(g.credit_hours));
+    },0);
+    const cr = e.reduce((s,g)=>s+parseFloat(g.credit_hours),0);
+    return cr>0 ? Math.round((pts/cr)*1000)/1000 : null;
+  }
+  function calcCore(grades) {
+    const core = (grades||[]).filter(g=>
+      g.grade_points!=null && g.credit_hours>0 &&
+      CORE_KW.some(kw=>(g.course_name||'').toLowerCase().includes(kw))
+    );
+    if(!core.length) return null;
+    const pts = core.reduce((s,g)=>s+(parseFloat(g.grade_points)*parseFloat(g.credit_hours)),0);
+    const cr  = core.reduce((s,g)=>s+parseFloat(g.credit_hours),0);
+    return cr>0 ? Math.round((pts/cr)*1000)/1000 : null;
+  }
+
+  try {
+    // Load all data in parallel
+    const [
+      {data: profiles},
+      {data: grades},
+      {data: achievements}
+    ] = await Promise.all([
+      sb.from('profile').select('*').eq('share_enabled', true).limit(1),
+      sb.from('grades').select('*').eq('user_id', (await sb.from('profile').select('user_id').eq('share_enabled',true).limit(1)).data?.[0]?.user_id || ''),
+      sb.from('achievements').select('*').order('created_at', {ascending: false})
+    ]);
+
+    const p = profiles?.[0];
+
+    // ── Profile fields ──────────────────────────────────────────────
+    if(p) {
+      if(p.full_name) {
+        document.getElementById('r-name').innerHTML =
+          p.full_name.replace(/(\w+)\s(.+)/, '$1 <strong>$2</strong>') +
+          ' <em>— Future Dr. Sloan Smith</em>';
+      }
+      if(p.tagline) set('r-title', p.tagline + ' · ' + (p.school||'Alton High School') + ' · ' + (p.grad_year||'Class of 2026'));
+      if(p.bio) set('r-bio', p.bio);
+      if(p.email) {
+        const emailEl = document.getElementById('r-email');
+        if(emailEl) { emailEl.href = 'mailto:'+p.email; emailEl.textContent = p.email; }
+      }
+      if(p.school) set('r-school', p.school + ' · Alton, Illinois');
+      if(p.grad_year) set('r-gradyear', 'Expected May ' + p.grad_year.replace('Class of ',''));
+      if(p.linkedin_url) {
+        const li = document.getElementById('r-linkedin');
+        if(li) { li.style.display=''; li.textContent = p.linkedin_url.replace('https://',''); }
+      }
+    }
+
+    // ── GPA ──────────────────────────────────────────────────────────
+    if(grades && grades.length > 0) {
+      const uw   = calcUW(grades);
+      const w    = calcW(grades);
+      const core = calcCore(grades);
+      const apCount = grades.filter(g=>g.is_ap).length;
+      const hCount  = grades.filter(g=>g.is_honors).length;
+
+      if(w)    set('r-gpa-w',    w.toFixed(3));
+      if(uw)   set('r-gpa-uw',   uw.toFixed(3));
+      if(core) set('r-gpa-core', core.toFixed(3));
+
+      set('r-gpa-note',
+        `${grades.length} courses · ${grades.reduce((s,g)=>s+parseFloat(g.credit_hours||1),0)} credit hours` +
+        (apCount > 0 ? ` · ${apCount} AP` : '') +
+        (hCount > 0 ? ` · ${hCount} Honors` : '') +
+        ' · Cumulative all years'
+      );
+    }
+
+    // ── Achievements ────────────────────────────────────────────────
+    if(achievements && achievements.length > 0) {
+      const container = document.getElementById('r-achievements');
+      container.innerHTML = achievements.map(a => `
+        <div class="ach-item">
+          <div class="ach-header">
+            <span class="ach-title">${a.title||''}</span>
+            <span class="ach-role">${a.role||''}</span>
+          </div>
+          ${a.description ? `<div class="ach-desc">${a.description}</div>` : ''}
+          ${a.impact ? `<div class="ach-impact">${a.impact}</div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // ── Footer date ─────────────────────────────────────────────────
+    set('r-updated', 'sloanmelia.com · ' + new Date().toLocaleDateString('en-US', {month:'long', year:'numeric'}));
+
+  } catch(e) {
+    console.log('Resume load error:', e.message);
+  }
+
+  // Hide loader
+  document.getElementById('loading').style.display = 'none';
+})();
+</script>
+</body>
+</html>
