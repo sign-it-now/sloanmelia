@@ -6,10 +6,10 @@
 <meta name="color-scheme" content="light">
 <title>SloanMelia — Sloan Smith Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.0/babel.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   color-scheme: light only;
@@ -217,28 +217,14 @@ textarea.input{resize:vertical;min-height:80px;}
 <body>
 <div id="root"></div>
 
-<script>
-window.onerror = function(msg, src, line, col, err) {
-  document.getElementById('root').innerHTML = 
-    '<div style="padding:2rem;font-family:monospace;color:red;background:#fff;">' +
-    '<strong>App Error:</strong><br>' + msg + '<br>Line: ' + line +
-    '<br><br>Please hard-refresh (Cmd+Shift+R)</div>';
-};
-</script>
-<script type="text/babel" data-presets="react">
+<script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
 
-// ── SUPABASE CLIENT ──────────────────────────────────────────────────────────
-const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_GNyuuI3nQxC0066zf_r7SA_s0QXXBQh';
-const COACH_URL    = 'https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach';
+// ── SUPABASE CLIENT (lazy initialized) ──────────────────────────────────────
 let supabase = null;
-function getSupabase() {
-  if(!supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  return supabase;
-}
+function getSupabase() { return supabase; }
 function initSupabase(url, key) {
-  supabase = window.supabase.createClient(url||SUPABASE_URL, key||SUPABASE_KEY);
+  supabase = window.supabase.createClient(url, key);
   return supabase;
 }
 
@@ -486,7 +472,7 @@ function HomeModule({ onNav, user }) {
     <div>
       <div className="page-header">
         <div className="page-title serif">Welcome back, <em style={{color:'var(--gold)'}}>Sloan</em> 👋</div>
-        <div className="page-sub">Class of 2026 · Alton High School · GPA 3.684 · Future Dr. Smith</div>
+        <div className="page-sub">Class of 2026 · Alton High School · GPA 3.84 · Future Dr. Smith</div>
       </div>
       <div className="page-content">
         <div className="stats-row">
@@ -522,233 +508,77 @@ function HomeModule({ onNav, user }) {
 
 // ── STUDY LIBRARY ─────────────────────────────────────────────────────────────
 const STUDY_TOPICS = [
-  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',poster:'/poster1-brain.html',textbook:'https://openstax.org/books/psychology-2e/pages/3-introduction',textbookLabel:'OpenStax Ch.3 — Biopsychology',desc:'The biological foundation of behavior, emotion, and criminal mind.',concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
-  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',poster:'/poster2-dsm5.html',textbook:'https://openstax.org/books/psychology-2e/pages/15-introduction',textbookLabel:'OpenStax Ch.15 — Psychological Disorders',desc:'Mental disorder classification system used in forensic evaluations.',concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
-  {id:3,title:'Theorists Timeline',cat:'Core Forensic',poster:'/poster3-theorists.html',textbook:'https://openstax.org/books/psychology-2e/pages/1-introduction',textbookLabel:'OpenStax Ch.1 — History of Psychology',desc:'From Freud to modern forensic psychology pioneers.',concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
-  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',poster:'/poster4-research.html',textbook:'https://openstax.org/books/psychology-2e/pages/2-introduction',textbookLabel:'OpenStax Ch.2 — Psychological Research',desc:'Scientific foundation of psychological research.',concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
-  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',poster:'/poster5-defense.html',textbook:'https://openstax.org/books/psychology-2e/pages/14-introduction',textbookLabel:'OpenStax Ch.14 — Personality',desc:'Psychological defenses relevant to criminal behavior analysis.',concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
-  {id:6,title:'Human Development',cat:'Core Forensic',poster:'/poster6-development.html',textbook:'https://openstax.org/books/psychology-2e/pages/9-introduction',textbookLabel:'OpenStax Ch.9 — Lifespan Development',desc:'Lifespan development theories critical to forensic assessment.',concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
-  {id:7,title:'Cognitive Biases',cat:'Core Forensic',poster:'/poster7-biases.html',textbook:'https://openstax.org/books/psychology-2e/pages/7-introduction',textbookLabel:'OpenStax Ch.7 — Thinking & Intelligence',desc:'How thinking errors affect judgment, perception, and testimony.',concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
-  {id:8,title:'APA Ethics Code',cat:'Core Forensic',poster:'/poster8-ethics.html',textbook:'https://openstax.org/books/psychology-2e/pages/2-2-approaches-to-research',textbookLabel:'OpenStax Ch.2.2 — Research Ethics',desc:'Professional ethical obligations guiding all psychologists.',concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
-  {id:9,title:'Biology & Physiology',cat:'Supporting',poster:'/support1-biology.html',textbook:'https://openstax.org/books/psychology-2e/pages/3-introduction',textbookLabel:'OpenStax Ch.3 — Biopsychology',desc:'Body systems that support psychological function.',concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
-  {id:10,title:'Sociology & Social Theory',cat:'Supporting',poster:'/support2-sociology.html',textbook:'https://openstax.org/books/psychology-2e/pages/12-introduction',textbookLabel:'OpenStax Ch.12 — Social Psychology',desc:'Social forces shaping criminal behavior and justice.',concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
-  {id:11,title:'Philosophy of Mind',cat:'Supporting',poster:'/support3-philosophy.html',textbook:'https://openstax.org/books/psychology-2e/pages/1-introduction',textbookLabel:'OpenStax Ch.1 — Introduction to Psychology',desc:'Consciousness, free will, and moral responsibility.',concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
-  {id:12,title:'Pharmacology Basics',cat:'Supporting',poster:'/support4-pharmacology.html',textbook:'https://openstax.org/books/psychology-2e/pages/5-introduction',textbookLabel:'OpenStax Ch.5 — States of Consciousness',desc:'Psychoactive substances and their behavioral effects.',concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
-  {id:13,title:'Law & Psychology Interface',cat:'Supporting',poster:'/support5-law.html',textbook:'https://openstax.org/books/psychology-2e/pages/1-3-contemporary-psychology',textbookLabel:'OpenStax Ch.1.3 — Forensic Psychology',desc:'How psychological science enters the legal system.',concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
-  {id:14,title:'Communication & Testimony',cat:'Supporting',poster:'/support6-comm-write-admin.html',textbook:'https://openstax.org/books/psychology-2e/pages/1-3-contemporary-psychology',textbookLabel:'OpenStax Ch.1.3 — Expert Witness Context',desc:'Expert witness skills and forensic report writing.',concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
-  {id:15,title:'Academic Writing',cat:'Supporting',poster:'/support6-comm-write-admin.html',textbook:'https://apastyle.apa.org/learn/quick-guide-on-references',textbookLabel:'APA Style — Official Quick Guide',desc:'Research paper and report writing standards for psychology.',concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
-  {id:16,title:'Program Administration',cat:'Supporting',poster:'/support6-comm-write-admin.html',textbook:'https://openstax.org/books/psychology-2e/pages/16-introduction',textbookLabel:'OpenStax Ch.16 — Therapy & Treatment',desc:'Clinical and forensic program management fundamentals.',concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
-
-  // ── COLLEGE FOUNDATIONS ──────────────────────────────────────────────────────
-  {id:17,title:'College Writing',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/writing-guide/pages/1-introduction',textbookLabel:'OpenStax — Writing Guide with Handbook',desc:'Academic writing, essay structure, argument, and rhetoric for college success.',concepts:['Thesis development and argument','Essay structure: intro, body, conclusion','Rhetorical modes and purpose','Evidence integration and citation','Revision strategies','Academic tone and style']},
-  {id:18,title:'General Biology',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/biology-2e/pages/1-introduction',textbookLabel:'OpenStax — Biology 2e',desc:'Foundational life science covering cells, genetics, evolution, and ecosystems.',concepts:['Cell structure and function','DNA, RNA, and protein synthesis','Genetics and heredity','Natural selection and evolution','Ecology and ecosystems','Homeostasis and body systems']},
-  {id:19,title:'Sociology',cat:'College Foundations',poster:'/support2-sociology.html',textbook:'https://openstax.org/books/introduction-sociology-3e/pages/1-introduction',textbookLabel:'OpenStax — Introduction to Sociology 3e',desc:'Social structures, institutions, inequality, and collective human behavior.',concepts:['Sociological imagination','Social stratification and class','Race, ethnicity, and inequality','Social institutions: family, education, religion','Deviance and social control','Culture and socialization']},
-  {id:20,title:'Jurisprudence & Legal Theory',cat:'College Foundations',poster:'/support5-law.html',textbook:'https://openstax.org/books/business-law-i-essentials/pages/1-1-basic-american-legal-principles',textbookLabel:'OpenStax — Business Law I: American Legal Principles',desc:'Philosophy of law, legal reasoning, rights, justice, and constitutional theory.',concepts:['Natural law vs. legal positivism','Constitutional structure and rights','Due process and equal protection','Sources of law: statute, case, regulation','Legal reasoning and precedent (stare decisis)','Criminal vs. civil law distinctions']},
-  {id:21,title:'Personal Finance & Budgeting',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/personal-finance/pages/1-introduction',textbookLabel:'OpenStax — Personal Finance',desc:'Budgeting, credit, investing, taxes, and financial planning for life after high school.',concepts:['Building a personal budget','Credit scores and debt management','Saving vs. investing','Student loan repayment strategies','Understanding taxes and W-2s','Retirement accounts: Roth IRA, 401(k)']},
-  {id:22,title:'Chemistry',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/chemistry-2e/pages/1-introduction',textbookLabel:'OpenStax — Chemistry 2e',desc:'Atoms, molecules, reactions, and chemical principles underlying all physical science.',concepts:['Atomic structure and periodic table','Chemical bonding and molecular geometry','Stoichiometry and mole concept','Acids, bases, and pH','Thermodynamics and reaction rates','Electrochemistry basics']},
-  {id:23,title:'US History',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/us-history/pages/1-introduction',textbookLabel:'OpenStax — U.S. History 2e',desc:'American history from pre-colonial era through the 20th century.',concepts:['Colonial foundations and revolution','Constitution and early republic','Civil War and Reconstruction','Industrialization and immigration','Civil Rights Movement','Cold War and modern America']},
-  {id:24,title:'Statistics & Data Analysis',cat:'College Foundations',poster:'/poster4-research.html',textbook:'https://openstax.org/books/introductory-statistics/pages/1-introduction',textbookLabel:'OpenStax — Introductory Statistics',desc:'Probability, data analysis, and statistical reasoning used across every academic field.',concepts:['Descriptive statistics: mean, median, mode','Probability and distributions','Hypothesis testing','Correlation vs. causation','Regression analysis','Interpreting p-values and confidence intervals']},
-  {id:25,title:'Anatomy & Physiology',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/anatomy-and-physiology-2e/pages/1-introduction',textbookLabel:'OpenStax — Anatomy & Physiology 2e',desc:'Human body systems — essential for forensic pathology, toxicology, and medical testimony.',concepts:['Integumentary and skeletal systems','Nervous system and brain anatomy','Cardiovascular and respiratory systems','Endocrine system and hormones','Cause of death: physiological basics','Forensic pathology applications']},
-  {id:26,title:'Economics',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/principles-economics-3e/pages/1-introduction',textbookLabel:'OpenStax — Principles of Economics 3e',desc:'Micro and macro economic principles governing markets, policy, and individual decisions.',concepts:['Supply, demand, and equilibrium','GDP, inflation, and unemployment','Fiscal and monetary policy','Market structures: competition, monopoly','Behavioral economics basics','Cost-benefit analysis']},
-  {id:27,title:'Political Science & Government',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/american-government-3e/pages/1-introduction',textbookLabel:'OpenStax — American Government 3e',desc:'Structure of government, civil rights, policy-making, and democratic theory.',concepts:['Branches of federal government','Federalism and state vs. federal power','Civil liberties and the Bill of Rights','Electoral systems and voting','Public policy process','Criminal justice system and policy']},
-  {id:28,title:'Microbiology & Forensic Science',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/microbiology/pages/1-introduction',textbookLabel:'OpenStax — Microbiology',desc:'Microorganisms, disease, and biological evidence relevant to forensic investigation.',concepts:['Bacteria, viruses, and fungi basics','DNA evidence and PCR technology','Toxicology and biological agents','Decomposition science','Chain of custody for biological samples','Infectious disease and criminal law']},
-  {id:29,title:'Environmental Science',cat:'College Foundations',poster:null,textbook:'https://openstax.org/books/concepts-biology/pages/1-introduction',textbookLabel:'OpenStax — Concepts of Biology',desc:'Ecological systems, environmental policy, and sustainability science.',concepts:['Ecosystems and biodiversity','Climate science fundamentals','Environmental law and policy','Pollution and public health','Resource management','Environmental justice']},
+  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',desc:'The biological foundation of behavior, emotion, and criminal mind.',concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
+  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',desc:'Mental disorder classification system used in forensic evaluations.',concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
+  {id:3,title:'Theorists Timeline',cat:'Core Forensic',desc:'From Freud to modern forensic psychology pioneers.',concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
+  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',desc:'Scientific foundation of psychological research.',concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
+  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',desc:'Psychological defenses relevant to criminal behavior analysis.',concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
+  {id:6,title:'Human Development',cat:'Core Forensic',desc:'Lifespan development theories critical to forensic assessment.',concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
+  {id:7,title:'Cognitive Biases',cat:'Core Forensic',desc:'How thinking errors affect judgment, perception, and testimony.',concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
+  {id:8,title:'APA Ethics Code',cat:'Core Forensic',desc:'Professional ethical obligations guiding all psychologists.',concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
+  {id:9,title:'Biology & Physiology',cat:'Supporting',desc:'Body systems that support psychological function.',concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
+  {id:10,title:'Sociology & Social Theory',cat:'Supporting',desc:'Social forces shaping criminal behavior and justice.',concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
+  {id:11,title:'Philosophy of Mind',cat:'Supporting',desc:'Consciousness, free will, and moral responsibility.',concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
+  {id:12,title:'Pharmacology Basics',cat:'Supporting',desc:'Psychoactive substances and their behavioral effects.',concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
+  {id:13,title:'Law & Psychology Interface',cat:'Supporting',desc:'How psychological science enters the legal system.',concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
+  {id:14,title:'Communication & Testimony',cat:'Supporting',desc:'Expert witness skills and forensic report writing.',concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
+  {id:15,title:'Academic Writing',cat:'Supporting',desc:'Research paper and report writing standards for psychology.',concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
+  {id:16,title:'Program Administration',cat:'Supporting',desc:'Clinical and forensic program management fundamentals.',concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
 ];
 
 function LibraryModule({ onNav, coachUrl }) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
-  const filtered = STUDY_TOPICS.filter(t => t.title.toLowerCase().includes(search.toLowerCase()) || t.cat.toLowerCase().includes(search.toLowerCase()) || t.desc.toLowerCase().includes(search.toLowerCase()));
-
-  const openPoster = (t, e) => {
-    if(e) e.stopPropagation();
-    window.open(t.poster, '_blank', 'noopener');
-  };
-
-  const openTextbook = (t, e) => {
-    if(e) e.stopPropagation();
-    window.open(t.textbook, '_blank', 'noopener');
-  };
-
-  // OpenStax-inspired academic color system
-  const CAT = {
-    'Core Forensic':      { border:'#1a3a5c', badgeBg:'#e8f0f8', badgeText:'#1a3a5c', chipBg:'#c8ddf0', headerBg:'#1a3a5c', label:'Core Forensic',      studyBtnBg:'#1a3a5c' },
-    'Supporting':         { border:'#6b3f8b', badgeBg:'#f3e8f8', badgeText:'#6b3f8b', chipBg:'#ddc8f0', headerBg:'#5c2d7a', label:'Supporting Course',   studyBtnBg:'#6b3f8b' },
-    'College Foundations':{ border:'#1a5c48', badgeBg:'#e8f5ef', badgeText:'#1a5c48', chipBg:'#b8e0d0', headerBg:'#1a5c48', label:'College Foundations', studyBtnBg:'#1a5c48' },
-  };
-
-  const renderCard = (t) => {
-    const cs = CAT[t.cat] || CAT['Core Forensic'];
-    return (
-      <div key={t.id} onClick={()=>setSelected(t)} style={{
-        background:'#fff', border:'1px solid #e5ddd0', borderTop:`4px solid ${cs.border}`,
-        padding:'1.1rem', cursor:'pointer', display:'flex', flexDirection:'column', gap:'0',
-        transition:'box-shadow 0.18s, transform 0.18s',
-        boxShadow:'0 1px 3px rgba(0,0,0,0.06)',
-      }}
-        onMouseEnter={e=>{e.currentTarget.style.boxShadow='0 6px 20px rgba(0,0,0,0.12)';e.currentTarget.style.transform='translateY(-2px)';}}
-        onMouseLeave={e=>{e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.06)';e.currentTarget.style.transform='translateY(0)';}}
-      >
-        {/* Header row: category badge + chapter number */}
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'0.55rem'}}>
-          <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.5rem',letterSpacing:'0.12em',textTransform:'uppercase',
-            background:cs.badgeBg,color:cs.badgeText,padding:'0.18rem 0.6rem',border:`1px solid ${cs.border}33`}}>
-            {cs.label}
-          </span>
-          <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.7rem',color:cs.border,fontWeight:500,opacity:0.5,letterSpacing:'0.05em'}}>
-            {String(t.id).padStart(2,'0')}
-          </span>
-        </div>
-        {/* Title */}
-        <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.05rem',fontWeight:700,color:'#0e0c09',lineHeight:1.25,marginBottom:'0.35rem'}}>
-          {t.title}
-        </div>
-        {/* Description */}
-        <div style={{fontSize:'0.8rem',color:'#7a7060',lineHeight:1.55,marginBottom:'0.6rem',flex:1}}>
-          {t.desc}
-        </div>
-        {/* Key concept chips — first 3 */}
-        <div style={{display:'flex',gap:'0.3rem',flexWrap:'wrap',marginBottom:'0.65rem'}}>
-          {t.concepts.slice(0,3).map((c,i)=>(
-            <span key={i} style={{fontFamily:'DM Mono,monospace',fontSize:'0.48rem',background:cs.chipBg,color:cs.badgeText,
-              padding:'0.15rem 0.45rem',letterSpacing:'0.04em',whiteSpace:'nowrap',maxWidth:'160px',overflow:'hidden',textOverflow:'ellipsis',display:'inline-block'}}>
-              {c}
-            </span>
-          ))}
-        </div>
-        {/* Action buttons */}
-        <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',borderTop:'1px solid #ede5d8',paddingTop:'0.6rem'}}>
-          {t.poster && (
-            <button onClick={(e)=>{e.stopPropagation();openPoster(t,e);}} style={{
-              fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.1em',textTransform:'uppercase',
-              background:cs.studyBtnBg,color:'#fff',border:'none',padding:'0.32rem 0.8rem',cursor:'pointer'}}>
-              Study Guide
-            </button>
-          )}
-          <button onClick={(e)=>{e.stopPropagation();setSelected(t);}} style={{
-            fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.1em',textTransform:'uppercase',
-            background:'transparent',color:cs.border,border:`1px solid ${cs.border}`,padding:'0.32rem 0.8rem',cursor:'pointer'}}>
-            Overview →
-          </button>
-          <button onClick={(e)=>{e.stopPropagation();openTextbook(t,e);}} style={{
-            fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.1em',textTransform:'uppercase',
-            background:'transparent',color:'#7a7060',border:'1px solid #c8c0b0',padding:'0.32rem 0.8rem',cursor:'pointer'}}>
-            OpenStax
-          </button>
-        </div>
-      </div>
-    );
-  };
+  const filtered = STUDY_TOPICS.filter(t => t.title.toLowerCase().includes(search.toLowerCase()) || t.cat.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div>
       <div className="page-header">
         <div className="page-title serif">Study <em style={{color:'var(--gold)'}}>Library</em></div>
-        <div className="page-sub">29 study modules across forensic psychology & college foundations · Free OpenStax textbooks linked for every subject</div>
+        <div className="page-sub">16 forensic psychology topic modules · Click any card to study</div>
       </div>
       <div className="page-content">
-        <div style={{marginBottom:'1.2rem'}}>
-          <input className="input" placeholder="Search all subjects..." value={search} onChange={e=>setSearch(e.target.value)}/>
+        <div style={{marginBottom:'1rem'}}>
+          <input className="input" placeholder="Search topics..." value={search} onChange={e=>setSearch(e.target.value)}/>
         </div>
 
-        {(search==='' || filtered.some(t=>t.cat==='Core Forensic')) && <>
-          <div style={{background:'#1a3a5c',color:'#fff',padding:'0.65rem 1.1rem',display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem',marginTop:'0.5rem'}}>
-            <div>
-              <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.5rem',letterSpacing:'0.18em',textTransform:'uppercase',opacity:0.55,marginBottom:'0.1rem'}}>Study Library · Section 01</div>
-              <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.05rem',fontWeight:700}}>Core Forensic Psychology</div>
+        <div className="section-label">Core Forensic Psychology</div>
+        <div className="grid3" style={{marginBottom:'1.5rem'}}>
+          {filtered.filter(t=>t.cat==='Core Forensic').map(t=>(
+            <div key={t.id} className="card" style={{borderTop:'3px solid var(--ink)',cursor:'pointer'}} onClick={()=>setSelected(t)}>
+              <span className="card-label">Core Forensic</span>
+              <div className="card-title">{t.title}</div>
+              <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
+              <button className="btn btn-ghost btn-sm" style={{marginTop:'0.7rem',paddingLeft:0}}>Study →</button>
             </div>
-            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',opacity:0.6}}>8 modules</span>
-          </div>
-          <div className="grid3" style={{marginBottom:'2.5rem'}}>
-            {filtered.filter(t=>t.cat==='Core Forensic').map(renderCard)}
-          </div>
-        </>}
+          ))}
+        </div>
 
-        {(search==='' || filtered.some(t=>t.cat==='Supporting')) && <>
-          <div style={{background:'#5c2d7a',color:'#fff',padding:'0.65rem 1.1rem',display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem'}}>
-            <div>
-              <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.5rem',letterSpacing:'0.18em',textTransform:'uppercase',opacity:0.55,marginBottom:'0.1rem'}}>Study Library · Section 02</div>
-              <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.05rem',fontWeight:700}}>Supporting Coursework</div>
+        <div className="section-label">Supporting Coursework</div>
+        <div className="grid3">
+          {filtered.filter(t=>t.cat==='Supporting').map(t=>(
+            <div key={t.id} className="card" style={{borderTop:'3px solid var(--gold)',cursor:'pointer'}} onClick={()=>setSelected(t)}>
+              <span className="card-label" style={{color:'var(--teal)'}}>Supporting Course</span>
+              <div className="card-title">{t.title}</div>
+              <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
+              <button className="btn btn-ghost btn-sm" style={{marginTop:'0.7rem',paddingLeft:0}}>Study →</button>
             </div>
-            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',opacity:0.6}}>8 modules</span>
-          </div>
-          <div className="grid3" style={{marginBottom:'2.5rem'}}>
-            {filtered.filter(t=>t.cat==='Supporting').map(renderCard)}
-          </div>
-        </>}
-
-        {(search==='' || filtered.some(t=>t.cat==='College Foundations')) && <>
-          <div style={{background:'#1a5c48',color:'#fff',padding:'0.65rem 1.1rem',display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem'}}>
-            <div>
-              <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.5rem',letterSpacing:'0.18em',textTransform:'uppercase',opacity:0.55,marginBottom:'0.1rem'}}>Study Library · Section 03 · All Free via OpenStax</div>
-              <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.05rem',fontWeight:700}}>College Foundations</div>
-            </div>
-            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',opacity:0.6}}>13 modules</span>
-          </div>
-          <div className="grid3" style={{marginBottom:'2.5rem'}}>
-            {filtered.filter(t=>t.cat==='College Foundations').map(renderCard)}
-          </div>
-        </>}
-
-        {filtered.length===0 && (
-          <div style={{textAlign:'center',padding:'3rem',color:'var(--dim)'}}>
-            <div style={{fontSize:'2rem',marginBottom:'0.75rem'}}>🔍</div>
-            <div style={{fontFamily:'Playfair Display,serif',fontSize:'1.1rem',marginBottom:'0.5rem'}}>No subjects found</div>
-            <div style={{fontSize:'0.85rem'}}>Try a different search term</div>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
-      <Modal open={!!selected} onClose={()=>setSelected(null)} title={selected?.title} wide={true}>
-        {selected && (()=>{
-          const cs = CAT[selected.cat] || CAT['Core Forensic'];
-          return <>
-            {/* Category bar */}
-            <div style={{background:cs.headerBg,color:'#fff',padding:'0.5rem 0.8rem',display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1rem',marginTop:'-0.5rem'}}>
-              <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.14em',textTransform:'uppercase',opacity:0.85}}>{cs.label}</span>
-              <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',opacity:0.5}}>Module {String(selected.id).padStart(2,'0')}</span>
-            </div>
-            <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem',lineHeight:1.65}}>{selected.desc}</p>
-            {/* Key concepts */}
-            <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.15em',textTransform:'uppercase',
-              color:cs.badgeText,display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'0.7rem'}}>
-              <span style={{display:'block',width:16,height:2,background:cs.border}}></span>
-              Key Concepts
-            </div>
-            <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginBottom:'1.4rem'}}>
-              {selected.concepts.map((c,i)=>(
-                <span key={i} style={{fontFamily:'DM Mono,monospace',fontSize:'0.54rem',background:cs.chipBg,color:cs.badgeText,
-                  padding:'0.25rem 0.65rem',border:`1px solid ${cs.border}22`,letterSpacing:'0.03em'}}>
-                  {c}
-                </span>
-              ))}
-            </div>
-            {/* Textbook reference */}
-            <div style={{background:cs.badgeBg,border:`1px solid ${cs.border}33`,borderLeft:`3px solid ${cs.border}`,padding:'0.7rem 1rem',marginBottom:'1.2rem'}}>
-              <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.12em',textTransform:'uppercase',color:cs.badgeText,display:'block',marginBottom:'0.2rem'}}>Free OpenStax Textbook</span>
-              <span style={{fontSize:'0.85rem',color:'var(--ink)'}}>{selected.textbookLabel}</span>
-            </div>
-            <div style={{display:'flex',gap:'0.75rem',flexWrap:'wrap'}}>
-              {selected.poster && (
-                <button style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',
-                  background:cs.studyBtnBg,color:'#fff',border:'none',padding:'0.5rem 1.2rem',cursor:'pointer'}}
-                  onClick={()=>openPoster(selected,null)}>
-                  Open Study Guide
-                </button>
-              )}
-              <button style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',
-                background:'transparent',color:cs.border,border:`1px solid ${cs.border}`,padding:'0.5rem 1.2rem',cursor:'pointer'}}
-                onClick={()=>openTextbook(selected,null)}>
-                Read Textbook
-              </button>
-              <button style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',
-                background:'var(--gold)',color:'#fff',border:'none',padding:'0.5rem 1.2rem',cursor:'pointer'}}
-                onClick={()=>{setSelected(null);onNav('coach');}}>
-                Ask Coach
-              </button>
-            </div>
-          </>;
-        })()}
+      <Modal open={!!selected} onClose={()=>setSelected(null)} title={selected?.title}>
+        {selected && <>
+          <span className="badge badge-teal" style={{marginBottom:'1rem'}}>{selected.cat}</span>
+          <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem'}}>{selected.desc}</p>
+          <div className="section-label">Key Concepts</div>
+          <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
+            {selected.concepts.map((c,i)=><li key={i} style={{marginBottom:'0.4rem',fontSize:'0.88rem'}}>{c}</li>)}
+          </ul>
+          <button className="btn btn-gold" onClick={()=>{setSelected(null);onNav('coach');}}>
+            🤖 Ask Coach About This Topic
+          </button>
+        </>}
       </Modal>
     </div>
   );
@@ -1325,7 +1155,7 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers })
   const { messages, vaultContext } = await req.json()
   const systemPrompt = \`You are Sloan Smith's personal college application coach embedded in sloanmelia.com.
-SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.684 | Goal: PhD in Forensic Psychology
+SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 | Goal: PhD in Forensic Psychology
 SENIOR YEAR: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2
 KEY ACTIVITY: Patient Enrichment Program — FOUNDER. Annual hospital donation drive. This is her CENTERPIECE story.
 Others: Mu Alpha Theta (Math Honor Society), Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring
@@ -1455,28 +1285,41 @@ Rules: Always use her real data. Format form fields as FIELD: answer. For essays
 // ── ROOT APP ──────────────────────────────────────────────────────────────────
 function App() {
   const { toasts, toast } = useToast();
-  const [config] = useState({ url: SUPABASE_URL, key: SUPABASE_KEY, coachUrl: COACH_URL });
+  const [config, setConfig] = useState(null);
   const [user, setUser] = useState(null);
   const [page, setPage] = useState('home');
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(()=>{
-    initSupabase(SUPABASE_URL, SUPABASE_KEY);
-    const sb = getSupabase();
-    sb.auth.getSession().then(({data:{session}})=>{
-      if(session?.user) setUser(session.user);
-      setAuthLoading(false);
-    });
-    sb.auth.onAuthStateChange((_,session)=>{
-      setUser(session?.user||null);
-    });
+    const url = localStorage.getItem('sm_url');
+    const key = localStorage.getItem('sm_key');
+    const coach = localStorage.getItem('sm_coach')||'';
+    if(url&&key) {
+      initSupabase(url,key);
+      setConfig({url,key,coachUrl:coach});
+      const sb = getSupabase();
+      sb.auth.getSession().then(({data:{session}})=>{
+        if(session?.user) setUser(session.user);
+        setAuthLoading(false);
+      });
+      sb.auth.onAuthStateChange((_,session)=>{
+        setUser(session?.user||null);
+      });
+    } else setAuthLoading(false);
   },[]);
+
+  const handleSetup = (cfg) => {
+    setConfig(cfg);
+    const sb = getSupabase();
+    sb.auth.getSession().then(({data:{session}})=>{ if(session?.user) setUser(session.user); setAuthLoading(false); });
+  };
 
   const signOut = async () => {
     await getSupabase().auth.signOut();
     setUser(null);
   };
 
+  if(!config) return (<><ToastContainer toasts={toasts}/><SetupScreen onSetup={handleSetup}/></>);
   if(authLoading) return <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center'}}><div className="typing"><span/><span/><span/></div></div>;
   if(!user) return (<><ToastContainer toasts={toasts}/><LoginScreen onLogin={setUser} toast={toast}/></>);
 
