@@ -508,22 +508,22 @@ function HomeModule({ onNav, user }) {
 
 // ── STUDY LIBRARY ─────────────────────────────────────────────────────────────
 const STUDY_TOPICS = [
-  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',poster:'/poster1-brain.html',desc:'The biological foundation of behavior, emotion, and criminal mind.',concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
-  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',poster:'/poster2-dsm5.html',desc:'Mental disorder classification system used in forensic evaluations.',concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
-  {id:3,title:'Theorists Timeline',cat:'Core Forensic',poster:'/poster3-theorists.html',desc:'From Freud to modern forensic psychology pioneers.',concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
-  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',poster:'/poster4-research.html',desc:'Scientific foundation of psychological research.',concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
-  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',poster:'/poster5-defense.html',desc:'Psychological defenses relevant to criminal behavior analysis.',concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
-  {id:6,title:'Human Development',cat:'Core Forensic',poster:'/poster6-development.html',desc:'Lifespan development theories critical to forensic assessment.',concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
-  {id:7,title:'Cognitive Biases',cat:'Core Forensic',poster:'/poster7-biases.html',desc:'How thinking errors affect judgment, perception, and testimony.',concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
-  {id:8,title:'APA Ethics Code',cat:'Core Forensic',poster:'/poster8-ethics.html',desc:'Professional ethical obligations guiding all psychologists.',concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
-  {id:9,title:'Biology & Physiology',cat:'Supporting',poster:'/support1-biology.html',desc:'Body systems that support psychological function.',concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
-  {id:10,title:'Sociology & Social Theory',cat:'Supporting',poster:'/support2-sociology.html',desc:'Social forces shaping criminal behavior and justice.',concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
-  {id:11,title:'Philosophy of Mind',cat:'Supporting',poster:'/support3-philosophy.html',desc:'Consciousness, free will, and moral responsibility.',concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
-  {id:12,title:'Pharmacology Basics',cat:'Supporting',poster:'/support4-pharmacology.html',desc:'Psychoactive substances and their behavioral effects.',concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
-  {id:13,title:'Law & Psychology Interface',cat:'Supporting',poster:'/support5-law.html',desc:'How psychological science enters the legal system.',concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
-  {id:14,title:'Communication & Testimony',cat:'Supporting',poster:'/support6-comm-write-admin.html',desc:'Expert witness skills and forensic report writing.',concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
-  {id:15,title:'Academic Writing',cat:'Supporting',poster:'/support6-comm-write-admin.html',desc:'Research paper and report writing standards for psychology.',concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
-  {id:16,title:'Program Administration',cat:'Supporting',poster:'/support6-comm-write-admin.html',desc:'Clinical and forensic program management fundamentals.',concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
+  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',poster:'/poster1-brain.html',textbook:'https://openstax.org/books/psychology-2e/pages/3-introduction',textbookLabel:'OpenStax Ch.3 — Biopsychology',desc:'The biological foundation of behavior, emotion, and criminal mind.',concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
+  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',poster:'/poster2-dsm5.html',textbook:'https://openstax.org/books/psychology-2e/pages/15-introduction',textbookLabel:'OpenStax Ch.15 — Psychological Disorders',desc:'Mental disorder classification system used in forensic evaluations.',concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
+  {id:3,title:'Theorists Timeline',cat:'Core Forensic',poster:'/poster3-theorists.html',textbook:'https://openstax.org/books/psychology-2e/pages/1-introduction',textbookLabel:'OpenStax Ch.1 — History of Psychology',desc:'From Freud to modern forensic psychology pioneers.',concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
+  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',poster:'/poster4-research.html',textbook:'https://openstax.org/books/psychology-2e/pages/2-introduction',textbookLabel:'OpenStax Ch.2 — Psychological Research',desc:'Scientific foundation of psychological research.',concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
+  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',poster:'/poster5-defense.html',textbook:'https://openstax.org/books/psychology-2e/pages/14-introduction',textbookLabel:'OpenStax Ch.14 — Personality',desc:'Psychological defenses relevant to criminal behavior analysis.',concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
+  {id:6,title:'Human Development',cat:'Core Forensic',poster:'/poster6-development.html',textbook:'https://openstax.org/books/psychology-2e/pages/9-introduction',textbookLabel:'OpenStax Ch.9 — Lifespan Development',desc:'Lifespan development theories critical to forensic assessment.',concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
+  {id:7,title:'Cognitive Biases',cat:'Core Forensic',poster:'/poster7-biases.html',textbook:'https://openstax.org/books/psychology-2e/pages/7-introduction',textbookLabel:'OpenStax Ch.7 — Thinking & Intelligence',desc:'How thinking errors affect judgment, perception, and testimony.',concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
+  {id:8,title:'APA Ethics Code',cat:'Core Forensic',poster:'/poster8-ethics.html',textbook:'https://openstax.org/books/psychology-2e/pages/2-2-approaches-to-research',textbookLabel:'OpenStax Ch.2.2 — Research Ethics',desc:'Professional ethical obligations guiding all psychologists.',concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
+  {id:9,title:'Biology & Physiology',cat:'Supporting',poster:'/support1-biology.html',textbook:'https://openstax.org/books/psychology-2e/pages/3-introduction',textbookLabel:'OpenStax Ch.3 — Biopsychology',desc:'Body systems that support psychological function.',concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
+  {id:10,title:'Sociology & Social Theory',cat:'Supporting',poster:'/support2-sociology.html',textbook:'https://openstax.org/books/psychology-2e/pages/12-introduction',textbookLabel:'OpenStax Ch.12 — Social Psychology',desc:'Social forces shaping criminal behavior and justice.',concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
+  {id:11,title:'Philosophy of Mind',cat:'Supporting',poster:'/support3-philosophy.html',textbook:'https://openstax.org/books/psychology-2e/pages/1-introduction',textbookLabel:'OpenStax Ch.1 — Introduction to Psychology',desc:'Consciousness, free will, and moral responsibility.',concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
+  {id:12,title:'Pharmacology Basics',cat:'Supporting',poster:'/support4-pharmacology.html',textbook:'https://openstax.org/books/psychology-2e/pages/5-introduction',textbookLabel:'OpenStax Ch.5 — States of Consciousness',desc:'Psychoactive substances and their behavioral effects.',concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
+  {id:13,title:'Law & Psychology Interface',cat:'Supporting',poster:'/support5-law.html',textbook:'https://openstax.org/books/psychology-2e/pages/1-3-contemporary-psychology',textbookLabel:'OpenStax Ch.1.3 — Forensic Psychology',desc:'How psychological science enters the legal system.',concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
+  {id:14,title:'Communication & Testimony',cat:'Supporting',poster:'/support6-comm-write-admin.html',textbook:'https://openstax.org/books/psychology-2e/pages/1-3-contemporary-psychology',textbookLabel:'OpenStax Ch.1.3 — Expert Witness Context',desc:'Expert witness skills and forensic report writing.',concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
+  {id:15,title:'Academic Writing',cat:'Supporting',poster:'/support6-comm-write-admin.html',textbook:'https://apastyle.apa.org/learn/quick-guide-on-references',textbookLabel:'APA Style — Official Quick Guide',desc:'Research paper and report writing standards for psychology.',concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
+  {id:16,title:'Program Administration',cat:'Supporting',poster:'/support6-comm-write-admin.html',textbook:'https://openstax.org/books/psychology-2e/pages/16-introduction',textbookLabel:'OpenStax Ch.16 — Therapy & Treatment',desc:'Clinical and forensic program management fundamentals.',concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
 ];
 
 function LibraryModule({ onNav, coachUrl }) {
@@ -534,6 +534,11 @@ function LibraryModule({ onNav, coachUrl }) {
   const openPoster = (t, e) => {
     if(e) e.stopPropagation();
     window.open(t.poster, '_blank', 'noopener');
+  };
+
+  const openTextbook = (t, e) => {
+    if(e) e.stopPropagation();
+    window.open(t.textbook, '_blank', 'noopener');
   };
 
   return (
@@ -557,6 +562,7 @@ function LibraryModule({ onNav, coachUrl }) {
               <div style={{display:'flex',gap:'0.5rem',marginTop:'0.8rem',flexWrap:'wrap'}}>
                 <button className="btn btn-ghost btn-sm" style={{paddingLeft:0}} onClick={(e)=>{e.stopPropagation();setSelected(t);}}>Preview →</button>
                 <button className="btn btn-primary btn-sm" onClick={(e)=>openPoster(t,e)}>📖 Full Guide</button>
+                <button className="btn btn-outline btn-sm" onClick={(e)=>openTextbook(t,e)}>📚 Textbook</button>
               </div>
             </div>
           ))}
@@ -572,6 +578,7 @@ function LibraryModule({ onNav, coachUrl }) {
               <div style={{display:'flex',gap:'0.5rem',marginTop:'0.8rem',flexWrap:'wrap'}}>
                 <button className="btn btn-ghost btn-sm" style={{paddingLeft:0}} onClick={(e)=>{e.stopPropagation();setSelected(t);}}>Preview →</button>
                 <button className="btn btn-primary btn-sm" onClick={(e)=>openPoster(t,e)}>📖 Full Guide</button>
+                <button className="btn btn-outline btn-sm" onClick={(e)=>openTextbook(t,e)}>📚 Textbook</button>
               </div>
             </div>
           ))}
@@ -586,12 +593,19 @@ function LibraryModule({ onNav, coachUrl }) {
           <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
             {selected.concepts.map((c,i)=><li key={i} style={{marginBottom:'0.4rem',fontSize:'0.88rem'}}>{c}</li>)}
           </ul>
+          <div style={{background:'var(--cream)',border:'1px solid var(--faint)',padding:'0.75rem 1rem',marginBottom:'1.2rem',borderLeft:'3px solid var(--teal)'}}>
+            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.12em',textTransform:'uppercase',color:'var(--teal)',display:'block',marginBottom:'0.2rem'}}>Free College Textbook</span>
+            <span style={{fontSize:'0.85rem',color:'var(--ink)'}}>{selected.textbookLabel}</span>
+          </div>
           <div style={{display:'flex',gap:'0.75rem',flexWrap:'wrap'}}>
             <button className="btn btn-primary" onClick={()=>openPoster(selected,null)}>
               📖 Open Full Study Guide
             </button>
+            <button className="btn btn-outline" onClick={()=>openTextbook(selected,null)}>
+              📚 Read Textbook Chapter
+            </button>
             <button className="btn btn-gold" onClick={()=>{setSelected(null);onNav('coach');}}>
-              🤖 Ask Coach About This Topic
+              🤖 Ask Coach
             </button>
           </div>
         </>}
