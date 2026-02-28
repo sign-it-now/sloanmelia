@@ -533,6 +533,68 @@
     .feature-strip { padding: 3rem 1.5rem; }
   }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── Dynamic Profile Loader ──────────────────────────────────────────────────
+// Reads from Supabase profile + grades tables and updates the public page live.
+(async function() {
+  const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function set(id, text) {
+    const el = document.getElementById(id);
+    if(el && text) el.textContent = text;
+  }
+
+  function calcGPA(grades) {
+    const eligible = (grades||[]).filter(g => g.grade_points !== null && g.grade_points !== undefined && g.credit_hours > 0);
+    if(!eligible.length) return null;
+    const pts = eligible.reduce((s,g)=>s+(g.grade_points*g.credit_hours),0);
+    const cr  = eligible.reduce((s,g)=>s+parseFloat(g.credit_hours),0);
+    return cr>0 ? Math.round((pts/cr)*1000)/1000 : null;
+  }
+
+  try {
+    // Load profile data (publicly readable when share_enabled = true)
+    const {data: profiles} = await sb.from('profile').select('*').eq('share_enabled', true).limit(1);
+    const p = profiles?.[0];
+
+    if(p) {
+      if(p.tagline)   set('profile-tagline', p.tagline);
+      if(p.bio)       set('profile-bio', p.bio);
+      if(p.school && p.grad_year)
+        set('profile-eyebrow', p.school + ' · ' + p.grad_year);
+
+      // Update contact email link
+      const emailLink = document.querySelector('a[href^="mailto"]');
+      if(emailLink && p.email) {
+        emailLink.href = 'mailto:' + p.email;
+        emailLink.textContent = '✉ ' + p.email;
+      }
+
+      // Load live GPA from grades table
+      const {data: grades} = await sb.from('grades').select('grade_points,credit_hours').eq('user_id', p.user_id);
+      const liveGpa = calcGPA(grades);
+      if(liveGpa !== null) {
+        set('profile-gpa', liveGpa.toFixed(2));
+        // Also update any mentions of GPA in bio if it still has old value
+        const bioEl = document.getElementById('profile-bio');
+        if(bioEl) {
+          bioEl.textContent = bioEl.textContent
+            .replace(/3\.6[0-9]+/g, liveGpa.toFixed(2))
+            .replace(/3\.8[0-9]+/g, liveGpa.toFixed(2));
+        }
+      }
+    }
+  } catch(e) {
+    // Fail silently — static content remains as fallback
+    console.log('Profile load:', e.message);
+  }
+})();
+</script>
+
 </head>
 <body>
 
@@ -551,14 +613,14 @@
 <!-- ── HERO ── -->
 <div class="hero">
   <div class="hero-left">
-    <span class="hero-eyebrow">Alton High School · Class of 2026</span>
+    <span class="hero-eyebrow" id="profile-eyebrow">Alton High School · Class of 2026</span>
     <h1 class="hero-name">
       Sloan
       <strong>Smith</strong>
       <em>— Future Dr. Melia</em>
     </h1>
-    <p class="hero-tagline">Aspiring Forensic Psychologist &amp; Community Builder</p>
-    <p class="hero-bio">
+    <p class="hero-tagline" id="profile-tagline">Aspiring Forensic Psychologist &amp; Community Builder</p>
+    <p class="hero-bio" id="profile-bio">
       I'm a senior at Alton High School with a 3.684 GPA, a passion for understanding the human mind, and a clear mission: to earn my PhD in Forensic Psychology and apply science in service of justice and healing. Outside the classroom, I'm building things — programs, communities, and a body of work that reflects who I am and where I'm going.
     </p>
     <div class="hero-cta-row">
@@ -571,7 +633,7 @@
     <div class="hero-photo-overlay"></div>
     <div class="hero-stat-bar">
       <div class="hero-stat">
-        <span class="s-num">3.68</span>
+        <span class="s-num" id="profile-gpa">3.84</span>
         <span class="s-label">GPA</span>
       </div>
       <div class="hero-stat">

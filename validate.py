@@ -14,7 +14,7 @@ REQUIRED_CONSTANTS = [
 REQUIRED_FUNCTIONS = [
     'ErrorBoundary','Modal','Sidebar',
     'HomeModule','LibraryModule','VaultModule',
-    'TrackerModule','AchievementsModule','FinancialModule','CoachModule','GpaModule','App'
+    'TrackerModule','AchievementsModule','FinancialModule','CoachModule','GpaModule','ProfileModule','App'
 ]
 
 def validate(path='sloanmelia-app.html'):
