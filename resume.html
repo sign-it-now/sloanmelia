@@ -386,18 +386,16 @@
   }
 
   try {
-    // Load all data in parallel
-    const [
-      {data: profiles},
-      {data: grades},
-      {data: achievements}
-    ] = await Promise.all([
-      sb.from('profile').select('*').eq('share_enabled', true).limit(1),
-      sb.from('grades').select('*').eq('user_id', (await sb.from('profile').select('user_id').eq('share_enabled',true).limit(1)).data?.[0]?.user_id || ''),
-      sb.from('achievements').select('*').order('created_at', {ascending: false})
-    ]);
-
+    // Step 1: get profile to retrieve user_id
+    const {data: profiles} = await sb.from('profile').select('*').eq('share_enabled', true).limit(1);
     const p = profiles?.[0];
+    const uid = p?.user_id || '';
+
+    // Step 2: load grades + achievements using that user_id
+    const [{data: grades}, {data: achievements}] = await Promise.all([
+      sb.from('grades').select('*').eq('user_id', uid),
+      sb.from('achievements').select('*').eq('user_id', uid).order('created_at', {ascending: false})
+    ]);
 
     // ── Profile fields ──────────────────────────────────────────────
     if(p) {
