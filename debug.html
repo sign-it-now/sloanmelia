@@ -3,53 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <style>
-body { font-family: monospace; background: #faf7f2; padding: 2rem; }
-.ok { color: green; } .err { color: red; } .log { background: #eee; padding: 1rem; margin: 0.5rem 0; }
+body{font-family:monospace;background:#faf7f2;padding:2rem;}
+.ok{color:green}.err{color:red;font-weight:bold}.log{background:#eee;padding:0.5rem;margin:0.3rem 0;border-radius:3px;}
 </style>
 </head>
 <body>
-<h2>SloanMelia Debug</h2>
+<h2>SloanMelia Debug v2 — Runtime Test</h2>
 <div id="log"></div>
+<div id="root"></div>
+
 <script>
-function log(msg, ok) {
-  var d = document.createElement('div');
-  d.className = 'log ' + (ok ? 'ok' : 'err');
-  d.textContent = msg;
+function log(msg,ok){
+  var d=document.createElement('div');
+  d.className='log '+(ok?'ok':'err');
+  d.textContent=(ok?'✓ ':'✗ ')+msg;
   document.getElementById('log').appendChild(d);
 }
 
-// Test localStorage
-try { localStorage.setItem('test','1'); log('✓ localStorage works', true); } 
-catch(e) { log('✗ localStorage: ' + e, false); }
+// Capture ALL JS errors
+window.onerror = function(msg,src,line,col,err){
+  log('RUNTIME ERROR: '+msg+' (line '+line+')', false);
+  log('Stack: '+(err&&err.stack||'none'), false);
+  return false;
+};
+window.onunhandledrejection = function(e){
+  log('PROMISE ERROR: '+e.reason, false);
+};
 
-log('Loading React...', true);
+// Test localStorage
+try{localStorage.setItem('test','1');log('localStorage works',true);}catch(e){log('localStorage: '+e,false);}
 </script>
-<script src="https://unpkg.com/react@18/umd/react.development.js" 
-  onload="log('✓ React loaded: ' + (typeof React), true)"
-  onerror="log('✗ React FAILED to load', false)">
+<script src="https://unpkg.com/react@18/umd/react.development.js" onload="log('React loaded',true)" onerror="log('React FAILED',false)"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" onload="log('ReactDOM loaded',true)" onerror="log('ReactDOM FAILED',false)"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js" onload="log('Babel loaded',true)" onerror="log('Babel FAILED',false)"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="log('Supabase loaded',true)" onerror="log('Supabase FAILED',false)"></script>
+
+<script>
+// Simulate exactly what app does
+window.SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
+window.SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
+localStorage.setItem('sm_url', window.SUPABASE_URL);
+localStorage.setItem('sm_key', window.SUPABASE_KEY);
+localStorage.setItem('sm_coach','https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach');
 </script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
-  onload="log('✓ ReactDOM loaded', true)"
-  onerror="log('✗ ReactDOM FAILED', false)">
-</script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"
-  onload="log('✓ Babel loaded', true)"
-  onerror="log('✗ Babel FAILED', false)">
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  onload="log('✓ Supabase loaded', true)"
-  onerror="log('✗ Supabase FAILED', false)">
-</script>
+
 <script type="text/babel">
+const { useState, useEffect } = React;
+
+// Test 1: Can we init Supabase?
+let sb;
 try {
-  function App() { return <div className="ok">✓ BABEL + REACT WORKS — App rendered!</div>; }
-  const root = ReactDOM.createRoot(document.getElementById('react-root'));
-  root.render(<App/>);
-  document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log ok">✓ ReactDOM.createRoot worked</div>');
+  sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY);
+  document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log ok">✓ Supabase client created</div>');
 } catch(e) {
-  document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log err">✗ Babel/React error: ' + e + '</div>');
+  document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log err">✗ Supabase init: '+e+'</div>');
 }
+
+// Test 2: getSession
+sb.auth.getSession().then(({data:{session}, error}) => {
+  if(error) {
+    document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log err">✗ getSession error: '+error.message+'</div>');
+  } else {
+    document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log ok">✓ getSession OK — user: '+(session?.user?.email||'none (not logged in)')+'</div>');
+  }
+}).catch(e => {
+  document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log err">✗ getSession threw: '+e+'</div>');
+});
+
+// Test 3: Render login + full App component with error boundary
+class ErrorBoundary extends React.Component {
+  constructor(p){super(p);this.state={error:null};}
+  static getDerivedStateFromError(e){return{error:e};}
+  componentDidCatch(e,info){
+    document.getElementById('log').insertAdjacentHTML('beforeend',
+      '<div class="log err">✗ REACT ERROR: '+e.message+'</div>'+
+      '<div class="log err">Component: '+info.componentStack.slice(0,200)+'</div>'
+    );
+  }
+  render(){
+    if(this.state.error) return <div style={{color:'red',padding:'1rem'}}>App crashed: {this.state.error.message}</div>;
+    return this.props.children;
+  }
+}
+
+function TestApp() {
+  const [status, setStatus] = useState('mounting...');
+  
+  useEffect(()=>{
+    setStatus('useEffect ran');
+    const url = localStorage.getItem('sm_url');
+    const key = localStorage.getItem('sm_key');
+    if(url && key){
+      try {
+        const client = window.supabase.createClient(url, key);
+        setStatus('Supabase initialized from localStorage ✓');
+        client.auth.getSession().then(({data:{session}})=>{
+          setStatus('getSession complete. User: '+(session?.user?.email||'none'));
+        }).catch(e=>setStatus('getSession error: '+e));
+      } catch(e){
+        setStatus('Supabase init error: '+e);
+      }
+    } else {
+      setStatus('No credentials in localStorage');
+    }
+  },[]);
+  
+  return (
+    <div style={{background:'#d0f0d0',padding:'1rem',marginTop:'1rem'}}>
+      <strong>React App Status:</strong> {status}
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <ErrorBoundary>
+    <TestApp/>
+  </ErrorBoundary>
+);
+document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log ok">✓ ReactDOM.createRoot rendered</div>');
 </script>
-<div id="react-root"></div>
 </body>
 </html>

@@ -215,6 +215,23 @@ textarea.input{resize:vertical;min-height:80px;}
 </style>
 </head>
 <body>
+<script>
+// Global error catcher - shows error on screen instead of blank page
+window.onerror = function(msg, src, line, col, err) {
+  document.body.innerHTML = '<div style="font-family:monospace;padding:2rem;background:#faf7f2;color:#9a1a1a;">' +
+    '<h2>SloanMelia — JavaScript Error</h2>' +
+    '<p><strong>Error:</strong> ' + msg + '</p>' +
+    '<p><strong>Line:</strong> ' + line + '</p>' +
+    '<p><strong>Stack:</strong><br>' + (err && err.stack ? err.stack.replace(/\n/g,'<br>') : 'none') + '</p>' +
+    '</div>';
+  return false;
+};
+window.onunhandledrejection = function(e) {
+  document.body.innerHTML = '<div style="font-family:monospace;padding:2rem;background:#faf7f2;color:#9a1a1a;">' +
+    '<h2>SloanMelia — Async Error</h2>' +
+    '<p>' + e.reason + '</p></div>';
+};
+</script>
 <div id="root"></div>
 
 <script>
