@@ -218,6 +218,34 @@ textarea.input{resize:vertical;min-height:80px;}
 <div id="root"></div>
 
 <script>
+// EDGE_FN_CODE defined outside Babel to avoid nested backtick parse error
+window.EDGE_FN_CODE = [
+  'import { serve } from "https://deno.land/std@0.168.0/http/server.ts"',
+  'const ANTHROPIC_KEY = Deno.env.get('ANTHROPIC_API_KEY')',
+  'serve(async (req) => {',
+  '  const headers = { 'Access-Control-Allow-Origin': '*',',
+  '    'Access-Control-Allow-Headers': 'authorization, content-type',',
+  '    'Content-Type': 'application/json' }',
+  '  if (req.method === 'OPTIONS') return new Response('ok', { headers })',
+  '  const { messages, vaultContext } = await req.json()',
+  '  const systemPrompt = `You are Sloan Smith's personal college application coach embedded in sloanmelia.com.',
+  'SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 | Goal: PhD in Forensic Psychology',
+  'SENIOR YEAR: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2',
+  'KEY ACTIVITY: Patient Enrichment Program — FOUNDER. Annual hospital donation drive. This is her CENTERPIECE story.',
+  'Others: Mu Alpha Theta (Math Honor Society), Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring',
+  'VAULT: ${vaultContext}',
+  'Rules: Always use her real data. Format form fields as FIELD: answer. For essays, lead with Patient Enrichment Program.`',
+  '  const response = await fetch('https://api.anthropic.com/v1/messages', {',
+  '    method: 'POST',',
+  '    headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },',
+  '    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 2048, system: systemPrompt, messages })',
+  '  })',
+  '  const data = await response.json()',
+  '  return new Response(JSON.stringify(data), { headers })',
+  '})'
+].join('\n');
+</script>
+<script>
 // Credential bootstrap - runs synchronously before React
 (function(){
   var u='https://gpktuflimoqeyxtwadsy.supabase.co';
@@ -1155,29 +1183,7 @@ function CoachModule({ user, coachUrl, toast }) {
     setEssayLoading(false);
   };
 
-  const EDGE_FN_CODE = `import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-const ANTHROPIC_KEY = Deno.env.get('ANTHROPIC_API_KEY')
-serve(async (req) => {
-  const headers = { 'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, content-type',
-    'Content-Type': 'application/json' }
-  if (req.method === 'OPTIONS') return new Response('ok', { headers })
-  const { messages, vaultContext } = await req.json()
-  const systemPrompt = \`You are Sloan Smith's personal college application coach embedded in sloanmelia.com.
-SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 | Goal: PhD in Forensic Psychology
-SENIOR YEAR: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2
-KEY ACTIVITY: Patient Enrichment Program — FOUNDER. Annual hospital donation drive. This is her CENTERPIECE story.
-Others: Mu Alpha Theta (Math Honor Society), Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring
-VAULT: \${vaultContext}
-Rules: Always use her real data. Format form fields as FIELD: answer. For essays, lead with Patient Enrichment Program.\`
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 2048, system: systemPrompt, messages })
-  })
-  const data = await response.json()
-  return new Response(JSON.stringify(data), { headers })
-})`;
+  const EDGE_FN_CODE = window.EDGE_FN_CODE || '';
 
   return (
     <div>
