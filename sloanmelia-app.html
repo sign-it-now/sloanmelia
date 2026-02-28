@@ -1815,21 +1815,27 @@ Each item must have exactly these fields:
 - is_honors (true if course name contains H, Honors, or CP, false otherwise)
 Include ALL courses from ALL years shown. Return ONLY the JSON array.`;
 
-  // ── Parse from vault images ───────────────────────────────────────
+  // ── Parse from vault images — one image at a time ────────────────
   const parseFromVault = async () => {
     if(selectedDocs.length === 0) { toast('Select at least one transcript from your vault'); return; }
     if(!coachUrl) { toast('Coach URL not configured'); return; }
     setParsing(true);
-    try {
-      const sb = getSupabase();
-      // Build image content blocks for each selected doc
-      const imageBlocks = [];
-      for(const docId of selectedDocs) {
-        const doc = vaultDocs.find(d=>d.id===docId);
-        if(!doc) continue;
+    const allRows = [];
+    const sb = getSupabase();
+
+    for(let i = 0; i < selectedDocs.length; i++) {
+      const docId = selectedDocs[i];
+      const doc = vaultDocs.find(d=>d.id===docId);
+      if(!doc) continue;
+
+      toast(`Reading image ${i+1} of ${selectedDocs.length}: ${doc.name}...`);
+
+      try {
+        // Get signed URL for this image
         const {data: signedData} = await sb.storage.from('documents').createSignedUrl(doc.file_path, 300);
-        if(!signedData?.signedUrl) continue;
-        // Fetch image and convert to base64
+        if(!signedData?.signedUrl) { console.warn('No signed URL for', doc.name); continue; }
+
+        // Convert to base64
         const imgRes = await fetch(signedData.signedUrl);
         const blob = await imgRes.blob();
         const b64 = await new Promise(res=>{
@@ -1838,24 +1844,44 @@ Include ALL courses from ALL years shown. Return ONLY the JSON array.`;
           r.readAsDataURL(blob);
         });
         const mediaType = blob.type || 'image/jpeg';
-        imageBlocks.push({type:'image', source:{type:'base64', media_type:mediaType, data:b64}});
-      }
-      if(imageBlocks.length === 0) { toast('Could not load images — try paste mode'); setParsing(false); return; }
-      imageBlocks.push({type:'text', text: PARSE_PROMPT});
 
-      const res = await fetch(coachUrl, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+anonKey},
-        body: JSON.stringify({messages:[{role:'user',content:imageBlocks}]})
-      });
-      const data = await res.json();
-      const text = data.content?.[0]?.text || '';
-      const cleaned = text.replace(/```json|```/g,'').trim();
-      const parsed = JSON.parse(cleaned);
-      await saveParsedRows(parsed);
-    } catch(e) {
-      console.error(e);
-      toast('Image parse failed — try paste mode below');
+        // Send ONE image per call — embed instructions directly in user message
+        // (no mode param needed — instructions are self-contained)
+        const res = await fetch(coachUrl, {
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+anonKey},
+          body: JSON.stringify({
+            messages:[{
+              role:'user',
+              content:[
+                {type:'image', source:{type:'base64', media_type:mediaType, data:b64}},
+                {type:'text', text: PARSE_PROMPT}
+              ]
+            }]
+          })
+        });
+
+        if(!res.ok) { console.warn('Edge function error:', res.status); continue; }
+        const data = await res.json();
+        const text = (data.content?.[0]?.text || '').trim();
+        if(!text) { console.warn('Empty response for', doc.name); continue; }
+
+        // Extract JSON array from response
+        const jsonMatch = text.match(/\[[\s\S]*\]/);
+        if(!jsonMatch) { console.warn('No JSON array in response for', doc.name, ':', text.slice(0,100)); continue; }
+        const parsed = JSON.parse(jsonMatch[0]);
+        if(Array.isArray(parsed)) allRows.push(...parsed);
+
+      } catch(e) {
+        console.error('Error on', doc.name, e);
+        // Continue to next image
+      }
+    }
+
+    if(allRows.length > 0) {
+      await saveParsedRows(allRows);
+    } else {
+      toast('No courses extracted — check images are transcript pages and try again');
     }
     setParsing(false);
   };
