@@ -1,48 +1,43 @@
-# Default page — redirect root to the app
+# Public profile — the page colleges and recruiters see
 [[redirects]]
   from = "/"
-  to = "/sloanmelia-app.html"
-  status = 302
+  to = "/index.html"
+  status = 200
   force = true
 
+# Dashboard — private login area
 [[redirects]]
-  from = "/index.html"
+  from = "/app"
   to = "/sloanmelia-app.html"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/study-library.html"
-  to = "/sloanmelia-app.html"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/studylibrary.html"
-  to = "/sloanmelia-app.html"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/studylibrary"
-  to = "/sloanmelia-app.html"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/study-library"
-  to = "/sloanmelia-app.html"
-  status = 302
+  status = 200
   force = true
 
 [[redirects]]
   from = "/dashboard"
   to = "/sloanmelia-app.html"
   status = 302
-  force = true
 
 [[redirects]]
   from = "/dashboard.html"
   to = "/sloanmelia-app.html"
   status = 302
-  force = true
+
+[[redirects]]
+  from = "/study-library.html"
+  to = "/sloanmelia-app.html"
+  status = 302
+
+[[redirects]]
+  from = "/studylibrary.html"
+  to = "/sloanmelia-app.html"
+  status = 302
+
+[[redirects]]
+  from = "/studylibrary"
+  to = "/sloanmelia-app.html"
+  status = 302
+
+[[redirects]]
+  from = "/study-library"
+  to = "/sloanmelia-app.html"
+  status = 302

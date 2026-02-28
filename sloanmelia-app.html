@@ -468,7 +468,7 @@ function Sidebar({ page, onNav, user, onSignOut }) {
       </nav>
       <div className="sidebar-footer">
         <a
-          href="https://sloanmelia.com"
+          href="https://sloanmelia.com/index.html"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -587,7 +587,7 @@ function HomeModule({ onNav, user }) {
             <div style={{fontWeight:700,fontSize:'0.95rem',marginBottom:'0.2rem'}}>🌐 Your Public Profile</div>
             <div style={{fontSize:'0.82rem',color:'var(--dim)'}}>sloanmelia.com — what colleges and recruiters see</div>
           </div>
-          <a href="https://sloanmelia.com" target="_blank" rel="noopener noreferrer"
+          <a href="https://sloanmelia.com/index.html" target="_blank" rel="noopener noreferrer"
             className="btn btn-gold"
             style={{textDecoration:'none',whiteSpace:'nowrap',flexShrink:0,marginLeft:'1rem'}}>
             View Profile ↗
@@ -1421,7 +1421,7 @@ function ProfileModule({ user, toast }) {
   const [tab, setTab]           = useState('edit'); // edit | share
   const [copied, setCopied]     = useState('');
   const [liveGpa, setLiveGpa]   = useState(null);
-  const PUBLIC_URL = 'https://sloanmelia.com';
+  const PUBLIC_URL = 'https://sloanmelia.com/index.html';
 
   // Load existing profile + live GPA
   useEffect(()=>{
