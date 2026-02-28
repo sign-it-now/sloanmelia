@@ -1304,7 +1304,7 @@ function App() {
       sb.auth.getSession().then(({data:{session}})=>{
         if(session?.user) setUser(session.user);
         setAuthLoading(false);
-      });
+      }).catch(()=>setAuthLoading(false));
       sb.auth.onAuthStateChange((_,session)=>{
         setUser(session?.user||null);
       });
