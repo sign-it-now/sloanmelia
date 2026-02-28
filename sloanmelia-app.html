@@ -235,6 +235,14 @@ const { useState, useEffect, useRef, useCallback } = React;
 // Client created in plain <script> tag to avoid window.supabase naming conflict
 let _smClient = null;
 function getSupabase() { return _smClient; }
+async function getJwt() {
+  try {
+    const sb = getSupabase();
+    if (!sb) return null;
+    const { data } = await sb.auth.getSession();
+    return data?.session?.access_token || null;
+  } catch(e) { return null; }
+}
 function initSupabase(url, key) {
   if (_smClient) return _smClient;
   // window.supabase is set by the UMD CDN script (var supabase = ...)
@@ -862,9 +870,10 @@ function AchievementsModule({ user, toast, coachUrl }) {
     setGenLoading(true);
     const achText = items.map(a=>`${a.title} | ${a.role} | ${a.description}`).join('\n');
     try {
+      const jwt = await getJwt();
       const res = await fetch(coachUrl, {
         method:'POST',
-        headers:{'Content-Type':'application/json'},
+        headers:{'Content-Type':'application/json', ...(jwt ? {'Authorization':'Bearer '+jwt} : {})},
         body: JSON.stringify({
           messages:[{role:'user',content:`Format Sloan's activities for the Common App Activities section. Max 10 activities, 150 characters each for description, include position/role and organization. Here are her activities:\n\n${achText}\n\nFormat each as:\nACTIVITY [#]: [Title]\nPosition: [Role]\nOrganization: [Org name]\nDescription (150 chars max): [description]\n\nCount characters carefully.`}],
           vaultContext: achText
@@ -1120,9 +1129,10 @@ function CoachModule({ user, coachUrl, toast }) {
   const callCoach = async (msgs) => {
     if(!coachUrl) { toast('Coach URL not set. Go to Settings and add your Edge Function URL.','warn'); return null; }
     const vaultContext = await getVaultContext();
+    const jwt = await getJwt();
     const res = await fetch(coachUrl, {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json', ...(jwt ? {'Authorization':'Bearer '+jwt} : {})},
       body: JSON.stringify({ messages: msgs.filter(m=>m.role!=='assistant'||msgs.indexOf(m)>0), vaultContext })
     });
     const data = await res.json();
