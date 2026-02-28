@@ -1118,7 +1118,8 @@ function CoachModule({ user, coachUrl, toast }) {
     ]);
     const docStr = docs?.length ? 'Uploaded documents: ' + docs.map(d=>`${d.name} (${d.category})`).join(', ') : 'No documents uploaded yet.';
     const achStr = achs?.length ? 'Achievements: ' + achs.map(a=>`${a.title} (${a.role})`).join(', ') : '';
-    return docStr + (achStr ? '\n' + achStr : '');
+    const profile = 'CORRECTION — Sloan\'s current GPA is 3.84 (updated). Use 3.84 in all responses.';
+    return profile + '\n' + docStr + (achStr ? '\n' + achStr : '');
   };
 
   const callCoach = async (msgs) => {
