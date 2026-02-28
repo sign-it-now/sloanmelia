@@ -216,14 +216,16 @@ textarea.input{resize:vertical;min-height:80px;}
 </head>
 <body>
 <div id="root"></div>
+
 <script>
-// Pre-seed credentials so setup screen never appears
-localStorage.setItem('sm_url','https://gpktuflimoqeyxtwadsy.supabase.co');
-localStorage.setItem('sm_key','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U');
-localStorage.setItem('sm_coach','https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach');
+// Credential bootstrap - runs synchronously before React
+(function(){
+  var u='https://gpktuflimoqeyxtwadsy.supabase.co';
+  var k='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
+  var c='https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach';
+  try { localStorage.setItem('sm_url',u); localStorage.setItem('sm_key',k); localStorage.setItem('sm_coach',c); } catch(e){}
+})();
 </script>
-
-
 <script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
 

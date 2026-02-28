@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: monospace; background: #faf7f2; padding: 2rem; }
+.ok { color: green; } .err { color: red; } .log { background: #eee; padding: 1rem; margin: 0.5rem 0; }
+</style>
+</head>
+<body>
+<h2>SloanMelia Debug</h2>
+<div id="log"></div>
+<script>
+function log(msg, ok) {
+  var d = document.createElement('div');
+  d.className = 'log ' + (ok ? 'ok' : 'err');
+  d.textContent = msg;
+  document.getElementById('log').appendChild(d);
+}
+
+// Test localStorage
+try { localStorage.setItem('test','1'); log('✓ localStorage works', true); } 
+catch(e) { log('✗ localStorage: ' + e, false); }
+
+log('Loading React...', true);
+</script>
+<script src="https://unpkg.com/react@18/umd/react.development.js" 
+  onload="log('✓ React loaded: ' + (typeof React), true)"
+  onerror="log('✗ React FAILED to load', false)">
+</script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+  onload="log('✓ ReactDOM loaded', true)"
+  onerror="log('✗ ReactDOM FAILED', false)">
+</script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"
+  onload="log('✓ Babel loaded', true)"
+  onerror="log('✗ Babel FAILED', false)">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  onload="log('✓ Supabase loaded', true)"
+  onerror="log('✗ Supabase FAILED', false)">
+</script>
+<script type="text/babel">
+try {
+  function App() { return <div className="ok">✓ BABEL + REACT WORKS — App rendered!</div>; }
+  const root = ReactDOM.createRoot(document.getElementById('react-root'));
+  root.render(<App/>);
+  document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log ok">✓ ReactDOM.createRoot worked</div>');
+} catch(e) {
+  document.getElementById('log').insertAdjacentHTML('beforeend','<div class="log err">✗ Babel/React error: ' + e + '</div>');
+}
+</script>
+<div id="react-root"></div>
+</body>
+</html>
