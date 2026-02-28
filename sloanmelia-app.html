@@ -445,6 +445,7 @@ const NAV_ITEMS = [
   { id:'tracker', icon:'🎓', label:'College Tracker' },
   { id:'achievements', icon:'⭐', label:'Achievements' },
   { id:'financial', icon:'💰', label:'Financial Aid' },
+  { id:'gpa', icon:'📊', label:'GPA Tracker' },
   { id:'coach', icon:'🤖', label:'Coach', special:true },
 ];
 
@@ -473,12 +474,32 @@ function Sidebar({ page, onNav, user, onSignOut }) {
 }
 
 // ── HOME MODULE ────────────────────────────────────────────────────────────────
+// ── GPA SYSTEM ────────────────────────────────────────────────────────────────
+const GRADE_POINTS = {
+  'A+':4.0,'A':4.0,'A-':3.7,
+  'B+':3.3,'B':3.0,'B-':2.7,
+  'C+':2.3,'C':2.0,'C-':1.7,
+  'D+':1.3,'D':1.0,'D-':0.7,
+  'F':0.0,'WF':0.0,'P':null,'W':null,'I':null
+};
+function gradeToPoints(letter) {
+  if(!letter) return null;
+  return GRADE_POINTS[letter.trim().toUpperCase()] ?? null;
+}
+function calcGPA(grades) {
+  const eligible = grades.filter(g => g.grade_points !== null && g.credit_hours > 0);
+  if(!eligible.length) return null;
+  const totalPts = eligible.reduce((s,g)=>s + (g.grade_points * g.credit_hours), 0);
+  const totalCr  = eligible.reduce((s,g)=>s + g.credit_hours, 0);
+  return totalCr > 0 ? Math.round((totalPts/totalCr)*1000)/1000 : null;
+}
+
 function HomeModule({ onNav, user }) {
-  const [stats, setStats] = useState({docs:0, schools:0, achievements:0});
+  const [stats, setStats] = useState({docs:0, schools:0, achievements:0, gpa:null, totalCourses:0});
   const graduation = new Date('2026-05-15');
   const days = Math.max(0, Math.ceil((graduation - new Date())/(1000*60*60*24)));
 
-  useEffect(()=>{
+  const loadStats = () => {
     const sb = getSupabase();
     const uid = user?.id;
     if(!uid) return;
@@ -486,31 +507,51 @@ function HomeModule({ onNav, user }) {
       sb.from('documents').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('college_applications').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('achievements').select('id',{count:'exact'}).eq('user_id',uid),
-    ]).then(([d,c,a])=>{
-      setStats({docs:d.count||0, schools:c.count||0, achievements:a.count||0});
+      sb.from('grades').select('grade_points,credit_hours').eq('user_id',uid),
+    ]).then(([d,c,a,g])=>{
+      const gpa = calcGPA(g.data||[]);
+      setStats({docs:d.count||0, schools:c.count||0, achievements:a.count||0,
+                gpa, totalCourses:(g.data||[]).length});
     }).catch(()=>{});
-  },[user]);
+  };
+
+  useEffect(()=>{ loadStats(); },[user]);
+
+  const gpaColor = stats.gpa === null ? 'var(--dim)'
+    : stats.gpa >= 3.7 ? '#059669'
+    : stats.gpa >= 3.3 ? '#d97706'
+    : '#dc2626';
 
   return (
     <div>
       <div className="page-header">
         <div className="page-title serif">Welcome back, <em style={{color:'var(--gold)'}}>Sloan</em> 👋</div>
-        <div className="page-sub">Class of 2026 · Alton High School · GPA 3.84 · Future Dr. Smith</div>
+        <div className="page-sub">Class of 2026 · Alton High School · Future Dr. Smith</div>
       </div>
       <div className="page-content">
+
+        {/* Stats row — GPA is now live from DB */}
         <div className="stats-row">
+          <div className="stat-card" style={{borderTopColor: gpaColor}}>
+            <span className="stat-num" style={{color: gpaColor}}>
+              {stats.gpa !== null ? stats.gpa.toFixed(3) : '3.840'}
+            </span>
+            <span className="stat-lbl">
+              Cumulative GPA
+              {stats.totalCourses > 0 && <span style={{display:'block',fontSize:'0.7rem',color:'var(--dim)'}}>{stats.totalCourses} courses tracked</span>}
+            </span>
+          </div>
           <div className="stat-card"><span className="stat-num">{stats.docs}</span><span className="stat-lbl">Documents Uploaded</span></div>
           <div className="stat-card"><span className="stat-num">{stats.schools}</span><span className="stat-lbl">Schools Tracked</span></div>
-          <div className="stat-card"><span className="stat-num">{stats.achievements}</span><span className="stat-lbl">Achievements Logged</span></div>
           <div className="stat-card" style={{borderTopColor:'var(--gold)'}}><span className="stat-num">{days}</span><span className="stat-lbl">Days to Graduation</span></div>
         </div>
 
         <div className="section-label">Quick Actions</div>
         <div className="grid3" style={{marginBottom:'1.5rem'}}>
           {[
+            {icon:'📊',title:'Update GPA',desc:'Add courses or upload transcript to recalculate',action:'gpa',color:'#059669'},
             {icon:'🤖',title:'Ask Your Coach',desc:'Get help with forms, essays, and applications',action:'coach',color:'var(--gold)'},
             {icon:'📁',title:'Upload Document',desc:'Add transcripts, recommendation letters, and more',action:'vault',color:'var(--teal)'},
-            {icon:'🎓',title:'Track Applications',desc:'Check deadlines and school statuses',action:'tracker',color:'var(--ink)'},
           ].map(a=>(
             <div key={a.action} className="card" style={{borderTop:`3px solid ${a.color}`,cursor:'pointer'}} onClick={()=>onNav(a.action)}>
               <div style={{fontSize:'1.5rem',marginBottom:'0.5rem'}}>{a.icon}</div>
@@ -528,6 +569,7 @@ function HomeModule({ onNav, user }) {
     </div>
   );
 }
+
 
 // ── STUDY LIBRARY ─────────────────────────────────────────────────────────────
 const STUDY_TOPICS = [
@@ -1328,6 +1370,282 @@ function FinancialModule({ user, toast, coachUrl }) {
 }
 
 // ── COACH MODULE ──────────────────────────────────────────────────────────────
+// ── GPA MODULE ────────────────────────────────────────────────────────────────
+const SEMESTERS = ['Fall 2022','Spring 2023','Fall 2023','Spring 2024','Fall 2024','Spring 2025','Fall 2025','Spring 2026'];
+
+function GpaModule({ user, toast }) {
+  const [grades, setGrades] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({course_name:'',grade_letter:'A',credit_hours:1,semester:'Fall 2025',is_ap:false,is_honors:false});
+  const [saving, setSaving] = useState(false);
+  const [pasteText, setPasteText] = useState('');
+  const [parsing, setParsing] = useState(false);
+  const [tab, setTab] = useState('view'); // 'view','add','parse'
+  const coachUrl = localStorage.getItem('sm_coach')||'';
+  const anonKey = localStorage.getItem('sm_key')||'';
+
+  const load = async () => {
+    setLoading(true);
+    const sb = getSupabase();
+    const {data} = await sb.from('grades').select('*').eq('user_id',user.id).order('grade_year',{ascending:true}).order('semester',{ascending:true});
+    setGrades(data||[]);
+    setLoading(false);
+  };
+
+  useEffect(()=>{ load(); },[user]);
+
+  const gpa = calcGPA(grades);
+  const byTerm = grades.reduce((acc,g)=>{
+    const k = g.semester||'Unknown';
+    if(!acc[k]) acc[k]=[];
+    acc[k].push(g);
+    return acc;
+  },{});
+
+  const addGrade = async () => {
+    if(!form.course_name.trim()) { toast('Enter a course name'); return; }
+    setSaving(true);
+    const pts = gradeToPoints(form.grade_letter);
+    const sb = getSupabase();
+    const {error} = await sb.from('grades').insert({
+      user_id: user.id,
+      course_name: form.course_name.trim(),
+      grade_letter: form.grade_letter,
+      grade_points: pts,
+      credit_hours: parseFloat(form.credit_hours),
+      semester: form.semester,
+      grade_year: parseInt(form.semester.split(' ')[1]||'2025'),
+      is_ap: form.is_ap,
+      is_honors: form.is_honors,
+      source: 'manual'
+    });
+    if(error) { toast('Error saving: ' + error.message); setSaving(false); return; }
+    toast('Course added!');
+    setForm({course_name:'',grade_letter:'A',credit_hours:1,semester:'Fall 2025',is_ap:false,is_honors:false});
+    setSaving(false);
+    await load();
+  };
+
+  const deleteGrade = async (id) => {
+    const sb = getSupabase();
+    await sb.from('grades').delete().eq('id',id);
+    await load();
+    toast('Removed');
+  };
+
+  const parseTranscript = async () => {
+    if(!pasteText.trim()) { toast('Paste your transcript text first'); return; }
+    if(!coachUrl) { toast('Coach URL not set'); return; }
+    setParsing(true);
+    try {
+      const prompt = `Parse this transcript and return ONLY a JSON array. Each item must have:
+- course_name (string)
+- grade_letter (A, A-, B+, B, B-, C+, C, etc.)
+- credit_hours (number, default 1 if not shown)
+- semester (e.g. "Fall 2024")
+- is_ap (true/false — look for AP in course name)
+- is_honors (true/false — look for H, Honors, or CP in course name)
+
+Transcript:
+${pasteText}
+
+Return ONLY the JSON array, no other text.`;
+
+      const res = await fetch(coachUrl, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+anonKey},
+        body: JSON.stringify({messages:[{role:'user',content:prompt}]})
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text || '';
+      const cleaned = text.replace(/```json|```/g,'').trim();
+      const parsed = JSON.parse(cleaned);
+
+      if(!Array.isArray(parsed) || parsed.length === 0) {
+        toast('Could not parse transcript — try adding courses manually');
+        setParsing(false);
+        return;
+      }
+
+      const sb = getSupabase();
+      const rows = parsed.map(r=>({
+        user_id: user.id,
+        course_name: r.course_name,
+        grade_letter: r.grade_letter,
+        grade_points: gradeToPoints(r.grade_letter),
+        credit_hours: parseFloat(r.credit_hours)||1,
+        semester: r.semester||'Unknown',
+        grade_year: parseInt((r.semester||'2025').split(' ').pop())||2025,
+        is_ap: !!r.is_ap,
+        is_honors: !!r.is_honors,
+        source: 'parsed'
+      }));
+
+      const {error} = await sb.from('grades').insert(rows);
+      if(error) { toast('Save error: '+error.message); setParsing(false); return; }
+      toast(`✅ Imported ${rows.length} courses from transcript!`);
+      setPasteText('');
+      setTab('view');
+      await load();
+    } catch(e) {
+      toast('Parse failed — try manual entry');
+    }
+    setParsing(false);
+  };
+
+  const gpaColor = gpa===null?'var(--dim)':gpa>=3.7?'#059669':gpa>=3.3?'#d97706':'#dc2626';
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title serif">GPA <em style={{color:'var(--gold)'}}>Tracker</em></div>
+        <div className="page-sub">Cumulative GPA calculated from all courses · Updates coach and profile in real-time</div>
+      </div>
+      <div className="page-content">
+
+        {/* GPA Hero */}
+        <div className="card" style={{borderTop:`4px solid ${gpaColor}`,marginBottom:'1.5rem',textAlign:'center',padding:'1.5rem'}}>
+          <div style={{fontSize:'3.5rem',fontWeight:900,color:gpaColor,fontFamily:'serif',lineHeight:1}}>
+            {gpa !== null ? gpa.toFixed(3) : '—'}
+          </div>
+          <div style={{fontSize:'0.85rem',color:'var(--dim)',marginTop:'0.4rem'}}>
+            Cumulative GPA · {grades.filter(g=>g.grade_points!==null).length} courses · {grades.reduce((s,g)=>s+parseFloat(g.credit_hours||1),0)} credit hours
+          </div>
+          {grades.length === 0 && (
+            <div style={{marginTop:'0.8rem',fontSize:'0.85rem',color:'var(--dim)'}}>
+              Add courses manually or paste your transcript below to get started
+            </div>
+          )}
+        </div>
+
+        {/* Tabs */}
+        <div style={{display:'flex',gap:'0.5rem',marginBottom:'1.2rem'}}>
+          {[['view','📊 View Courses'],['add','➕ Add Course'],['parse','📋 Import Transcript']].map(([t,label])=>(
+            <button key={t} onClick={()=>setTab(t)}
+              className="btn btn-sm"
+              style={{
+                background:tab===t?'var(--ink)':'transparent',
+                color:tab===t?'var(--cream)':'var(--dim)',
+                border:'1px solid var(--border)',fontSize:'0.8rem'
+              }}>{label}</button>
+          ))}
+        </div>
+
+        {/* VIEW TAB */}
+        {tab==='view' && (
+          loading ? <div style={{color:'var(--dim)'}}>Loading...</div> :
+          grades.length === 0 ? (
+            <div className="info-box">No courses yet. Add them manually or import your transcript.</div>
+          ) : (
+            Object.entries(byTerm).sort().map(([semester, termGrades])=>(
+              <div key={semester} style={{marginBottom:'1.5rem'}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'0.5rem'}}>
+                  <div className="section-label">{semester}</div>
+                  <div style={{fontSize:'0.8rem',fontFamily:'monospace',color:gpaColor,fontWeight:700}}>
+                    Term GPA: {calcGPA(termGrades)?.toFixed(3)||'N/A'}
+                  </div>
+                </div>
+                {termGrades.map(g=>(
+                  <div key={g.id} className="card" style={{
+                    display:'flex',alignItems:'center',justifyContent:'space-between',
+                    padding:'0.7rem 1rem',marginBottom:'0.4rem',
+                    borderLeft:`3px solid ${
+                      g.grade_points>=3.7?'#059669':g.grade_points>=2.7?'#d97706':g.grade_points!==null?'#dc2626':'var(--border)'
+                    }`
+                  }}>
+                    <div style={{flex:1}}>
+                      <div style={{fontWeight:600,fontSize:'0.9rem'}}>
+                        {g.course_name}
+                        {g.is_ap && <span style={{marginLeft:'0.4rem',fontSize:'0.7rem',background:'#7c3aed',color:'#fff',padding:'1px 5px',borderRadius:'3px'}}>AP</span>}
+                        {g.is_honors && <span style={{marginLeft:'0.3rem',fontSize:'0.7rem',background:'#0369a1',color:'#fff',padding:'1px 5px',borderRadius:'3px'}}>H</span>}
+                      </div>
+                      <div style={{fontSize:'0.78rem',color:'var(--dim)'}}>{g.credit_hours} cr · {g.source==='parsed'?'📋 imported':'✏️ manual'}</div>
+                    </div>
+                    <div style={{textAlign:'right',marginRight:'1rem'}}>
+                      <div style={{fontSize:'1.3rem',fontWeight:700,color:
+                        g.grade_points>=3.7?'#059669':g.grade_points>=2.7?'#d97706':g.grade_points!==null?'#dc2626':'var(--dim)'
+                      }}>{g.grade_letter||'N/A'}</div>
+                      <div style={{fontSize:'0.75rem',color:'var(--dim)'}}>{g.grade_points!==null?g.grade_points.toFixed(1):''}</div>
+                    </div>
+                    <button onClick={()=>deleteGrade(g.id)} className="btn btn-sm" style={{background:'transparent',color:'var(--dim)',border:'1px solid var(--border)',fontSize:'0.75rem'}}>✕</button>
+                  </div>
+                ))}
+              </div>
+            ))
+          )
+        )}
+
+        {/* ADD TAB */}
+        {tab==='add' && (
+          <div className="card" style={{padding:'1.2rem'}}>
+            <div style={{display:'grid',gap:'0.8rem'}}>
+              <div>
+                <label className="label">Course Name</label>
+                <input className="input" value={form.course_name} onChange={e=>setForm(p=>({...p,course_name:e.target.value}))} placeholder="e.g. AP Psychology"/>
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'0.6rem'}}>
+                <div>
+                  <label className="label">Grade</label>
+                  <select className="input" value={form.grade_letter} onChange={e=>setForm(p=>({...p,grade_letter:e.target.value}))}>
+                    {Object.keys(GRADE_POINTS).filter(k=>k!=='P'&&k!=='W'&&k!=='I').map(g=>(
+                      <option key={g} value={g}>{g} ({GRADE_POINTS[g]?.toFixed(1)||'N/A'})</option>
+                    ))}
+                    <option value="P">P (Pass)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="label">Credits</label>
+                  <input className="input" type="number" min="0.5" max="6" step="0.5" value={form.credit_hours} onChange={e=>setForm(p=>({...p,credit_hours:e.target.value}))}/>
+                </div>
+                <div>
+                  <label className="label">Semester</label>
+                  <select className="input" value={form.semester} onChange={e=>setForm(p=>({...p,semester:e.target.value}))}>
+                    {SEMESTERS.map(s=><option key={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div style={{display:'flex',gap:'1.5rem'}}>
+                <label style={{display:'flex',alignItems:'center',gap:'0.4rem',cursor:'pointer',fontSize:'0.88rem'}}>
+                  <input type="checkbox" checked={form.is_ap} onChange={e=>setForm(p=>({...p,is_ap:e.target.checked}))}/>
+                  AP Course
+                </label>
+                <label style={{display:'flex',alignItems:'center',gap:'0.4rem',cursor:'pointer',fontSize:'0.88rem'}}>
+                  <input type="checkbox" checked={form.is_honors} onChange={e=>setForm(p=>({...p,is_honors:e.target.checked}))}/>
+                  Honors / CP
+                </label>
+              </div>
+              <button className="btn btn-gold" onClick={addGrade} disabled={saving}>
+                {saving ? 'Saving...' : '➕ Add Course'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* PARSE TAB */}
+        {tab==='parse' && (
+          <div>
+            <div className="info-box" style={{marginBottom:'1rem'}}>
+              <strong>📋 Import from Transcript</strong><br/>
+              Copy and paste your transcript text below. The AI Coach will automatically extract all courses, grades, and credit hours and add them to your GPA tracker.
+            </div>
+            <textarea
+              className="input"
+              style={{minHeight:'200px',resize:'vertical',fontFamily:'monospace',fontSize:'0.82rem'}}
+              value={pasteText}
+              onChange={e=>setPasteText(e.target.value)}
+              placeholder="Paste your transcript text here...&#10;&#10;Example:&#10;Fall 2024&#10;AP Psychology  A  1.0&#10;AP Statistics  B+  1.0&#10;English 4 AP  A-  1.0"
+            />
+            <button className="btn btn-gold" style={{marginTop:'0.8rem',width:'100%'}} onClick={parseTranscript} disabled={parsing}>
+              {parsing ? '🤖 Parsing transcript...' : '🤖 Import with AI Coach'}
+            </button>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
+
 function CoachModule({ user, coachUrl, toast }) {
   const [tab, setTab] = useState('chat');
   const [messages, setMessages] = useState([{role:'assistant',content:"Hi Sloan! I'm your Coach. I know your full profile, GPA, courses, activities, and everything in your Document Vault. Ask me anything — I can fill out application forms, help with essays, explain financial aid, quiz you on forensic psychology, or tell you what documents you still need. What do you need today?"}]);
@@ -1353,8 +1671,16 @@ function CoachModule({ user, coachUrl, toast }) {
     ]);
     const docStr = docs?.length ? 'Uploaded documents: ' + docs.map(d=>`${d.name} (${d.category})`).join(', ') : 'No documents uploaded yet.';
     const achStr = achs?.length ? 'Achievements: ' + achs.map(a=>`${a.title} (${a.role})`).join(', ') : '';
-    const profile = 'CORRECTION — Sloan\'s current GPA is 3.84 (updated). Use 3.84 in all responses.';
-    return profile + '\n' + docStr + (achStr ? '\n' + achStr : '');
+    // Get live GPA from grades table
+    const {data:gradeData} = await sb.from('grades').select('grade_points,credit_hours,course_name,semester').eq('user_id',user.id);
+    const liveGpa = calcGPA(gradeData||[]);
+    const gpaStr = liveGpa !== null
+      ? `Sloan's current cumulative GPA: ${liveGpa.toFixed(3)} (calculated from ${(gradeData||[]).length} courses in GPA Tracker)`
+      : "Sloan's GPA: 3.84 (manually recorded — no courses entered in GPA tracker yet)";
+    const courseList = gradeData && gradeData.length > 0
+      ? 'Recent courses: ' + gradeData.slice(-5).map(g=>`${g.course_name} (${g.semester}: ${g.grade_letter||'N/A'})`).join(', ')
+      : '';
+    return gpaStr + '\n' + docStr + (achStr ? '\n' + achStr : '') + (courseList ? '\n' + courseList : '');
   };
 
   const callCoach = async (msgs) => {
@@ -1595,6 +1921,7 @@ function App() {
         {page==='tracker'      && <TrackerModule {...moduleProps}/>}
         {page==='achievements' && <AchievementsModule {...moduleProps}/>}
         {page==='financial'    && <FinancialModule {...moduleProps}/>}
+        {page==='gpa'          && <GpaModule user={user} toast={toast}/>}
         {page==='coach'        && <CoachModule {...moduleProps}/>}
       </div>
     </div>
