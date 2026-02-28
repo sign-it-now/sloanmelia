@@ -220,7 +220,10 @@ textarea.input{resize:vertical;min-height:80px;}
 <script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
 
-// ── SUPABASE CLIENT (lazy initialized) ──────────────────────────────────────
+// ── SUPABASE CLIENT (pre-configured) ──────────────────────────────────────
+const SUPABASE_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
+const COACH_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach';
 let supabase = null;
 function getSupabase() { return supabase; }
 function initSupabase(url, key) {
@@ -1291,21 +1294,20 @@ function App() {
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(()=>{
-    const url = localStorage.getItem('sm_url');
-    const key = localStorage.getItem('sm_key');
-    const coach = localStorage.getItem('sm_coach')||'';
-    if(url&&key) {
-      initSupabase(url,key);
-      setConfig({url,key,coachUrl:coach});
-      const sb = getSupabase();
-      sb.auth.getSession().then(({data:{session}})=>{
-        if(session?.user) setUser(session.user);
-        setAuthLoading(false);
-      });
-      sb.auth.onAuthStateChange((_,session)=>{
-        setUser(session?.user||null);
-      });
-    } else setAuthLoading(false);
+    // Use hardcoded credentials — no setup screen needed
+    const url = SUPABASE_URL;
+    const key = SUPABASE_KEY;
+    const coach = COACH_URL;
+    initSupabase(url, key);
+    setConfig({url, key, coachUrl: coach});
+    const sb = getSupabase();
+    sb.auth.getSession().then(({data:{session}})=>{
+      if(session?.user) setUser(session.user);
+      setAuthLoading(false);
+    });
+    sb.auth.onAuthStateChange((_,session)=>{
+      setUser(session?.user||null);
+    });
   },[]);
 
   const handleSetup = (cfg) => {
