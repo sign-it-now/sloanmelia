@@ -569,7 +569,7 @@ function HomeModule({ onNav, user }) {
       sb.from('documents').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('college_applications').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('achievements').select('id',{count:'exact'}).eq('user_id',uid),
-      sb.from('grades').select('grade_points,credit_hours').eq('user_id',uid),
+      sb.from('grades').select('grade_points,credit_hours,is_ap,is_honors').eq('user_id',uid),
     ]).then(([d,c,a,g])=>{
       const gpaUnweighted = calcGPA(g.data||[]);
       const gpaWeighted    = calcWeightedGPA(g.data||[]);
@@ -1471,7 +1471,7 @@ function ProfileModule({ user, toast }) {
     const sb = getSupabase();
     Promise.all([
       sb.from('profile').select('*').eq('user_id', user.id).single(),
-      sb.from('grades').select('grade_points,credit_hours').eq('user_id', user.id)
+      sb.from('grades').select('grade_points,credit_hours,is_ap,is_honors').eq('user_id', user.id)
     ]).then(([{data:p}, {data:g}])=>{
       if(p) setForm(f=>({...f,...p}));
       const gpa = calcGPA(g||[]);
@@ -2185,7 +2185,7 @@ function CoachModule({ user, coachUrl, toast }) {
     const docStr = docs?.length ? 'Uploaded documents: ' + docs.map(d=>`${d.name} (${d.category})`).join(', ') : 'No documents uploaded yet.';
     const achStr = achs?.length ? 'Achievements: ' + achs.map(a=>`${a.title} (${a.role})`).join(', ') : '';
     // Get live GPA from grades table
-    const {data:gradeData} = await sb.from('grades').select('grade_points,credit_hours,course_name,semester').eq('user_id',user.id);
+    const {data:gradeData} = await sb.from('grades').select('grade_points,credit_hours,is_ap,is_honors,course_name,semester').eq('user_id',user.id);
     const liveGpaUW     = calcGPA(gradeData||[]);
     const liveGpaW      = calcWeightedGPA(gradeData||[]);
     const liveGpaCore   = calcCoreGPA(gradeData||[]);
