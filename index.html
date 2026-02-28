@@ -575,7 +575,7 @@
       }
 
       // Load live GPA from grades table
-      const {data: grades} = await sb.from('grades').select('grade_points,credit_hours').eq('user_id', p.user_id);
+      const {data: grades} = await sb.from('grades').select('grade_points,credit_hours,is_ap,is_honors').eq('user_id', p.user_id);
       const liveGpa = calcGPA(grades);
       if(liveGpa !== null) {
         // Weighted GPA calculation (AP+1.0, Honors+0.5, cap 5.0)
@@ -597,6 +597,9 @@
         set('profile-gpa-weighted', gpaW);    // academic stats weighted
         set('profile-gpa-academic', gpaUW);   // academic stats unweighted
         set('profile-gpa-bio',      gpaUW);   // bio paragraph (unweighted in prose)
+        // AP count from real data
+        const apCount = (grades||[]).filter(g=>g.is_ap).length;
+        if(apCount > 0) set('profile-ap-count', String(apCount));
       }
     }
   } catch(e) {
@@ -673,8 +676,8 @@
       <span class="label">Unweighted GPA <span style="font-size:0.55em;display:block;opacity:0.6;">4.0 Scale</span></span>
     </div>
     <div class="stat-cell">
-      <span class="big">3</span>
-      <span class="label">AP Courses · Senior Year</span>
+      <span class="big" id="profile-ap-count">13</span>
+      <span class="label">AP Courses · All Years</span>
     </div>
     <div class="stat-cell">
       <span class="big">3yr</span>
