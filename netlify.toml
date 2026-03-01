@@ -21,6 +21,7 @@
   from = "/dashboard.html"
   to = "/sloanmelia-app.html"
   status = 302
+  force = true
 
 [[redirects]]
   from = "/study-library.html"

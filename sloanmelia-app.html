@@ -862,6 +862,10 @@ function LibraryModule({ onNav }) {
 }
 
 
+// ── DOCUMENT VAULT CONSTANTS ───────────────────────────────────────────────────
+const DOC_CATS = ['Transcript','Test Scores','Recommendation Letter','Essay','Certificate','Resume','Financial','Other'];
+const CAT_BADGE = {Transcript:'badge-blue','Test Scores':'badge-teal','Recommendation Letter':'badge-gold',Essay:'badge-green',Certificate:'badge-teal',Resume:'badge-gold',Financial:'badge-red',Other:'badge-gray'};
+
 function VaultModule({ user, toast }) {
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
