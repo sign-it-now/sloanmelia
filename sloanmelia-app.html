@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   color-scheme: light only;
@@ -213,17 +213,6 @@ textarea.input{resize:vertical;min-height:80px;}
 .info-box{background:var(--cream);border-left:4px solid var(--gold);padding:1rem 1.2rem;font-size:0.88rem;line-height:1.65;margin-bottom:1rem;}
 .info-box strong{display:block;font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
 </style>
-<script>
-// Pre-seed credentials
-var SM_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
-var SM_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdwa3R1ZmxpbW9xZXl4dHdhZHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODM2MDEsImV4cCI6MjA4NzI1OTYwMX0.q3RMeKEo17qXgt-a9ljtMfKJ46etHy4_rrj1cs64A4U';
-var SM_COACH = 'https://gpktuflimoqeyxtwadsy.supabase.co/functions/v1/coach';
-try{
-  localStorage.setItem('sm_url', SM_URL);
-  localStorage.setItem('sm_key', SM_KEY);
-  localStorage.setItem('sm_coach', SM_COACH);
-}catch(e){}
-</script>
 </head>
 <body>
 <div id="root"></div>
@@ -231,24 +220,12 @@ try{
 <script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
 
-// ── SUPABASE CLIENT ──────────────────────────────────────────────────────────
-// Client created in plain <script> tag to avoid window.supabase naming conflict
-let _smClient = null;
-function getSupabase() { return _smClient; }
-function getAnonKey() {
-  // Use the anon key for edge function auth - simpler and more reliable than session JWT
-  return localStorage.getItem('sm_key') || '';
-}
+// ── SUPABASE CLIENT (lazy initialized) ──────────────────────────────────────
+let supabase = null;
+function getSupabase() { return supabase; }
 function initSupabase(url, key) {
-  if (_smClient) return _smClient;
-  // window.supabase is set by the UMD CDN script (var supabase = ...)
-  // We access it via window to avoid shadowing by Babel's 'let supabase'
-  const lib = window['supabase'];
-  if (!lib || !lib.createClient) {
-    throw new Error('Supabase CDN not loaded. Check network tab for CDN errors.');
-  }
-  _smClient = lib.createClient(url, key);
-  return _smClient;
+  supabase = window.supabase.createClient(url, key);
+  return supabase;
 }
 
 // ── TOAST SYSTEM ──────────────────────────────────────────────────────────────
@@ -445,8 +422,6 @@ const NAV_ITEMS = [
   { id:'tracker', icon:'🎓', label:'College Tracker' },
   { id:'achievements', icon:'⭐', label:'Achievements' },
   { id:'financial', icon:'💰', label:'Financial Aid' },
-  { id:'gpa', icon:'📊', label:'GPA Tracker' },
-  { id:'profile', icon:'🌐', label:'Profile Builder' },
   { id:'coach', icon:'🤖', label:'Coach', special:true },
 ];
 
@@ -467,26 +442,6 @@ function Sidebar({ page, onNav, user, onSignOut }) {
         ))}
       </nav>
       <div className="sidebar-footer">
-        <a
-          href="https://sloanmelia.com/index.html"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display:'flex',alignItems:'center',gap:'0.5rem',
-            padding:'0.5rem 0.6rem',marginBottom:'0.5rem',
-            background:'rgba(200,146,42,0.12)',
-            border:'1px solid rgba(200,146,42,0.3)',
-            borderRadius:'6px',textDecoration:'none',
-            color:'var(--gold)',fontSize:'0.78rem',fontWeight:600,
-            transition:'background 0.15s'
-          }}
-          onMouseEnter={e=>e.currentTarget.style.background='rgba(200,146,42,0.22)'}
-          onMouseLeave={e=>e.currentTarget.style.background='rgba(200,146,42,0.12)'}
-        >
-          <span>🌐</span>
-          <span>View Public Profile</span>
-          <span style={{marginLeft:'auto',opacity:0.6}}>↗</span>
-        </a>
         <div className="sidebar-user">{user?.email}</div>
         <button className="btn btn-ghost w100" style={{color:'rgba(255,255,255,0.35)',textAlign:'left',paddingLeft:0}} onClick={onSignOut}>Sign Out</button>
       </div>
@@ -495,73 +450,12 @@ function Sidebar({ page, onNav, user, onSignOut }) {
 }
 
 // ── HOME MODULE ────────────────────────────────────────────────────────────────
-// ── GPA SYSTEM ────────────────────────────────────────────────────────────────
-const GRADE_POINTS = {
-  'A+':4.0,'A':4.0,'A-':3.7,
-  'B+':3.3,'B':3.0,'B-':2.7,
-  'C+':2.3,'C':2.0,'C-':1.7,
-  'D+':1.3,'D':1.0,'D-':0.7,
-  'F':0.0,'WF':0.0,'P':null,'W':null,'I':null
-};
-function gradeToPoints(letter) {
-  if(!letter) return null;
-  return GRADE_POINTS[letter.trim().toUpperCase()] ?? null;
-}
-// ── GPA CALCULATION ENGINE ────────────────────────────────────────────────────
-// 1. UNWEIGHTED — straight 4.0 scale, no bonuses, every class equal
-function calcGPA(grades) {
-  const eligible = (grades||[]).filter(g => g.grade_points !== null && g.grade_points !== undefined && parseFloat(g.credit_hours) > 0);
-  if(!eligible.length) return null;
-  const pts = eligible.reduce((s,g)=>s + (parseFloat(g.grade_points) * parseFloat(g.credit_hours)), 0);
-  const cr  = eligible.reduce((s,g)=>s + parseFloat(g.credit_hours), 0);
-  return cr > 0 ? Math.round((pts/cr)*1000)/1000 : null;
-}
-
-// 2. WEIGHTED — AP courses +1.0 bonus, Honors/CP courses +0.5 bonus (College Board standard)
-//    e.g. A in AP class = 5.0, A in Honors = 4.5, A in regular = 4.0
-//    Scale goes above 4.0 — this shows course rigor
-function calcWeightedGPA(grades) {
-  const eligible = (grades||[]).filter(g => g.grade_points !== null && g.grade_points !== undefined && parseFloat(g.credit_hours) > 0);
-  if(!eligible.length) return null;
-  const pts = eligible.reduce((s,g)=>{
-    const bonus = g.is_ap ? 1.0 : g.is_honors ? 0.5 : 0;
-    const weighted = Math.min(parseFloat(g.grade_points) + bonus, 5.0); // cap at 5.0
-    return s + (weighted * parseFloat(g.credit_hours));
-  }, 0);
-  const cr = eligible.reduce((s,g)=>s + parseFloat(g.credit_hours), 0);
-  return cr > 0 ? Math.round((pts/cr)*1000)/1000 : null;
-}
-
-// 3. CORE ACADEMIC — unweighted but electives stripped out
-//    Only counts: English, Math, Science, Social Studies, Foreign Language
-//    Used by UC system and many competitive universities
-const CORE_KEYWORDS = [
-  'english','math','algebra','geometry','calculus','statistics','biology','chemistry',
-  'physics','science','history','social','geography','spanish','french','language',
-  'ap ','psychology','sociology','economics','government','writing','literature'
-];
-function isCoreAcademic(courseName) {
-  const lower = (courseName||'').toLowerCase();
-  return CORE_KEYWORDS.some(kw => lower.includes(kw));
-}
-function calcCoreGPA(grades) {
-  const core = (grades||[]).filter(g =>
-    g.grade_points !== null && g.grade_points !== undefined &&
-    parseFloat(g.credit_hours) > 0 &&
-    isCoreAcademic(g.course_name)
-  );
-  if(!core.length) return null;
-  const pts = core.reduce((s,g)=>s + (parseFloat(g.grade_points) * parseFloat(g.credit_hours)), 0);
-  const cr  = core.reduce((s,g)=>s + parseFloat(g.credit_hours), 0);
-  return cr > 0 ? Math.round((pts/cr)*1000)/1000 : null;
-}
-
 function HomeModule({ onNav, user }) {
-  const [stats, setStats] = useState({docs:0, schools:0, achievements:0, gpa:null, totalCourses:0});
+  const [stats, setStats] = useState({docs:0, schools:0, achievements:0, sessions:0});
   const graduation = new Date('2026-05-15');
   const days = Math.max(0, Math.ceil((graduation - new Date())/(1000*60*60*24)));
 
-  const loadStats = () => {
+  useEffect(()=>{
     const sb = getSupabase();
     const uid = user?.id;
     if(!uid) return;
@@ -569,53 +463,33 @@ function HomeModule({ onNav, user }) {
       sb.from('documents').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('college_applications').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('achievements').select('id',{count:'exact'}).eq('user_id',uid),
-      sb.from('grades').select('grade_points,credit_hours,is_ap,is_honors').eq('user_id',uid),
-    ]).then(([d,c,a,g])=>{
-      const gpaUnweighted = calcGPA(g.data||[]);
-      const gpaWeighted    = calcWeightedGPA(g.data||[]);
-      setStats({docs:d.count||0, schools:c.count||0, achievements:a.count||0,
-                gpa:gpaWeighted, gpaUnweighted, totalCourses:(g.data||[]).length});
+      sb.from('coach_sessions').select('id',{count:'exact'}).eq('user_id',uid),
+    ]).then(([d,c,a,s])=>{
+      setStats({docs:d.count||0, schools:c.count||0, achievements:a.count||0, sessions:s.count||0});
     }).catch(()=>{});
-  };
-
-  useEffect(()=>{ loadStats(); },[user]);
-
-  const gpaColor = stats.gpa === null ? 'var(--dim)'
-    : stats.gpa >= 3.7 ? '#059669'
-    : stats.gpa >= 3.3 ? '#d97706'
-    : '#dc2626';
+  },[user]);
 
   return (
     <div>
       <div className="page-header">
         <div className="page-title serif">Welcome back, <em style={{color:'var(--gold)'}}>Sloan</em> 👋</div>
-        <div className="page-sub">Class of 2026 · Alton High School · Future Dr. Smith</div>
+        <div className="page-sub">Class of 2026 · Alton High School · GPA 3.684 · Future Dr. Smith</div>
       </div>
       <div className="page-content">
-
-        {/* Stats row — GPA is now live from DB */}
         <div className="stats-row">
-          <div className="stat-card" style={{borderTopColor: gpaColor}}>
-            <span className="stat-num" style={{color: gpaColor}}>
-              {stats.gpa !== null ? stats.gpa.toFixed(3) : '—'}
-            </span>
-            <span className="stat-lbl">
-              Weighted GPA
-              {stats.gpaUnweighted !== null && <span style={{display:'block',fontSize:'0.7rem',color:'var(--dim)'}}>Unweighted: {stats.gpaUnweighted?.toFixed(3)}</span>}
-              {stats.totalCourses > 0 && <span style={{display:'block',fontSize:'0.68rem',color:'var(--dim)'}}>{stats.totalCourses} courses</span>}
-            </span>
-          </div>
           <div className="stat-card"><span className="stat-num">{stats.docs}</span><span className="stat-lbl">Documents Uploaded</span></div>
           <div className="stat-card"><span className="stat-num">{stats.schools}</span><span className="stat-lbl">Schools Tracked</span></div>
+          <div className="stat-card"><span className="stat-num">{stats.achievements}</span><span className="stat-lbl">Achievements Logged</span></div>
+          <div className="stat-card" style={{borderTopColor:'var(--teal)'}}><span className="stat-num">{stats.sessions}</span><span className="stat-lbl">Coach Sessions Saved</span></div>
           <div className="stat-card" style={{borderTopColor:'var(--gold)'}}><span className="stat-num">{days}</span><span className="stat-lbl">Days to Graduation</span></div>
         </div>
 
         <div className="section-label">Quick Actions</div>
         <div className="grid3" style={{marginBottom:'1.5rem'}}>
           {[
-            {icon:'📊',title:'Update GPA',desc:'Add courses or upload transcript to recalculate',action:'gpa',color:'#059669'},
             {icon:'🤖',title:'Ask Your Coach',desc:'Get help with forms, essays, and applications',action:'coach',color:'var(--gold)'},
             {icon:'📁',title:'Upload Document',desc:'Add transcripts, recommendation letters, and more',action:'vault',color:'var(--teal)'},
+            {icon:'🎓',title:'Track Applications',desc:'Check deadlines and school statuses',action:'tracker',color:'var(--ink)'},
           ].map(a=>(
             <div key={a.action} className="card" style={{borderTop:`3px solid ${a.color}`,cursor:'pointer'}} onClick={()=>onNav(a.action)}>
               <div style={{fontSize:'1.5rem',marginBottom:'0.5rem'}}>{a.icon}</div>
@@ -623,18 +497,6 @@ function HomeModule({ onNav, user }) {
               <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem'}}>{a.desc}</div>
             </div>
           ))}
-        </div>
-
-        <div className="card" style={{borderTop:'3px solid var(--gold)',marginBottom:'1rem',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'1rem 1.2rem'}}>
-          <div>
-            <div style={{fontWeight:700,fontSize:'0.95rem',marginBottom:'0.2rem'}}>🌐 Your Public Profile</div>
-            <div style={{fontSize:'0.82rem',color:'var(--dim)'}}>sloanmelia.com — what colleges and recruiters see</div>
-          </div>
-          <a href="https://sloanmelia.com/index.html" target="_blank" rel="noopener noreferrer"
-            className="btn btn-gold"
-            style={{textDecoration:'none',whiteSpace:'nowrap',flexShrink:0,marginLeft:'1rem'}}>
-            View Profile ↗
-          </a>
         </div>
 
         <div className="info-box">
@@ -646,329 +508,99 @@ function HomeModule({ onNav, user }) {
   );
 }
 
-
 // ── STUDY LIBRARY ─────────────────────────────────────────────────────────────
 const STUDY_TOPICS = [
-  // ── CORE FORENSIC (8) ──────────────────────────────────────────
-  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',
-   color:'#7c3aed',bg:'#f5f3ff',
-   desc:'The biological foundation of behavior, emotion, and the criminal mind.',
-   poster:'https://sloanmelia.com/poster1-brain.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/3-1-human-genetics',
-   openstaxLabel:'Psychology 2e · Ch 3: Biopsychology',
-   concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
-  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',
-   color:'#dc2626',bg:'#fef2f2',
-   desc:'Mental disorder classification system used in forensic evaluations.',
-   poster:'https://sloanmelia.com/poster2-dsm5.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/15-1-what-are-psychological-disorders',
-   openstaxLabel:'Psychology 2e · Ch 15: Psychological Disorders',
-   concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
-  {id:3,title:'Theorists Timeline',cat:'Core Forensic',
-   color:'#d97706',bg:'#fffbeb',
-   desc:'From Freud to modern forensic psychology pioneers.',
-   poster:'https://sloanmelia.com/poster3-theorists.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/1-2-history-of-psychology',
-   openstaxLabel:'Psychology 2e · Ch 1: History of Psychology',
-   concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
-  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',
-   color:'#0369a1',bg:'#f0f9ff',
-   desc:'Scientific foundation of psychological research.',
-   poster:'https://sloanmelia.com/poster4-research.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/2-1-why-is-research-important',
-   openstaxLabel:'Psychology 2e · Ch 2: Research Methods',
-   concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
-  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',
-   color:'#be185d',bg:'#fdf2f8',
-   desc:'Psychological defenses relevant to criminal behavior analysis.',
-   poster:'https://sloanmelia.com/poster5-defense.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/11-3-defense-mechanisms',
-   openstaxLabel:'Psychology 2e · Ch 11: Defense Mechanisms',
-   concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
-  {id:6,title:'Human Development',cat:'Core Forensic',
-   color:'#059669',bg:'#f0fdf4',
-   desc:'Lifespan development theories critical to forensic assessment.',
-   poster:'https://sloanmelia.com/poster6-development.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/9-1-what-is-lifespan-development',
-   openstaxLabel:'Psychology 2e · Ch 9: Lifespan Development',
-   concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
-  {id:7,title:'Cognitive Biases',cat:'Core Forensic',
-   color:'#9333ea',bg:'#faf5ff',
-   desc:'How thinking errors affect judgment, perception, and testimony.',
-   poster:'https://sloanmelia.com/poster7-biases.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/7-3-problem-solving',
-   openstaxLabel:'Psychology 2e · Ch 7: Thinking & Intelligence',
-   concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
-  {id:8,title:'APA Ethics Code',cat:'Core Forensic',
-   color:'#1d4ed8',bg:'#eff6ff',
-   desc:'Professional ethical obligations guiding all psychologists.',
-   poster:'https://sloanmelia.com/poster8-ethics.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/1-3-contemporary-psychology',
-   openstaxLabel:'Psychology 2e · Ch 1: Ethics in Psychology',
-   concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
-  // ── SUPPORTING COURSEWORK (8) ────────────────────────────────────
-  {id:9,title:'Biology & Physiology',cat:'Supporting',
-   color:'#0d9488',bg:'#f0fdfa',
-   desc:'Body systems that support psychological function.',
-   poster:'https://sloanmelia.com/support1-biology.html',
-   openstax:'https://openstax.org/books/anatomy-and-physiology-2e/pages/1-introduction',
-   openstaxLabel:'Anatomy & Physiology 2e · Full Textbook',
-   concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
-  {id:10,title:'Sociology & Social Theory',cat:'Supporting',
-   color:'#c2410c',bg:'#fff7ed',
-   desc:'Social forces shaping criminal behavior and justice.',
-   poster:'https://sloanmelia.com/support2-sociology.html',
-   openstax:'https://openstax.org/books/introduction-sociology-3e/pages/1-introduction',
-   openstaxLabel:'Introduction to Sociology 3e · Full Textbook',
-   concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
-  {id:11,title:'Philosophy of Mind',cat:'Supporting',
-   color:'#6d28d9',bg:'#f5f3ff',
-   desc:'Consciousness, free will, and moral responsibility.',
-   poster:'https://sloanmelia.com/support3-philosophy.html',
-   openstax:'https://openstax.org/books/introduction-philosophy/pages/1-introduction',
-   openstaxLabel:'Introduction to Philosophy · Full Textbook',
-   concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
-  {id:12,title:'Pharmacology Basics',cat:'Supporting',
-   color:'#0f766e',bg:'#f0fdfa',
-   desc:'Psychoactive substances and their behavioral effects.',
-   poster:'https://sloanmelia.com/support4-pharmacology.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/16-3-approaches-to-treating-psychological-disorders',
-   openstaxLabel:'Psychology 2e · Ch 16: Biomedical Therapy',
-   concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
-  {id:13,title:'Law & Psychology Interface',cat:'Supporting',
-   color:'#1e40af',bg:'#eff6ff',
-   desc:'How psychological science enters the legal system.',
-   poster:'https://sloanmelia.com/support5-law.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/1-introduction',
-   openstaxLabel:'Psychology 2e · Forensic Applications',
-   concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
-  {id:14,title:'Communication & Testimony',cat:'Supporting',
-   color:'#9f1239',bg:'#fff1f2',
-   desc:'Expert witness skills and forensic report writing.',
-   poster:'https://sloanmelia.com/support6-comm-write-admin.html',
-   openstax:'https://openstax.org/books/psychology-2e/pages/1-introduction',
-   openstaxLabel:'Psychology 2e · Professional Communication',
-   concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
-  {id:15,title:'Academic Writing',cat:'Supporting',
-   color:'#065f46',bg:'#f0fdf4',
-   desc:'Research paper and report writing standards for psychology.',
-   poster:'https://sloanmelia.com/support6-comm-write-admin.html',
-   openstax:'https://openstax.org/books/writing-guide/pages/1-unit-introduction',
-   openstaxLabel:'Writing Guide with Handbook · Full Textbook',
-   concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
-  {id:16,title:'Program Administration',cat:'Supporting',
-   color:'#374151',bg:'#f9fafb',
-   desc:'Clinical and forensic program management fundamentals.',
-   poster:'https://sloanmelia.com/support6-comm-write-admin.html',
-   openstax:'https://openstax.org/books/introduction-business/pages/1-introduction',
-   openstaxLabel:'Introduction to Business · Org Management',
-   concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
+  {id:1,title:'Brain & Neuroscience',cat:'Core Forensic',desc:'The biological foundation of behavior, emotion, and criminal mind.',concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
+  {id:2,title:'DSM-5 Diagnostic Reference',cat:'Core Forensic',desc:'Mental disorder classification system used in forensic evaluations.',concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
+  {id:3,title:'Theorists Timeline',cat:'Core Forensic',desc:'From Freud to modern forensic psychology pioneers.',concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
+  {id:4,title:'Research Methods & Statistics',cat:'Core Forensic',desc:'Scientific foundation of psychological research.',concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
+  {id:5,title:'Defense Mechanisms',cat:'Core Forensic',desc:'Psychological defenses relevant to criminal behavior analysis.',concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
+  {id:6,title:'Human Development',cat:'Core Forensic',desc:'Lifespan development theories critical to forensic assessment.',concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
+  {id:7,title:'Cognitive Biases',cat:'Core Forensic',desc:'How thinking errors affect judgment, perception, and testimony.',concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
+  {id:8,title:'APA Ethics Code',cat:'Core Forensic',desc:'Professional ethical obligations guiding all psychologists.',concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
+  {id:9,title:'Biology & Physiology',cat:'Supporting',desc:'Body systems that support psychological function.',concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
+  {id:10,title:'Sociology & Social Theory',cat:'Supporting',desc:'Social forces shaping criminal behavior and justice.',concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
+  {id:11,title:'Philosophy of Mind',cat:'Supporting',desc:'Consciousness, free will, and moral responsibility.',concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
+  {id:12,title:'Pharmacology Basics',cat:'Supporting',desc:'Psychoactive substances and their behavioral effects.',concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
+  {id:13,title:'Law & Psychology Interface',cat:'Supporting',desc:'How psychological science enters the legal system.',concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
+  {id:14,title:'Communication & Testimony',cat:'Supporting',desc:'Expert witness skills and forensic report writing.',concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
+  {id:15,title:'Academic Writing',cat:'Supporting',desc:'Research paper and report writing standards for psychology.',concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
+  {id:16,title:'Program Administration',cat:'Supporting',desc:'Clinical and forensic program management fundamentals.',concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
 ];
 
 function LibraryModule({ onNav, coachUrl }) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
-  const [activeTab, setActiveTab] = useState('all');
-  const filtered = STUDY_TOPICS.filter(t =>
-    (activeTab === 'all' || t.cat === activeTab) &&
-    (t.title.toLowerCase().includes(search.toLowerCase()) ||
-     t.cat.toLowerCase().includes(search.toLowerCase()) ||
-     t.desc.toLowerCase().includes(search.toLowerCase()))
-  );
+  const filtered = STUDY_TOPICS.filter(t => t.title.toLowerCase().includes(search.toLowerCase()) || t.cat.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div>
       <div className="page-header">
         <div className="page-title serif">Study <em style={{color:'var(--gold)'}}>Library</em></div>
-        <div className="page-sub">16 forensic psychology modules · Click any card to study · OpenStax textbooks linked</div>
+        <div className="page-sub">16 forensic psychology topic modules · Click any card to study</div>
       </div>
       <div className="page-content">
-
-        {/* Search + filter */}
-        <div style={{display:'flex',gap:'0.6rem',marginBottom:'1.2rem',flexWrap:'wrap',alignItems:'center'}}>
-          <input className="input" style={{flex:1,minWidth:'180px'}}
-            placeholder="Search topics, concepts, keywords..."
-            value={search} onChange={e=>setSearch(e.target.value)}/>
-          <div style={{display:'flex',gap:'0.4rem'}}>
-            {['all','Core Forensic','Supporting'].map(tab=>(
-              <button key={tab} onClick={()=>setActiveTab(tab)}
-                className="btn btn-sm"
-                style={{
-                  background: activeTab===tab ? 'var(--ink)' : 'transparent',
-                  color: activeTab===tab ? 'var(--cream)' : 'var(--dim)',
-                  border: '1px solid var(--border)',
-                  fontSize:'0.78rem'
-                }}>
-                {tab === 'all' ? 'All 16' : tab === 'Core Forensic' ? '🔬 Core (8)' : '📖 Supporting (8)'}
-              </button>
-            ))}
-          </div>
+        <div style={{marginBottom:'1rem'}}>
+          <input className="input" placeholder="Search topics..." value={search} onChange={e=>setSearch(e.target.value)}/>
         </div>
 
-        {/* Core Forensic section */}
-        {(activeTab === 'all' || activeTab === 'Core Forensic') && filtered.filter(t=>t.cat==='Core Forensic').length > 0 && (
-          <>
-            <div className="section-label" style={{marginBottom:'0.6rem'}}>
-              🔬 Core Forensic Psychology
+        <div className="section-label">Core Forensic Psychology</div>
+        <div className="grid3" style={{marginBottom:'1.5rem'}}>
+          {filtered.filter(t=>t.cat==='Core Forensic').map(t=>(
+            <div key={t.id} className="card" style={{borderTop:'3px solid var(--ink)',cursor:'pointer'}} onClick={()=>setSelected(t)}>
+              <span className="card-label">Core Forensic</span>
+              <div className="card-title">{t.title}</div>
+              <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
+              <button className="btn btn-ghost btn-sm" style={{marginTop:'0.7rem',paddingLeft:0}}>Study →</button>
             </div>
-            <div className="grid3" style={{marginBottom:'1.8rem'}}>
-              {filtered.filter(t=>t.cat==='Core Forensic').map(t=>(
-                <div key={t.id}
-                  className="card"
-                  style={{
-                    borderTop:`4px solid ${t.color}`,
-                    background:t.bg,
-                    cursor:'pointer',
-                    transition:'transform 0.15s,box-shadow 0.15s'
-                  }}
-                  onClick={()=>setSelected(t)}
-                  onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow=`0 6px 20px ${t.color}25`;}}
-                  onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='';}}
-                >
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'0.4rem'}}>
-                    <span className="card-label" style={{color:t.color,fontWeight:700}}>Core Forensic</span>
-                    <span style={{fontSize:'0.68rem',background:`${t.color}15`,color:t.color,padding:'2px 6px',borderRadius:'4px',fontFamily:'monospace',fontWeight:600}}>
-                      #{t.id.toString().padStart(2,'0')}
-                    </span>
-                  </div>
-                  <div className="card-title" style={{color:'var(--ink)',marginBottom:'0.3rem'}}>{t.title}</div>
-                  <div style={{fontSize:'0.8rem',color:'var(--dim)',lineHeight:1.5,marginBottom:'0.6rem'}}>{t.desc}</div>
-                  <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginTop:'auto'}}>
-                    <span style={{fontSize:'0.7rem',background:t.color,color:'#fff',padding:'2px 7px',borderRadius:'3px',fontWeight:600}}>
-                      📖 OpenStax
-                    </span>
-                    <span style={{fontSize:'0.7rem',background:'var(--ink)',color:'var(--cream)',padding:'2px 7px',borderRadius:'3px'}}>
-                      Study →
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
+          ))}
+        </div>
 
-        {/* Supporting section */}
-        {(activeTab === 'all' || activeTab === 'Supporting') && filtered.filter(t=>t.cat==='Supporting').length > 0 && (
-          <>
-            <div className="section-label" style={{marginBottom:'0.6rem'}}>
-              📖 Supporting Coursework
+        <div className="section-label">Supporting Coursework</div>
+        <div className="grid3">
+          {filtered.filter(t=>t.cat==='Supporting').map(t=>(
+            <div key={t.id} className="card" style={{borderTop:'3px solid var(--gold)',cursor:'pointer'}} onClick={()=>setSelected(t)}>
+              <span className="card-label" style={{color:'var(--teal)'}}>Supporting Course</span>
+              <div className="card-title">{t.title}</div>
+              <div style={{fontSize:'0.82rem',color:'var(--dim)',marginTop:'0.3rem',lineHeight:1.5}}>{t.desc}</div>
+              <button className="btn btn-ghost btn-sm" style={{marginTop:'0.7rem',paddingLeft:0}}>Study →</button>
             </div>
-            <div className="grid3">
-              {filtered.filter(t=>t.cat==='Supporting').map(t=>(
-                <div key={t.id}
-                  className="card"
-                  style={{
-                    borderTop:`4px solid ${t.color}`,
-                    background:t.bg,
-                    cursor:'pointer',
-                    transition:'transform 0.15s,box-shadow 0.15s'
-                  }}
-                  onClick={()=>setSelected(t)}
-                  onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow=`0 6px 20px ${t.color}25`;}}
-                  onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='';}}
-                >
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'0.4rem'}}>
-                    <span className="card-label" style={{color:t.color,fontWeight:700}}>Supporting</span>
-                    <span style={{fontSize:'0.68rem',background:`${t.color}15`,color:t.color,padding:'2px 6px',borderRadius:'4px',fontFamily:'monospace',fontWeight:600}}>
-                      #{t.id.toString().padStart(2,'0')}
-                    </span>
-                  </div>
-                  <div className="card-title" style={{color:'var(--ink)',marginBottom:'0.3rem'}}>{t.title}</div>
-                  <div style={{fontSize:'0.8rem',color:'var(--dim)',lineHeight:1.5,marginBottom:'0.6rem'}}>{t.desc}</div>
-                  <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginTop:'auto'}}>
-                    <span style={{fontSize:'0.7rem',background:t.color,color:'#fff',padding:'2px 7px',borderRadius:'3px',fontWeight:600}}>
-                      📖 OpenStax
-                    </span>
-                    <span style={{fontSize:'0.7rem',background:'var(--ink)',color:'var(--cream)',padding:'2px 7px',borderRadius:'3px'}}>
-                      Study →
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {filtered.length === 0 && (
-          <div style={{textAlign:'center',padding:'3rem',color:'var(--dim)'}}>
-            No topics match your search. Try a different keyword.
-          </div>
-        )}
-
+          ))}
+        </div>
       </div>
 
-      {/* Detail Modal */}
       <Modal open={!!selected} onClose={()=>setSelected(null)} title={selected?.title}>
-        {selected && (
-          <>
-            {/* Color accent bar */}
-            <div style={{height:'4px',background:selected.color,borderRadius:'2px',marginBottom:'1rem',marginLeft:'-1.5rem',marginRight:'-1.5rem',width:'calc(100% + 3rem)'}}/>
-
-            <div style={{display:'flex',gap:'0.5rem',marginBottom:'1rem',flexWrap:'wrap'}}>
-              <span style={{fontSize:'0.75rem',background:`${selected.color}15`,color:selected.color,padding:'3px 10px',borderRadius:'12px',fontWeight:700}}>
-                {selected.cat}
-              </span>
-              <span style={{fontSize:'0.75rem',background:'var(--cream)',color:'var(--dim)',padding:'3px 10px',borderRadius:'12px',border:'1px solid var(--border)'}}>
-                Module #{selected.id.toString().padStart(2,'0')}
-              </span>
-            </div>
-
-            <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem',lineHeight:1.6}}>{selected.desc}</p>
-
-            <div className="section-label" style={{color:selected.color}}>Key Concepts</div>
-            <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
-              {selected.concepts.map((c,i)=>(
-                <li key={i} style={{marginBottom:'0.5rem',fontSize:'0.88rem',lineHeight:1.5}}>
-                  <span style={{color:selected.color,fontWeight:600}}>›</span> {c}
-                </li>
-              ))}
-            </ul>
-
-            <div className="section-label">Resources</div>
-            <div style={{display:'flex',gap:'0.6rem',flexWrap:'wrap',marginBottom:'0.8rem',marginTop:'0.5rem'}}>
-              {selected.poster && (
-                <a href={selected.poster} target="_blank" rel="noopener noreferrer"
-                  style={{
-                    textDecoration:'none',display:'inline-flex',alignItems:'center',gap:'0.4rem',
-                    background:selected.color,color:'#fff',
-                    padding:'0.45rem 1rem',borderRadius:'6px',fontSize:'0.83rem',fontWeight:600
-                  }}>
-                  📄 View Reference Poster
-                </a>
-              )}
-              {selected.openstax && (
-                <a href={selected.openstax} target="_blank" rel="noopener noreferrer"
-                  style={{
-                    textDecoration:'none',display:'inline-flex',alignItems:'center',gap:'0.4rem',
-                    background:`${selected.color}15`,color:selected.color,
-                    border:`1px solid ${selected.color}40`,
-                    padding:'0.45rem 1rem',borderRadius:'6px',fontSize:'0.83rem',fontWeight:600
-                  }}>
-                  📚 {selected.openstaxLabel || 'OpenStax Textbook'}
-                </a>
-              )}
-            </div>
-            <button
-              className="btn"
-              style={{background:'var(--ink)',color:'var(--cream)',border:'none',width:'100%',marginTop:'0.4rem'}}
-              onClick={()=>{setSelected(null);onNav('coach');}}>
-              🤖 Ask Coach About This Topic
-            </button>
-          </>
-        )}
+        {selected && <>
+          <span className="badge badge-teal" style={{marginBottom:'1rem'}}>{selected.cat}</span>
+          <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem'}}>{selected.desc}</p>
+          <div className="section-label">Key Concepts</div>
+          <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
+            {selected.concepts.map((c,i)=><li key={i} style={{marginBottom:'0.4rem',fontSize:'0.88rem'}}>{c}</li>)}
+          </ul>
+          <button className="btn btn-gold" onClick={()=>{setSelected(null);onNav('coach');}}>
+            🤖 Ask Coach About This Topic
+          </button>
+        </>}
       </Modal>
     </div>
   );
 }
 
-const DOC_CATS = ['Transcript','Test Scores','Recommendation Letter','Essay','Certificate','Resume','Financial','Other'];
-const CAT_BADGE = {Transcript:'badge-blue','Test Scores':'badge-teal','Recommendation Letter':'badge-gold',Essay:'badge-green',Certificate:'badge-teal',Resume:'badge-gold',Financial:'badge-red',Other:'badge-gray'};
+// ── DOCUMENT VAULT ────────────────────────────────────────────────────────────
+const DOC_CATS = ['Transcript','Recommendation Letter','Resume','Test Scores','Certificate','Financial Aid','Other'];
+const CAT_BADGE = {Transcript:'badge-teal','Recommendation Letter':'badge-gold',Resume:'badge-ink','Test Scores':'badge-purple',Certificate:'badge-green','Financial Aid':'badge-blue',Other:'badge-gray'};
 
-function VaultModule({ user, toast }) {
+function VaultModule({ user, toast, onNav }) {
+  const [vaultTab, setVaultTab] = useState('files');
   const [docs, setDocs] = useState([]);
+  const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sessionsLoading, setSessionsLoading] = useState(true);
   const [cat, setCat] = useState('Transcript');
   const [uploading, setUploading] = useState(false);
+  const [notesDoc, setNotesDoc] = useState(null);
+  const [notesText, setNotesText] = useState('');
+  const [savingNotes, setSavingNotes] = useState(false);
   const fileRef = useRef();
 
   const load = async () => {
@@ -977,7 +609,15 @@ function VaultModule({ user, toast }) {
     setDocs(data||[]);
     setLoading(false);
   };
-  useEffect(()=>{ load(); },[]);
+
+  const loadSessions = async () => {
+    const sb = getSupabase();
+    const { data } = await sb.from('coach_sessions').select('*').eq('user_id', user.id).order('updated_at',{ascending:false}).limit(50);
+    setSessions(data||[]);
+    setSessionsLoading(false);
+  };
+
+  useEffect(()=>{ load(); loadSessions(); },[]);
 
   const upload = async (file) => {
     if(!file) return;
@@ -989,7 +629,7 @@ function VaultModule({ user, toast }) {
     if(se) { toast('Upload failed: '+se.message,'error'); setUploading(false); return; }
     const { error: de } = await sb.from('documents').insert({user_id:user.id,name:file.name,category:cat,file_path:path,file_size:file.size});
     if(de) toast('Saved to storage but DB record failed','warn');
-    else toast('Document uploaded!','success');
+    else toast('Document uploaded! Add notes so the Coach can read it.','success');
     setUploading(false);
     load();
   };
@@ -1003,6 +643,34 @@ function VaultModule({ user, toast }) {
     load();
   };
 
+  const delSession = async (session) => {
+    if(!window.confirm('Delete this coaching session?')) return;
+    const sb = getSupabase();
+    await sb.from('coach_sessions').delete().eq('id',session.id);
+    toast('Session deleted','success');
+    loadSessions();
+  };
+
+  const resumeSession = (session) => {
+    localStorage.setItem('sm_resume_session', JSON.stringify(session));
+    onNav('coach');
+  };
+
+  const openNotes = (doc) => {
+    setNotesDoc(doc);
+    setNotesText(doc.content_notes || '');
+  };
+
+  const saveNotes = async () => {
+    if(!notesDoc) return;
+    setSavingNotes(true);
+    const sb = getSupabase();
+    const { error } = await sb.from('documents').update({content_notes:notesText}).eq('id',notesDoc.id);
+    if(error) toast('Could not save notes','error');
+    else { toast('Notes saved! Coach will now reference this.','success'); load(); setNotesDoc(null); }
+    setSavingNotes(false);
+  };
+
   const fmtSize = (bytes) => {
     if(!bytes) return '';
     if(bytes<1024) return bytes+'B';
@@ -1010,67 +678,185 @@ function VaultModule({ user, toast }) {
     return (bytes/(1024*1024)).toFixed(1)+'MB';
   };
 
+  const fmtDate = (d) => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const msgCount = (s) => Array.isArray(s.messages) ? s.messages.filter(m=>m.role==='user').length : 0;
+
   return (
     <div>
       <div className="page-header">
-        <div className="page-title serif">Document <em style={{color:'var(--gold)'}}>Vault</em></div>
-        <div className="page-sub">Securely store all your application documents</div>
+        <div className="page-title serif">Document <em style={{color:'var(--gold)'}}>Vault</em> & Memory</div>
+        <div className="page-sub">Files, coaching sessions, and AI knowledge — all in one place</div>
       </div>
       <div className="page-content">
 
-        <div className="card" style={{borderTop:'3px solid var(--gold)',marginBottom:'1.5rem'}}>
-          <div className="section-label">Upload New Document</div>
-          <div style={{marginBottom:'0.8rem'}}>
-            <label className="label">Category</label>
-            <select className="select" value={cat} onChange={e=>setCat(e.target.value)}>
-              {DOC_CATS.map(c=><option key={c}>{c}</option>)}
-            </select>
-          </div>
-
-          <div
-            style={{border:'2px dashed var(--faint)',padding:'2rem',textAlign:'center',cursor:'pointer',background:'var(--bg)'}}
-            onClick={()=>fileRef.current.click()}
-            onDragOver={e=>{e.preventDefault();e.currentTarget.style.borderColor='var(--gold)';}}
-            onDragLeave={e=>{e.currentTarget.style.borderColor='var(--faint)';}}
-            onDrop={e=>{e.preventDefault();e.currentTarget.style.borderColor='var(--faint)';upload(e.dataTransfer.files[0]);}}
-          >
-            <div style={{fontSize:'2rem',marginBottom:'0.5rem'}}>📎</div>
-            <div style={{fontSize:'0.88rem',color:'var(--dim)'}}>Drag & drop or <span style={{color:'var(--gold)',fontWeight:600}}>click to browse</span></div>
-            <div style={{fontSize:'0.75rem',color:'var(--dim)',marginTop:'0.3rem'}}>Max 10MB · PDF, DOC, JPG, PNG</div>
-            {uploading && <div style={{marginTop:'0.5rem',color:'var(--gold)',fontFamily:'DM Mono,monospace',fontSize:'0.65rem',letterSpacing:'0.1em'}}>UPLOADING...</div>}
-          </div>
-          <input ref={fileRef} type="file" style={{display:'none'}} onChange={e=>upload(e.target.files[0])}/>
+        <div className="tabs">
+          {[['files','📁 My Documents'],['sessions','💬 Saved Coach Sessions'],['memory','🧠 Coach Knows This']].map(([id,label])=>(
+            <div key={id} className={`tab${vaultTab===id?' active':''}`} onClick={()=>setVaultTab(id)}>{label}</div>
+          ))}
         </div>
 
-        {loading ? <div className="empty-state"><div className="typing"><span/><span/><span/></div></div> :
-          docs.length===0 ? (
-            <div className="empty-state">
-              <div className="empty-icon">📁</div>
-              <div className="empty-text">No documents yet</div>
-              <div style={{fontSize:'0.82rem',color:'var(--dim)'}}>Upload your transcript, recommendation letters, and resume above</div>
+        {/* ── FILES TAB ── */}
+        {vaultTab==='files' && (
+          <>
+            <div className="card" style={{borderTop:'3px solid var(--gold)',marginBottom:'1.5rem'}}>
+              <div className="section-label">Upload New Document</div>
+              <div style={{marginBottom:'0.8rem'}}>
+                <label className="label">Category</label>
+                <select className="select" value={cat} onChange={e=>setCat(e.target.value)}>
+                  {DOC_CATS.map(c=><option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div
+                style={{border:'2px dashed var(--faint)',padding:'2rem',textAlign:'center',cursor:'pointer',background:'var(--bg)'}}
+                onClick={()=>fileRef.current.click()}
+                onDragOver={e=>{e.preventDefault();e.currentTarget.style.borderColor='var(--gold)';}}
+                onDragLeave={e=>{e.currentTarget.style.borderColor='var(--faint)';}}
+                onDrop={e=>{e.preventDefault();e.currentTarget.style.borderColor='var(--faint)';upload(e.dataTransfer.files[0]);}}
+              >
+                <div style={{fontSize:'2rem',marginBottom:'0.5rem'}}>📎</div>
+                <div style={{fontSize:'0.88rem',color:'var(--dim)'}}>Drag & drop or <span style={{color:'var(--gold)',fontWeight:600}}>click to browse</span></div>
+                <div style={{fontSize:'0.75rem',color:'var(--dim)',marginTop:'0.3rem'}}>Max 10MB · PDF, DOC, JPG, PNG</div>
+                {uploading && <div style={{marginTop:'0.5rem',color:'var(--gold)',fontFamily:'DM Mono,monospace',fontSize:'0.65rem',letterSpacing:'0.1em'}}>UPLOADING...</div>}
+              </div>
+              <input ref={fileRef} type="file" style={{display:'none'}} onChange={e=>upload(e.target.files[0])}/>
             </div>
-          ) : (
-            <div>
-              <div className="section-label">{docs.length} Document{docs.length!==1?'s':''} Stored</div>
-              {docs.map(doc=>(
-                <div key={doc.id} className="card" style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'0.5rem',padding:'0.8rem 1.2rem'}}>
-                  <div style={{display:'flex',alignItems:'center',gap:'0.8rem'}}>
-                    <span style={{fontSize:'1.2rem'}}>📄</span>
-                    <div>
-                      <div style={{fontWeight:600,fontSize:'0.9rem'}}>{doc.name}</div>
-                      <div style={{display:'flex',gap:'0.5rem',marginTop:'0.2rem',alignItems:'center'}}>
-                        <span className={`badge ${CAT_BADGE[doc.category]||'badge-gray'}`}>{doc.category}</span>
-                        <span style={{fontSize:'0.75rem',color:'var(--dim)'}}>{fmtSize(doc.file_size)} · {new Date(doc.created_at).toLocaleDateString()}</span>
+
+            <div className="info-box">
+              <strong>💡 Make Documents AI-Readable</strong>
+              After uploading, click "Add Notes" on any document to type key info from it. The Coach will read those notes when helping you — that's how it knows your real GPA, your essay topics, and your transcript details.
+            </div>
+
+            {loading ? <div className="empty-state"><div className="typing"><span/><span/><span/></div></div> :
+              docs.length===0 ? (
+                <div className="empty-state">
+                  <div className="empty-icon">📁</div>
+                  <div className="empty-text">No documents yet</div>
+                  <div style={{fontSize:'0.82rem',color:'var(--dim)'}}>Upload your transcript, recommendation letters, and resume above</div>
+                </div>
+              ) : (
+                <div>
+                  <div className="section-label">{docs.length} Document{docs.length!==1?'s':''} Stored</div>
+                  {docs.map(doc=>(
+                    <div key={doc.id} className="card" style={{marginBottom:'0.6rem',padding:'0.9rem 1.2rem',borderLeft:`3px solid ${doc.content_notes?'var(--teal)':'var(--faint)'}`}}>
+                      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'0.5rem'}}>
+                        <div style={{display:'flex',alignItems:'center',gap:'0.8rem'}}>
+                          <span style={{fontSize:'1.2rem'}}>📄</span>
+                          <div>
+                            <div style={{fontWeight:600,fontSize:'0.9rem'}}>{doc.name}</div>
+                            <div style={{display:'flex',gap:'0.5rem',marginTop:'0.2rem',alignItems:'center',flexWrap:'wrap'}}>
+                              <span className={`badge ${CAT_BADGE[doc.category]||'badge-gray'}`}>{doc.category}</span>
+                              <span style={{fontSize:'0.75rem',color:'var(--dim)'}}>{fmtSize(doc.file_size)} · {fmtDate(doc.created_at)}</span>
+                              {doc.content_notes ? <span style={{fontSize:'0.7rem',color:'var(--teal)',fontFamily:'DM Mono,monospace'}}>✓ AI can read this</span> : <span style={{fontSize:'0.7rem',color:'var(--dim)',fontFamily:'DM Mono,monospace'}}>⚠ Add notes for AI</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{display:'flex',gap:'0.4rem'}}>
+                          <button className="btn btn-outline btn-sm" onClick={()=>openNotes(doc)}>{doc.content_notes?'Edit Notes':'Add Notes'}</button>
+                          <button className="btn btn-danger btn-sm" onClick={()=>del(doc)}>Delete</button>
+                        </div>
+                      </div>
+                      {doc.content_notes && <div style={{marginTop:'0.6rem',fontSize:'0.8rem',color:'var(--dim)',fontStyle:'italic',borderTop:'1px solid var(--faint)',paddingTop:'0.5rem'}}>{doc.content_notes.slice(0,200)}{doc.content_notes.length>200?'...':''}</div>}
+                    </div>
+                  ))}
+                </div>
+              )
+            }
+          </>
+        )}
+
+        {/* ── SESSIONS TAB ── */}
+        {vaultTab==='sessions' && (
+          <>
+            <div className="info-box">
+              <strong>💬 Every Coaching Conversation is Saved Here</strong>
+              Click "Resume" to pick up exactly where you left off. The Coach loads your full conversation history so you never lose progress on an essay, form, or strategy.
+            </div>
+            {sessionsLoading ? <div className="empty-state"><div className="typing"><span/><span/><span/></div></div> :
+              sessions.length===0 ? (
+                <div className="empty-state">
+                  <div className="empty-icon">💬</div>
+                  <div className="empty-text">No saved sessions yet</div>
+                  <div style={{fontSize:'0.82rem',color:'var(--dim)',marginBottom:'1rem'}}>Start a conversation with your Coach — it will auto-save here</div>
+                  <button className="btn btn-gold" onClick={()=>onNav('coach')}>Open Coach →</button>
+                </div>
+              ) : (
+                <div>
+                  <div className="section-label">{sessions.length} Saved Session{sessions.length!==1?'s':''}</div>
+                  {sessions.map(s=>(
+                    <div key={s.id} className="card" style={{marginBottom:'0.6rem',padding:'0.9rem 1.2rem'}}>
+                      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'0.5rem'}}>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontWeight:600,fontSize:'0.92rem',marginBottom:'0.2rem'}}>{s.title}</div>
+                          <div style={{display:'flex',gap:'0.8rem',flexWrap:'wrap',alignItems:'center'}}>
+                            <span className={`badge ${s.tab==='chat'?'badge-teal':s.tab==='form'?'badge-blue':'badge-gold'}`}>{s.tab==='chat'?'Chat':s.tab==='form'?'Form Filler':'Essay Coach'}</span>
+                            <span style={{fontSize:'0.75rem',color:'var(--dim)',fontFamily:'DM Mono,monospace'}}>{msgCount(s)} message{msgCount(s)!==1?'s':''}</span>
+                            <span style={{fontSize:'0.75rem',color:'var(--dim)'}}>{fmtDate(s.updated_at)}</span>
+                          </div>
+                          {s.summary && <div style={{marginTop:'0.5rem',fontSize:'0.8rem',color:'var(--dim)',fontStyle:'italic'}}>{s.summary}</div>}
+                        </div>
+                        <div style={{display:'flex',gap:'0.4rem',flexShrink:0}}>
+                          <button className="btn btn-gold btn-sm" onClick={()=>resumeSession(s)}>Resume →</button>
+                          <button className="btn btn-danger btn-sm" onClick={()=>delSession(s)}>Delete</button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <button className="btn btn-danger btn-sm" onClick={()=>del(doc)}>Delete</button>
+                  ))}
+                </div>
+              )
+            }
+          </>
+        )}
+
+        {/* ── MEMORY TAB ── */}
+        {vaultTab==='memory' && (
+          <>
+            <div className="info-box">
+              <strong>🧠 What the Coach Already Knows About Sloan</strong>
+              This is the permanent knowledge the Coach loads at the start of every session. It comes from Sloan's profile, uploaded documents with notes, and saved achievements.
+            </div>
+            <div className="card" style={{borderTop:'3px solid var(--teal)'}}>
+              <div className="section-label">Permanent Profile Data</div>
+              {[
+                ['Name','Sloan Smith'],['School','Alton High School, Alton IL'],['Graduating','May 2026'],['GPA','3.684'],['Goal','PhD in Forensic Psychology'],
+                ['Senior Courses','AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2'],
+                ['Key Activity','Patient Enrichment Program — Founder. Annual hospital donation drive. Her centerpiece story.'],
+                ['Other Activities','Mu Alpha Theta, Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring'],
+              ].map(([k,v])=>(
+                <div key={k} style={{display:'flex',gap:'1rem',padding:'0.5rem 0',borderBottom:'1px solid var(--faint)',flexWrap:'wrap'}}>
+                  <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.62rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'var(--gold)',width:140,flexShrink:0}}>{k}</div>
+                  <div style={{fontSize:'0.88rem',flex:1}}>{v}</div>
                 </div>
               ))}
             </div>
-          )
-        }
+            <div style={{marginTop:'1rem'}} className="card">
+              <div className="section-label">Documents with AI Notes ({docs.filter(d=>d.content_notes).length} of {docs.length})</div>
+              {docs.filter(d=>d.content_notes).length===0 ? (
+                <div style={{fontSize:'0.85rem',color:'var(--dim)',fontStyle:'italic'}}>No document notes yet. Go to My Documents tab and click "Add Notes" on any uploaded file.</div>
+              ) : docs.filter(d=>d.content_notes).map(doc=>(
+                <div key={doc.id} style={{padding:'0.5rem 0',borderBottom:'1px solid var(--faint)'}}>
+                  <div style={{fontWeight:600,fontSize:'0.85rem',marginBottom:'0.2rem'}}>📄 {doc.name}</div>
+                  <div style={{fontSize:'0.8rem',color:'var(--dim)'}}>{doc.content_notes}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
       </div>
+
+      {/* Notes Modal */}
+      <Modal open={!!notesDoc} onClose={()=>setNotesDoc(null)} title={'Notes: '+(notesDoc?.name||'')} wide>
+        <div className="info-box">
+          <strong>What to write here</strong>
+          Type any important info from this document that you want the Coach to know. For a transcript: list your courses, grades, GPA. For a rec letter: who wrote it and what they said. For a resume: your key bullet points. The Coach reads these notes when helping you.
+        </div>
+        <label className="label">Document Notes (Coach-Readable)</label>
+        <textarea className="input" style={{minHeight:200}} value={notesText} onChange={e=>setNotesText(e.target.value)} placeholder="Example for a transcript:&#10;GPA: 3.684&#10;Senior year courses: AP Psychology (A), AP Statistics (B+), AP English Honors (A-), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2&#10;Weighted GPA: 3.9&#10;Class rank: Top 15%"/>
+        <div style={{display:'flex',gap:'0.5rem',marginTop:'1rem'}}>
+          <button className="btn btn-gold" onClick={saveNotes} disabled={savingNotes}>{savingNotes?'Saving...':'Save Notes'}</button>
+          <button className="btn btn-ghost" onClick={()=>setNotesDoc(null)}>Cancel</button>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -1221,7 +1007,7 @@ function AchievementsModule({ user, toast, coachUrl }) {
     try {
       const res = await fetch(coachUrl, {
         method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+getAnonKey()},
+        headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
           messages:[{role:'user',content:`Format Sloan's activities for the Common App Activities section. Max 10 activities, 150 characters each for description, include position/role and organization. Here are her activities:\n\n${achText}\n\nFormat each as:\nACTIVITY [#]: [Title]\nPosition: [Role]\nOrganization: [Org name]\nDescription (150 chars max): [description]\n\nCount characters carefully.`}],
           vaultContext: achText
@@ -1446,722 +1232,12 @@ function FinancialModule({ user, toast, coachUrl }) {
 }
 
 // ── COACH MODULE ──────────────────────────────────────────────────────────────
-// ── PROFILE BUILDER MODULE ───────────────────────────────────────────────────
-function ProfileModule({ user, toast }) {
-  const [form, setForm] = useState({
-    full_name:'Sloan Smith',
-    tagline:'Aspiring Forensic Psychologist & Community Builder',
-    bio:"I'm a senior at Alton High School with a passion for understanding the human mind and a clear mission: to earn my PhD in Forensic Psychology and apply science in service of justice and healing. Outside the classroom, I'm building things — programs, communities, and a body of work that reflects who I am and where I'm going.",
-    school:'Alton High School',
-    grad_year:'Class of 2026',
-    email:'sloan@sloanmelia.com',
-    linkedin_url:'',
-    share_enabled:true,
-    share_slug:'sloan-smith'
-  });
-  const [loading, setLoading]   = useState(true);
-  const [saving, setSaving]     = useState(false);
-  const [tab, setTab]           = useState('edit'); // edit | share
-  const [copied, setCopied]     = useState('');
-  const [liveGpa, setLiveGpa]   = useState(null);
-  const PUBLIC_URL = 'https://sloanmelia.com/index.html';
-
-  // Load existing profile + live GPA
-  useEffect(()=>{
-    const sb = getSupabase();
-    Promise.all([
-      sb.from('profile').select('*').eq('user_id', user.id).single(),
-      sb.from('grades').select('grade_points,credit_hours,is_ap,is_honors').eq('user_id', user.id)
-    ]).then(([{data:p}, {data:g}])=>{
-      if(p) setForm(f=>({...f,...p}));
-      const gpa = calcGPA(g||[]);
-      if(gpa) setLiveGpa(gpa);
-      setLoading(false);
-    }).catch(()=>setLoading(false));
-  },[user]);
-
-  const save = async () => {
-    setSaving(true);
-    const sb = getSupabase();
-    const {error} = await sb.from('profile').upsert({
-      ...form,
-      user_id: user.id,
-      updated_at: new Date().toISOString()
-    }, {onConflict:'user_id'});
-    if(error){ toast('Save error: '+error.message); setSaving(false); return; }
-    toast('✅ Profile saved! Public page will reflect your changes.');
-    setSaving(false);
-  };
-
-  const copy = (text, key) => {
-    navigator.clipboard.writeText(text);
-    setCopied(key);
-    setTimeout(()=>setCopied(''), 2500);
-  };
-
-  const shareUrl   = PUBLIC_URL;
-  const shareText  = `Check out my college profile: ${shareUrl}`;
-  const emailHref  = `mailto:?subject=Sloan Smith — College Profile&body=Hi! I wanted to share my college application profile with you: ${shareUrl}`;
-  const smsHref    = `sms:?body=${encodeURIComponent(shareText)}`;
-
-  if(loading) return <div style={{padding:'2rem',color:'var(--dim)'}}>Loading profile...</div>;
-
-  return (
-    <div>
-      <div className="page-header">
-        <div className="page-title serif">Profile <em style={{color:'var(--gold)'}}>Builder</em></div>
-        <div className="page-sub">Edit your public profile · Generate a shareable link for colleges and internships</div>
-      </div>
-      <div className="page-content">
-
-        {/* Preview strip */}
-        <div style={{
-          background:'var(--ink)',color:'var(--cream)',
-          borderRadius:'10px',padding:'1rem 1.4rem',
-          display:'flex',alignItems:'center',justifyContent:'space-between',
-          marginBottom:'1.5rem',flexWrap:'wrap',gap:'0.8rem'
-        }}>
-          <div>
-            <div style={{fontFamily:'serif',fontSize:'1.1rem',fontWeight:700}}>{form.full_name}</div>
-            <div style={{fontSize:'0.78rem',opacity:0.6,fontStyle:'italic'}}>{form.tagline}</div>
-            <div style={{fontSize:'0.72rem',opacity:0.45,marginTop:'0.2rem',fontFamily:'monospace'}}>{PUBLIC_URL}</div>
-          </div>
-          <a href={PUBLIC_URL} target="_blank" rel="noopener noreferrer"
-            className="btn btn-gold" style={{textDecoration:'none',flexShrink:0}}>
-            🌐 Preview Live Profile ↗
-          </a>
-        </div>
-
-        {/* Tabs */}
-        <div style={{display:'flex',gap:'0.5rem',marginBottom:'1.2rem'}}>
-          {[['edit','✏️ Edit Profile'],['share','📤 Share & Send']].map(([t,lbl])=>(
-            <button key={t} onClick={()=>setTab(t)} className="btn btn-sm"
-              style={{
-                background:tab===t?'var(--ink)':'transparent',
-                color:tab===t?'var(--cream)':'var(--dim)',
-                border:'1px solid var(--border)',fontSize:'0.8rem'
-              }}>{lbl}</button>
-          ))}
-        </div>
-
-        {/* ── EDIT TAB ── */}
-        {tab==='edit' && (
-          <div style={{display:'grid',gap:'1rem'}}>
-
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0.8rem'}}>
-              <div>
-                <label className="label">Full Name</label>
-                <input className="input" value={form.full_name} onChange={e=>setForm(p=>({...p,full_name:e.target.value}))}/>
-              </div>
-              <div>
-                <label className="label">School</label>
-                <input className="input" value={form.school} onChange={e=>setForm(p=>({...p,school:e.target.value}))}/>
-              </div>
-            </div>
-
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0.8rem'}}>
-              <div>
-                <label className="label">Graduating Class</label>
-                <input className="input" value={form.grad_year} onChange={e=>setForm(p=>({...p,grad_year:e.target.value}))}/>
-              </div>
-              <div>
-                <label className="label">
-                  GPA Shown on Profile
-                  {liveGpa && <span style={{color:'#059669',marginLeft:'0.4rem',fontWeight:700}}>(Live: {liveGpa.toFixed(3)})</span>}
-                </label>
-                <input className="input" value={liveGpa ? liveGpa.toFixed(3) : '3.84'} readOnly
-                  style={{background:'#f0fdf4',color:'#059669',fontWeight:700}}/>
-              </div>
-            </div>
-
-            <div>
-              <label className="label">Tagline <span style={{color:'var(--dim)',fontWeight:400}}>(shown under your name)</span></label>
-              <input className="input" value={form.tagline} onChange={e=>setForm(p=>({...p,tagline:e.target.value}))}
-                placeholder="Aspiring Forensic Psychologist & Community Builder"/>
-            </div>
-
-            <div>
-              <label className="label">Bio <span style={{color:'var(--dim)',fontWeight:400}}>(hero paragraph — 2–4 sentences)</span></label>
-              <textarea className="input" rows={4} style={{resize:'vertical'}}
-                value={form.bio} onChange={e=>setForm(p=>({...p,bio:e.target.value}))}/>
-            </div>
-
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0.8rem'}}>
-              <div>
-                <label className="label">Contact Email</label>
-                <input className="input" type="email" value={form.email} onChange={e=>setForm(p=>({...p,email:e.target.value}))}/>
-              </div>
-              <div>
-                <label className="label">LinkedIn URL <span style={{color:'var(--dim)',fontWeight:400}}>(optional)</span></label>
-                <input className="input" value={form.linkedin_url||''} onChange={e=>setForm(p=>({...p,linkedin_url:e.target.value}))}
-                  placeholder="https://linkedin.com/in/sloan-smith"/>
-              </div>
-            </div>
-
-            <div className="card" style={{borderTop:'3px solid #059669',padding:'1rem'}}>
-              <label style={{display:'flex',alignItems:'center',gap:'0.8rem',cursor:'pointer'}}>
-                <input type="checkbox" checked={form.share_enabled}
-                  onChange={e=>setForm(p=>({...p,share_enabled:e.target.checked}))}
-                  style={{width:'16px',height:'16px'}}/>
-                <div>
-                  <div style={{fontWeight:700,fontSize:'0.9rem'}}>Public Profile Active</div>
-                  <div style={{fontSize:'0.8rem',color:'var(--dim)'}}>When on, anyone with the link can view your profile. Turn off to make it private.</div>
-                </div>
-              </label>
-            </div>
-
-            <button className="btn btn-gold" style={{width:'100%',padding:'0.8rem'}} onClick={save} disabled={saving}>
-              {saving ? 'Saving...' : '💾 Save Profile Changes'}
-            </button>
-          </div>
-        )}
-
-        {/* ── SHARE TAB ── */}
-        {tab==='share' && (
-          <div style={{display:'grid',gap:'1rem'}}>
-
-            <div className="info-box">
-              <strong>Your profile link</strong> — share this with colleges, scholarship committees, admissions officers, or internship opportunities.
-            </div>
-
-            {/* The link */}
-            <div className="card" style={{borderTop:'4px solid var(--gold)',padding:'1.2rem'}}>
-              <div className="label" style={{marginBottom:'0.5rem'}}>Your Public Profile URL</div>
-              <div style={{display:'flex',gap:'0.6rem',alignItems:'center'}}>
-                <div style={{
-                  flex:1,background:'var(--cream)',border:'1px solid var(--border)',
-                  borderRadius:'6px',padding:'0.7rem 1rem',
-                  fontFamily:'monospace',fontSize:'0.9rem',color:'var(--ink)',
-                  wordBreak:'break-all'
-                }}>{PUBLIC_URL}</div>
-                <button className="btn btn-gold" style={{flexShrink:0,whiteSpace:'nowrap'}}
-                  onClick={()=>copy(PUBLIC_URL,'url')}>
-                  {copied==='url' ? '✓ Copied!' : '📋 Copy Link'}
-                </button>
-              </div>
-            </div>
-
-            {/* Send options */}
-            <div className="section-label">Send It</div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0.8rem'}}>
-
-              {/* Email */}
-              <a href={emailHref}
-                style={{textDecoration:'none'}}
-                className="card"
-                onClick={()=>toast('Opening email...')}
-              >
-                <div style={{fontSize:'2rem',marginBottom:'0.5rem'}}>✉️</div>
-                <div style={{fontWeight:700,fontSize:'0.95rem',marginBottom:'0.2rem'}}>Send via Email</div>
-                <div style={{fontSize:'0.8rem',color:'var(--dim)'}}>Opens your mail app with the link pre-loaded. Great for college admissions offices.</div>
-                <div style={{marginTop:'0.8rem',fontSize:'0.78rem',color:'var(--gold)',fontWeight:600}}>Tap to open mail app →</div>
-              </a>
-
-              {/* Text */}
-              <a href={smsHref}
-                style={{textDecoration:'none'}}
-                className="card"
-                onClick={()=>toast('Opening messages...')}
-              >
-                <div style={{fontSize:'2rem',marginBottom:'0.5rem'}}>💬</div>
-                <div style={{fontWeight:700,fontSize:'0.95rem',marginBottom:'0.2rem'}}>Send via Text</div>
-                <div style={{fontSize:'0.8rem',color:'var(--dim)'}}>Opens your messages app with the link ready to send. Great for sharing with family or advisors.</div>
-                <div style={{marginTop:'0.8rem',fontSize:'0.78rem',color:'var(--gold)',fontWeight:600}}>Tap to open messages →</div>
-              </a>
-            </div>
-
-            {/* Copy full message */}
-            <div className="card" style={{padding:'1.2rem'}}>
-              <div className="label" style={{marginBottom:'0.6rem'}}>Copy Full Message</div>
-              <div style={{
-                background:'var(--cream)',borderRadius:'6px',padding:'1rem',
-                fontSize:'0.88rem',lineHeight:1.7,color:'var(--ink)',
-                border:'1px solid var(--border)',marginBottom:'0.8rem',
-                fontStyle:'italic'
-              }}>
-                "Hi, I wanted to share my college application profile with you. You can view my academic record, activities, and career goals here: {PUBLIC_URL} — Sloan Smith, Alton High School Class of 2026"
-              </div>
-              <button className="btn btn-sm" style={{background:'var(--ink)',color:'var(--cream)',border:'none'}}
-                onClick={()=>copy(`Hi, I wanted to share my college application profile with you. You can view my academic record, activities, and career goals here: ${PUBLIC_URL} — Sloan Smith, Alton High School Class of 2026`,'msg')}>
-                {copied==='msg' ? '✓ Copied!' : '📋 Copy Full Message'}
-              </button>
-            </div>
-
-            {/* QR note */}
-            <div style={{textAlign:'center',padding:'1rem',color:'var(--dim)',fontSize:'0.82rem',borderTop:'1px solid var(--border)'}}>
-              💡 Tip: You can also screenshot this URL or add it to your college applications, LinkedIn, or email signature.
-            </div>
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
-}
-
-// ── GPA MODULE ────────────────────────────────────────────────────────────────
-const SEMESTERS = ['Fall 2022','Spring 2023','Fall 2023','Spring 2024','Fall 2024','Spring 2025','Fall 2025','Spring 2026'];
-
-function GpaModule({ user, toast }) {
-  const [grades, setGrades] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({course_name:'',grade_letter:'A',credit_hours:1,semester:'Fall 2025',is_ap:false,is_honors:false});
-  const [saving, setSaving] = useState(false);
-  const [pasteText, setPasteText] = useState('');
-  const [parsing, setParsing] = useState(false);
-  const [tab, setTab] = useState('view'); // 'view','add','parse'
-  const [vaultDocs, setVaultDocs] = useState([]);
-  const [selectedDocs, setSelectedDocs] = useState([]);
-  const [parseMode, setParseMode] = useState('vault'); // 'vault' | 'paste'
-  const coachUrl = localStorage.getItem('sm_coach')||'';
-  const anonKey = localStorage.getItem('sm_key')||'';
-  const SUPA_URL = 'https://gpktuflimoqeyxtwadsy.supabase.co';
-
-  const load = async () => {
-    setLoading(true);
-    const sb = getSupabase();
-    const {data} = await sb.from('grades').select('*').eq('user_id',user.id).order('grade_year',{ascending:true}).order('semester',{ascending:true});
-    setGrades(data||[]);
-    setLoading(false);
-  };
-
-  useEffect(()=>{
-    load();
-    // Load transcript docs from vault
-    const sb = getSupabase();
-    sb.from('documents').select('id,name,category,file_path')
-      .eq('user_id', user.id)
-      .in('category', ['Transcript','Test Scores'])
-      .order('created_at', {ascending:false})
-      .then(({data}) => setVaultDocs(data||[]));
-  },[user]);
-
-  const gpaUnweighted = calcGPA(grades);
-  const gpaWeighted   = calcWeightedGPA(grades);
-  const gpaCore       = calcCoreGPA(grades);
-  const gpa           = gpaUnweighted; // keep for term calcs (always unweighted per term)
-  const byTerm = grades.reduce((acc,g)=>{
-    const k = g.semester||'Unknown';
-    if(!acc[k]) acc[k]=[];
-    acc[k].push(g);
-    return acc;
-  },{});
-
-  const addGrade = async () => {
-    if(!form.course_name.trim()) { toast('Enter a course name'); return; }
-    setSaving(true);
-    const pts = gradeToPoints(form.grade_letter);
-    const sb = getSupabase();
-    const {error} = await sb.from('grades').insert({
-      user_id: user.id,
-      course_name: form.course_name.trim(),
-      grade_letter: form.grade_letter,
-      grade_points: pts,
-      credit_hours: parseFloat(form.credit_hours),
-      semester: form.semester,
-      grade_year: parseInt(form.semester.split(' ')[1]||'2025'),
-      is_ap: form.is_ap,
-      is_honors: form.is_honors,
-      source: 'manual'
-    });
-    if(error) { toast('Error saving: ' + error.message); setSaving(false); return; }
-    toast('Course added!');
-    setForm({course_name:'',grade_letter:'A',credit_hours:1,semester:'Fall 2025',is_ap:false,is_honors:false});
-    setSaving(false);
-    await load();
-  };
-
-  const deleteGrade = async (id) => {
-    const sb = getSupabase();
-    await sb.from('grades').delete().eq('id',id);
-    await load();
-    toast('Removed');
-  };
-
-  // ── Helper: save parsed rows to DB ──────────────────────────────
-  const saveParsedRows = async (parsed) => {
-    if(!Array.isArray(parsed) || parsed.length === 0) {
-      toast('No courses found — check the transcript and try again');
-      return false;
-    }
-    const sb = getSupabase();
-    const rows = parsed.map(r=>({
-      user_id: user.id,
-      course_name: r.course_name,
-      grade_letter: r.grade_letter,
-      grade_points: gradeToPoints(r.grade_letter),
-      credit_hours: parseFloat(r.credit_hours)||1,
-      semester: r.semester||'Unknown',
-      grade_year: parseInt((r.semester||'2025').split(' ').pop())||2025,
-      is_ap: !!r.is_ap,
-      is_honors: !!r.is_honors,
-      source: 'parsed'
-    }));
-    const {error} = await sb.from('grades').insert(rows);
-    if(error) { toast('Save error: '+error.message); return false; }
-    toast(`✅ Imported ${rows.length} courses! GPA updated.`);
-    setTab('view');
-    await load();
-    return true;
-  };
-
-  const PARSE_PROMPT = `You are reading a high school transcript. Extract every course and return ONLY a valid JSON array with no explanation.
-Each item must have exactly these fields:
-- course_name (string)
-- grade_letter (A, A-, B+, B, B-, C+, C, C-, D, F — exactly as shown)
-- credit_hours (number, use 1.0 if not shown)
-- semester ("Fall 2022", "Spring 2023", "Fall 2023", "Spring 2024", "Fall 2024", "Spring 2025", "Fall 2025", or "Spring 2026")
-- is_ap (true if course name contains AP, false otherwise)
-- is_honors (true if course name contains H, Honors, or CP, false otherwise)
-Include ALL courses from ALL years shown. Return ONLY the JSON array.`;
-
-  // ── Parse from vault images — one image at a time ────────────────
-  const parseFromVault = async () => {
-    if(selectedDocs.length === 0) { toast('Select at least one transcript from your vault'); return; }
-    if(!coachUrl) { toast('Coach URL not configured'); return; }
-    setParsing(true);
-    const allRows = [];
-    const sb = getSupabase();
-
-    for(let i = 0; i < selectedDocs.length; i++) {
-      const docId = selectedDocs[i];
-      const doc = vaultDocs.find(d=>d.id===docId);
-      if(!doc) continue;
-
-      toast(`Reading image ${i+1} of ${selectedDocs.length}: ${doc.name}...`);
-
-      try {
-        // Get signed URL for this image
-        const {data: signedData} = await sb.storage.from('documents').createSignedUrl(doc.file_path, 300);
-        if(!signedData?.signedUrl) { console.warn('No signed URL for', doc.name); continue; }
-
-        // Convert to base64
-        const imgRes = await fetch(signedData.signedUrl);
-        const blob = await imgRes.blob();
-        const b64 = await new Promise(res=>{
-          const r = new FileReader();
-          r.onload = ()=>res(r.result.split(',')[1]);
-          r.readAsDataURL(blob);
-        });
-        const mediaType = blob.type || 'image/jpeg';
-
-        // Send ONE image per call — embed instructions directly in user message
-        // (no mode param needed — instructions are self-contained)
-        const res = await fetch(coachUrl, {
-          method:'POST',
-          headers:{'Content-Type':'application/json','Authorization':'Bearer '+anonKey},
-          body: JSON.stringify({
-            messages:[{
-              role:'user',
-              content:[
-                {type:'image', source:{type:'base64', media_type:mediaType, data:b64}},
-                {type:'text', text: PARSE_PROMPT}
-              ]
-            }]
-          })
-        });
-
-        if(!res.ok) { console.warn('Edge function error:', res.status); continue; }
-        const data = await res.json();
-        const text = (data.content?.[0]?.text || '').trim();
-        if(!text) { console.warn('Empty response for', doc.name); continue; }
-
-        // Extract JSON array from response
-        const jsonMatch = text.match(/\[[\s\S]*\]/);
-        if(!jsonMatch) { console.warn('No JSON array in response for', doc.name, ':', text.slice(0,100)); continue; }
-        const parsed = JSON.parse(jsonMatch[0]);
-        if(Array.isArray(parsed)) allRows.push(...parsed);
-
-      } catch(e) {
-        console.error('Error on', doc.name, e);
-        // Continue to next image
-      }
-    }
-
-    if(allRows.length > 0) {
-      await saveParsedRows(allRows);
-    } else {
-      toast('No courses extracted — check images are transcript pages and try again');
-    }
-    setParsing(false);
-  };
-
-  // ── Parse from pasted text ────────────────────────────────────────
-  const parseFromPaste = async () => {
-    if(!pasteText.trim()) { toast('Paste your transcript text first'); return; }
-    if(!coachUrl) { toast('Coach URL not configured'); return; }
-    setParsing(true);
-    try {
-      const res = await fetch(coachUrl, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+anonKey},
-        body: JSON.stringify({messages:[{role:'user',content: PARSE_PROMPT + '\n\nTranscript text:\n' + pasteText}]})
-      });
-      const data = await res.json();
-      const text = data.content?.[0]?.text || '';
-      const cleaned = text.replace(/```json|```/g,'').trim();
-      const parsed = JSON.parse(cleaned);
-      await saveParsedRows(parsed);
-      setPasteText('');
-    } catch(e) {
-      toast('Parse failed — check transcript format and try again');
-    }
-    setParsing(false);
-  };
-
-  const gpaColor = gpa===null?'var(--dim)':gpa>=3.7?'#059669':gpa>=3.3?'#d97706':'#dc2626';
-
-  return (
-    <div>
-      <div className="page-header">
-        <div className="page-title serif">GPA <em style={{color:'var(--gold)'}}>Tracker</em></div>
-        <div className="page-sub">Cumulative GPA calculated from all courses · Updates coach and profile in real-time</div>
-      </div>
-      <div className="page-content">
-
-        {/* 3-Panel GPA Hero */}
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'0.8rem',marginBottom:'1.5rem'}}>
-
-          {/* Weighted */}
-          <div className="card" style={{borderTop:'4px solid #7c3aed',textAlign:'center',padding:'1.2rem 0.8rem'}}>
-            <div style={{fontSize:'0.65rem',fontFamily:'monospace',letterSpacing:'0.12em',textTransform:'uppercase',color:'#7c3aed',marginBottom:'0.4rem',fontWeight:700}}>Weighted GPA</div>
-            <div style={{fontSize:'2.8rem',fontWeight:900,color:'#7c3aed',fontFamily:'serif',lineHeight:1}}>
-              {gpaWeighted !== null ? gpaWeighted.toFixed(3) : '—'}
-            </div>
-            <div style={{fontSize:'0.7rem',color:'var(--dim)',marginTop:'0.5rem',lineHeight:1.4}}>AP +1.0 · Honors +0.5<br/>Shows course rigor</div>
-          </div>
-
-          {/* Unweighted */}
-          <div className="card" style={{borderTop:`4px solid ${gpaColor}`,textAlign:'center',padding:'1.2rem 0.8rem'}}>
-            <div style={{fontSize:'0.65rem',fontFamily:'monospace',letterSpacing:'0.12em',textTransform:'uppercase',color:gpaColor,marginBottom:'0.4rem',fontWeight:700}}>Unweighted GPA</div>
-            <div style={{fontSize:'2.8rem',fontWeight:900,color:gpaColor,fontFamily:'serif',lineHeight:1}}>
-              {gpaUnweighted !== null ? gpaUnweighted.toFixed(3) : '—'}
-            </div>
-            <div style={{fontSize:'0.7rem',color:'var(--dim)',marginTop:'0.5rem',lineHeight:1.4}}>Straight 4.0 scale<br/>Every class equal</div>
-          </div>
-
-          {/* Core Academic */}
-          <div className="card" style={{borderTop:'4px solid #0369a1',textAlign:'center',padding:'1.2rem 0.8rem'}}>
-            <div style={{fontSize:'0.65rem',fontFamily:'monospace',letterSpacing:'0.12em',textTransform:'uppercase',color:'#0369a1',marginBottom:'0.4rem',fontWeight:700}}>Core Academic GPA</div>
-            <div style={{fontSize:'2.8rem',fontWeight:900,color:'#0369a1',fontFamily:'serif',lineHeight:1}}>
-              {gpaCore !== null ? gpaCore.toFixed(3) : '—'}
-            </div>
-            <div style={{fontSize:'0.7rem',color:'var(--dim)',marginTop:'0.5rem',lineHeight:1.4}}>English·Math·Science<br/>Social Studies·Language</div>
-          </div>
-        </div>
-
-        {/* Course count strip */}
-        <div style={{textAlign:'center',marginBottom:'1.2rem',fontSize:'0.8rem',color:'var(--dim)'}}>
-          {grades.filter(g=>g.grade_points!==null).length} graded courses ·&nbsp;
-          {grades.reduce((s,g)=>s+parseFloat(g.credit_hours||1),0)} total credit hours ·&nbsp;
-          {grades.filter(g=>g.is_ap).length} AP · {grades.filter(g=>g.is_honors).length} Honors
-          {grades.length === 0 && ' · Add courses below to calculate'}
-        </div>
-
-        {/* Tabs */}
-        <div style={{display:'flex',gap:'0.5rem',marginBottom:'1.2rem'}}>
-          {[['view','📊 View Courses'],['add','➕ Add Course'],['parse','📋 Import Transcript']].map(([t,label])=>(
-            <button key={t} onClick={()=>setTab(t)}
-              className="btn btn-sm"
-              style={{
-                background:tab===t?'var(--ink)':'transparent',
-                color:tab===t?'var(--cream)':'var(--dim)',
-                border:'1px solid var(--border)',fontSize:'0.8rem'
-              }}>{label}</button>
-          ))}
-        </div>
-
-        {/* VIEW TAB */}
-        {tab==='view' && (
-          loading ? <div style={{color:'var(--dim)'}}>Loading...</div> :
-          grades.length === 0 ? (
-            <div className="info-box">No courses yet. Add them manually or import your transcript.</div>
-          ) : (
-            Object.entries(byTerm).sort().map(([semester, termGrades])=>(
-              <div key={semester} style={{marginBottom:'1.5rem'}}>
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'0.5rem'}}>
-                  <div className="section-label">{semester}</div>
-                  <div style={{fontSize:'0.8rem',fontFamily:'monospace',color:gpaColor,fontWeight:700}}>
-                    Term GPA: {calcGPA(termGrades)?.toFixed(3)||'N/A'}
-                  </div>
-                </div>
-                {termGrades.map(g=>(
-                  <div key={g.id} className="card" style={{
-                    display:'flex',alignItems:'center',justifyContent:'space-between',
-                    padding:'0.7rem 1rem',marginBottom:'0.4rem',
-                    borderLeft:`3px solid ${
-                      g.grade_points>=3.7?'#059669':g.grade_points>=2.7?'#d97706':g.grade_points!==null?'#dc2626':'var(--border)'
-                    }`
-                  }}>
-                    <div style={{flex:1}}>
-                      <div style={{fontWeight:600,fontSize:'0.9rem'}}>
-                        {g.course_name}
-                        {g.is_ap && <span style={{marginLeft:'0.4rem',fontSize:'0.7rem',background:'#7c3aed',color:'#fff',padding:'1px 5px',borderRadius:'3px'}}>AP</span>}
-                        {g.is_honors && <span style={{marginLeft:'0.3rem',fontSize:'0.7rem',background:'#0369a1',color:'#fff',padding:'1px 5px',borderRadius:'3px'}}>H</span>}
-                      </div>
-                      <div style={{fontSize:'0.78rem',color:'var(--dim)'}}>{g.credit_hours} cr · {g.source==='parsed'?'📋 imported':'✏️ manual'}</div>
-                    </div>
-                    <div style={{textAlign:'right',marginRight:'1rem'}}>
-                      <div style={{fontSize:'1.3rem',fontWeight:700,color:
-                        g.grade_points>=3.7?'#059669':g.grade_points>=2.7?'#d97706':g.grade_points!==null?'#dc2626':'var(--dim)'
-                      }}>{g.grade_letter||'N/A'}</div>
-                      <div style={{fontSize:'0.75rem',color:'var(--dim)'}}>{g.grade_points!==null?g.grade_points.toFixed(1):''}</div>
-                    </div>
-                    <button onClick={()=>deleteGrade(g.id)} className="btn btn-sm" style={{background:'transparent',color:'var(--dim)',border:'1px solid var(--border)',fontSize:'0.75rem'}}>✕</button>
-                  </div>
-                ))}
-              </div>
-            ))
-          )
-        )}
-
-        {/* ADD TAB */}
-        {tab==='add' && (
-          <div className="card" style={{padding:'1.2rem'}}>
-            <div style={{display:'grid',gap:'0.8rem'}}>
-              <div>
-                <label className="label">Course Name</label>
-                <input className="input" value={form.course_name} onChange={e=>setForm(p=>({...p,course_name:e.target.value}))} placeholder="e.g. AP Psychology"/>
-              </div>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'0.6rem'}}>
-                <div>
-                  <label className="label">Grade</label>
-                  <select className="input" value={form.grade_letter} onChange={e=>setForm(p=>({...p,grade_letter:e.target.value}))}>
-                    {Object.keys(GRADE_POINTS).filter(k=>k!=='P'&&k!=='W'&&k!=='I').map(g=>(
-                      <option key={g} value={g}>{g} ({GRADE_POINTS[g]?.toFixed(1)||'N/A'})</option>
-                    ))}
-                    <option value="P">P (Pass)</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="label">Credits</label>
-                  <input className="input" type="number" min="0.5" max="6" step="0.5" value={form.credit_hours} onChange={e=>setForm(p=>({...p,credit_hours:e.target.value}))}/>
-                </div>
-                <div>
-                  <label className="label">Semester</label>
-                  <select className="input" value={form.semester} onChange={e=>setForm(p=>({...p,semester:e.target.value}))}>
-                    {SEMESTERS.map(s=><option key={s}>{s}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div style={{display:'flex',gap:'1.5rem'}}>
-                <label style={{display:'flex',alignItems:'center',gap:'0.4rem',cursor:'pointer',fontSize:'0.88rem'}}>
-                  <input type="checkbox" checked={form.is_ap} onChange={e=>setForm(p=>({...p,is_ap:e.target.checked}))}/>
-                  AP Course
-                </label>
-                <label style={{display:'flex',alignItems:'center',gap:'0.4rem',cursor:'pointer',fontSize:'0.88rem'}}>
-                  <input type="checkbox" checked={form.is_honors} onChange={e=>setForm(p=>({...p,is_honors:e.target.checked}))}/>
-                  Honors / CP
-                </label>
-              </div>
-              <button className="btn btn-gold" onClick={addGrade} disabled={saving}>
-                {saving ? 'Saving...' : '➕ Add Course'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* PARSE TAB */}
-        {tab==='parse' && (
-          <div>
-            {/* Mode toggle */}
-            <div style={{display:'flex',gap:'0.5rem',marginBottom:'1rem'}}>
-              <button onClick={()=>setParseMode('vault')} className="btn btn-sm"
-                style={{background:parseMode==='vault'?'#059669':'transparent',color:parseMode==='vault'?'#fff':'var(--dim)',border:'1px solid var(--border)'}}>
-                📁 From Document Vault {vaultDocs.length>0 && `(${vaultDocs.length} transcripts)`}
-              </button>
-              <button onClick={()=>setParseMode('paste')} className="btn btn-sm"
-                style={{background:parseMode==='paste'?'var(--ink)':'transparent',color:parseMode==='paste'?'var(--cream)':'var(--dim)',border:'1px solid var(--border)'}}>
-                📋 Paste Text
-              </button>
-            </div>
-
-            {/* VAULT MODE */}
-            {parseMode==='vault' && (
-              <div>
-                {vaultDocs.length === 0 ? (
-                  <div className="info-box">
-                    No transcripts found in your Document Vault. Upload your transcript images in the <strong>Document Vault</strong> under the "Transcript" category, then come back here.
-                  </div>
-                ) : (
-                  <div>
-                    <div className="info-box" style={{marginBottom:'1rem'}}>
-                      <strong>📁 Select transcript pages from your vault</strong><br/>
-                      The AI Coach will read each image and extract all courses, grades, and semesters automatically.
-                    </div>
-                    <div style={{display:'grid',gap:'0.5rem',marginBottom:'1rem'}}>
-                      {vaultDocs.map(doc=>(
-                        <label key={doc.id} style={{
-                          display:'flex',alignItems:'center',gap:'0.8rem',
-                          padding:'0.7rem 1rem',border:'1px solid var(--border)',
-                          borderRadius:'6px',cursor:'pointer',
-                          background: selectedDocs.includes(doc.id) ? '#f0fdf4' : 'var(--cream)',
-                          borderColor: selectedDocs.includes(doc.id) ? '#059669' : 'var(--border)'
-                        }}>
-                          <input type="checkbox"
-                            checked={selectedDocs.includes(doc.id)}
-                            onChange={e=>{
-                              if(e.target.checked) setSelectedDocs(p=>[...p,doc.id]);
-                              else setSelectedDocs(p=>p.filter(id=>id!==doc.id));
-                            }}
-                          />
-                          <span style={{fontSize:'1.2rem'}}>
-                            {doc.name.match(/\.(png|jpg|jpeg)/i) ? '🖼️' : '📄'}
-                          </span>
-                          <div style={{flex:1}}>
-                            <div style={{fontWeight:600,fontSize:'0.88rem'}}>{doc.name}</div>
-                            <div style={{fontSize:'0.75rem',color:'var(--dim)'}}>{doc.category}</div>
-                          </div>
-                          {selectedDocs.includes(doc.id) && <span style={{color:'#059669',fontWeight:700}}>✓</span>}
-                        </label>
-                      ))}
-                    </div>
-                    <div style={{display:'flex',gap:'0.5rem',marginBottom:'0.5rem'}}>
-                      <button className="btn btn-sm" style={{fontSize:'0.75rem'}}
-                        onClick={()=>setSelectedDocs(vaultDocs.map(d=>d.id))}>Select All</button>
-                      <button className="btn btn-sm" style={{fontSize:'0.75rem'}}
-                        onClick={()=>setSelectedDocs([])}>Clear</button>
-                    </div>
-                    <button className="btn btn-gold" style={{width:'100%',padding:'0.8rem',marginTop:'0.5rem'}}
-                      onClick={parseFromVault} disabled={parsing||selectedDocs.length===0}>
-                      {parsing
-                        ? `🤖 Reading ${selectedDocs.length} image${selectedDocs.length>1?'s':''}...`
-                        : `🤖 Read & Import ${selectedDocs.length} Selected Transcript${selectedDocs.length!==1?'s':''}`}
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* PASTE MODE */}
-            {parseMode==='paste' && (
-              <div>
-                <div className="info-box" style={{marginBottom:'1rem'}}>
-                  Copy and paste transcript text below. The AI Coach extracts all courses, grades, credit hours, and semesters.
-                </div>
-                <textarea
-                  className="input"
-                  style={{minHeight:'200px',resize:'vertical',fontFamily:'monospace',fontSize:'0.82rem'}}
-                  value={pasteText}
-                  onChange={e=>setPasteText(e.target.value)}
-                  placeholder="Paste transcript text here...&#10;&#10;Fall 2024&#10;AP Psychology  A  1.0&#10;AP Statistics  B+  1.0"
-                />
-                <button className="btn btn-gold" style={{marginTop:'0.8rem',width:'100%'}} onClick={parseFromPaste} disabled={parsing}>
-                  {parsing ? '🤖 Parsing...' : '🤖 Import with AI Coach'}
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
-}
-
 function CoachModule({ user, coachUrl, toast }) {
+  const WELCOME = {role:'assistant',content:"Hi Sloan! I'm your Coach. I know your full profile, GPA, courses, activities, and everything in your Document Vault. Ask me anything — I can fill out application forms, help with essays, explain financial aid, quiz you on forensic psychology, or tell you what documents you still need. What do you need today?"};
   const [tab, setTab] = useState('chat');
-  const [messages, setMessages] = useState([{role:'assistant',content:"Hi Sloan! I'm your Coach. I know your full profile, GPA, courses, activities, and everything in your Document Vault. Ask me anything — I can fill out application forms, help with essays, explain financial aid, quiz you on forensic psychology, or tell you what documents you still need. What do you need today?"}]);
+  const [messages, setMessages] = useState([WELCOME]);
+  const [sessionId, setSessionId] = useState(null);
+  const [sessionTitle, setSessionTitle] = useState('');
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [formText, setFormText] = useState('');
@@ -2174,29 +1250,71 @@ function CoachModule({ user, coachUrl, toast }) {
   const [essayType, setEssayType] = useState('Common App Personal Statement (650 words)');
   const bottomRef = useRef();
 
+  // Check for a session to resume from Vault
+  useEffect(()=>{
+    const pending = localStorage.getItem('sm_resume_session');
+    if(pending) {
+      try {
+        const s = JSON.parse(pending);
+        localStorage.removeItem('sm_resume_session');
+        if(s.messages && Array.isArray(s.messages) && s.messages.length > 0) {
+          setMessages(s.messages);
+          setSessionId(s.id);
+          setSessionTitle(s.title);
+          setTab(s.tab || 'chat');
+          toast('Session resumed: '+s.title,'success');
+        }
+      } catch(e) {}
+    }
+  },[]);
+
   useEffect(()=>{ bottomRef.current?.scrollIntoView({behavior:'smooth'}); },[messages,loading]);
+
+  // Auto-save session to Supabase after each exchange
+  const saveSession = async (msgs, currentTitle, currentSessionId, currentTab) => {
+    try {
+      const sb = getSupabase();
+      const userMsgs = msgs.filter(m=>m.role==='user');
+      const title = currentTitle || (userMsgs[0]?.content?.slice(0,60) || 'Coaching Session');
+      // Generate a brief summary from last AI response
+      const lastAiMsg = [...msgs].reverse().find(m=>m.role==='assistant' && m!==msgs[0]);
+      const summary = lastAiMsg ? lastAiMsg.content.slice(0,150)+'...' : null;
+      
+      if(currentSessionId) {
+        await sb.from('coach_sessions').update({messages:msgs, title, summary, updated_at:new Date().toISOString(), tab:currentTab}).eq('id',currentSessionId);
+        return currentSessionId;
+      } else {
+        const { data, error } = await sb.from('coach_sessions').insert({user_id:user.id, messages:msgs, title, summary, tab:currentTab}).select('id').single();
+        if(data?.id) { setSessionId(data.id); setSessionTitle(title); return data.id; }
+      }
+    } catch(e) { /* silent — don't disrupt chat */ }
+    return currentSessionId;
+  };
+
+  const newSession = () => {
+    setMessages([WELCOME]);
+    setSessionId(null);
+    setSessionTitle('');
+    setFormText(''); setFormResult('');
+    setEssayPrompt(''); setEssayDraft(''); setEssayResult('');
+    toast('New session started','success');
+  };
 
   const getVaultContext = async () => {
     const sb = getSupabase();
-    const [{ data:docs },{ data:achs }] = await Promise.all([
-      sb.from('documents').select('name,category').eq('user_id',user.id),
+    const [{ data:docs },{ data:achs },{ data:recentSessions }] = await Promise.all([
+      sb.from('documents').select('name,category,content_notes').eq('user_id',user.id),
       sb.from('achievements').select('title,role,impact').eq('user_id',user.id),
+      sb.from('coach_sessions').select('title,summary').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(3),
     ]);
-    const docStr = docs?.length ? 'Uploaded documents: ' + docs.map(d=>`${d.name} (${d.category})`).join(', ') : 'No documents uploaded yet.';
-    const achStr = achs?.length ? 'Achievements: ' + achs.map(a=>`${a.title} (${a.role})`).join(', ') : '';
-    // Get live GPA from grades table
-    const {data:gradeData} = await sb.from('grades').select('grade_points,credit_hours,is_ap,is_honors,course_name,semester').eq('user_id',user.id);
-    const liveGpaUW     = calcGPA(gradeData||[]);
-    const liveGpaW      = calcWeightedGPA(gradeData||[]);
-    const liveGpaCore   = calcCoreGPA(gradeData||[]);
-    const courseCount   = (gradeData||[]).length;
-    const gpaStr = liveGpaUW !== null
-      ? `Sloan's GPA (${courseCount} courses tracked): Weighted=${liveGpaW?.toFixed(3)||'N/A'} | Unweighted=${liveGpaUW.toFixed(3)} | Core Academic=${liveGpaCore?.toFixed(3)||'N/A'}. Use weighted GPA when discussing college competitiveness. Use unweighted when discussing transcript GPA. Core Academic is for UC-system and similar schools.`
-      : "Sloan's GPA: approximately 3.84 (no courses entered in GPA Tracker yet — ask her to add them for precise calculations)";
-    const courseList = gradeData && gradeData.length > 0
-      ? 'Recent courses: ' + gradeData.slice(-5).map(g=>`${g.course_name} (${g.semester}: ${g.grade_letter||'N/A'})`).join(', ')
+    const docStr = docs?.length 
+      ? 'Uploaded documents:\n' + docs.map(d=>`- ${d.name} (${d.category})${d.content_notes?':\n  '+d.content_notes:''}`).join('\n')
+      : 'No documents uploaded yet.';
+    const achStr = achs?.length ? '\nAchievements: ' + achs.map(a=>`${a.title} (${a.role}) — ${a.impact}`).join('; ') : '';
+    const sessStr = recentSessions?.filter(s=>s.summary).length 
+      ? '\nRecent coaching history:\n' + recentSessions.filter(s=>s.summary).map(s=>`- ${s.title}: ${s.summary}`).join('\n')
       : '';
-    return gpaStr + '\n' + docStr + (achStr ? '\n' + achStr : '') + (courseList ? '\n' + courseList : '');
+    return docStr + achStr + sessStr;
   };
 
   const callCoach = async (msgs) => {
@@ -2204,7 +1322,7 @@ function CoachModule({ user, coachUrl, toast }) {
     const vaultContext = await getVaultContext();
     const res = await fetch(coachUrl, {
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+getAnonKey()},
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ messages: msgs.filter(m=>m.role!=='assistant'||msgs.indexOf(m)>0), vaultContext })
     });
     const data = await res.json();
@@ -2220,7 +1338,13 @@ function CoachModule({ user, coachUrl, toast }) {
     setLoading(true);
     try {
       const reply = await callCoach(newMsgs);
-      if(reply) setMessages(p=>[...p,{role:'assistant',content:reply}]);
+      if(reply) {
+        const finalMsgs = [...newMsgs,{role:'assistant',content:reply}];
+        setMessages(finalMsgs);
+        // Auto-save session in background
+        const title = sessionTitle || (userMsg.content.slice(0,60));
+        saveSession(finalMsgs, title, sessionId, 'chat');
+      }
     } catch(e) { toast('Coach error: '+e.message,'error'); }
     setLoading(false);
   };
@@ -2231,6 +1355,9 @@ function CoachModule({ user, coachUrl, toast }) {
     try {
       const reply = await callCoach([{role:'user',content:`Analyze this college application form and generate answers for each field using Sloan's real information. Format as:\n[FIELD NAME]\nAnswer: [generated answer]\n\nForm:\n${formText}`}]);
       setFormResult(reply||'');
+      // Save this as a session
+      const msgs = [{role:'user',content:'Form Filler: '+formText.slice(0,80)+'...'},{role:'assistant',content:reply||''}];
+      saveSession(msgs, 'Form Fill: '+formText.slice(0,40), sessionId, 'form');
     } catch(e) { toast('Coach error','error'); }
     setFormLoading(false);
   };
@@ -2243,6 +1370,10 @@ function CoachModule({ user, coachUrl, toast }) {
     try {
       const reply = await callCoach([{role:'user',content:prompt}]);
       setEssayResult(reply||'');
+      // Save as session
+      const title = mode==='outline' ? 'Essay Outline: '+essayType.slice(0,30) : 'Essay Review: '+essayType.slice(0,30);
+      const msgs = [{role:'user',content:prompt},{role:'assistant',content:reply||''}];
+      saveSession(msgs, title, sessionId, 'essay');
     } catch(e) { toast('Coach error','error'); }
     setEssayLoading(false);
   };
@@ -2256,7 +1387,7 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers })
   const { messages, vaultContext } = await req.json()
   const systemPrompt = \`You are Sloan Smith's personal college application coach embedded in sloanmelia.com.
-SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 | Goal: PhD in Forensic Psychology
+SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.684 | Goal: PhD in Forensic Psychology
 SENIOR YEAR: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2
 KEY ACTIVITY: Patient Enrichment Program — FOUNDER. Annual hospital donation drive. This is her CENTERPIECE story.
 Others: Mu Alpha Theta (Math Honor Society), Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring
@@ -2273,9 +1404,15 @@ Rules: Always use her real data. Format form fields as FIELD: answer. For essays
 
   return (
     <div>
-      <div className="page-header">
-        <div className="page-title serif">Your AI <em style={{color:'var(--gold)'}}>Coach</em> 🤖</div>
-        <div className="page-sub">Powered by Claude · Knows your full profile and vault</div>
+      <div className="page-header" style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',flexWrap:'wrap',gap:'0.8rem'}}>
+        <div>
+          <div className="page-title serif">Your AI <em style={{color:'var(--gold)'}}>Coach</em> 🤖</div>
+          <div className="page-sub">Powered by Claude · Knows your full profile and vault · Sessions auto-saved</div>
+        </div>
+        <div style={{display:'flex',gap:'0.5rem',alignItems:'center'}}>
+          {sessionId && <span style={{fontSize:'0.65rem',fontFamily:'DM Mono,monospace',color:'var(--teal)',background:'#d0eae8',padding:'0.2rem 0.6rem'}}>✓ Session saving</span>}
+          <button className="btn btn-outline btn-sm" onClick={newSession}>+ New Session</button>
+        </div>
       </div>
       <div className="page-content">
 
@@ -2315,7 +1452,7 @@ Rules: Always use her real data. Format form fields as FIELD: answer. For essays
             <div className="chat-input-row">
               <input className="chat-input" value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&sendChat()} placeholder="Ask your Coach anything..." disabled={loading}/>
               <button className="btn btn-gold" onClick={sendChat} disabled={loading||!input.trim()}>Send</button>
-              <button className="btn btn-ghost" onClick={()=>setMessages([messages[0]])}>Clear</button>
+              <button className="btn btn-ghost" onClick={newSession}>New Session</button>
             </div>
             <div style={{marginTop:'0.5rem',display:'flex',gap:'0.5rem',flexWrap:'wrap'}}>
               {['Fill my Common App activities section','What documents am I missing?','Help me write my personal statement','Explain FAFSA to me simply'].map(s=>(
@@ -2402,7 +1539,7 @@ function App() {
       sb.auth.getSession().then(({data:{session}})=>{
         if(session?.user) setUser(session.user);
         setAuthLoading(false);
-      }).catch(()=>setAuthLoading(false));
+      });
       sb.auth.onAuthStateChange((_,session)=>{
         setUser(session?.user||null);
       });
@@ -2433,36 +1570,18 @@ function App() {
       <div className="main-area" style={{flex:1}}>
         {page==='home'         && <HomeModule {...moduleProps} onNav={setPage}/>}
         {page==='library'      && <LibraryModule {...moduleProps} onNav={setPage}/>}
-        {page==='vault'        && <VaultModule {...moduleProps}/>}
+        {page==='vault'        && <VaultModule {...moduleProps} onNav={setPage}/>}
         {page==='tracker'      && <TrackerModule {...moduleProps}/>}
         {page==='achievements' && <AchievementsModule {...moduleProps}/>}
         {page==='financial'    && <FinancialModule {...moduleProps}/>}
-        {page==='gpa'          && <GpaModule user={user} toast={toast}/>}
-        {page==='profile'      && <ProfileModule user={user} toast={toast}/>}
         {page==='coach'        && <CoachModule {...moduleProps}/>}
       </div>
     </div>
   );
 }
 
-class ErrorBoundary extends React.Component {
-  constructor(p){super(p);this.state={err:null};}
-  static getDerivedStateFromError(e){return{err:e};}
-  render(){
-    if(this.state.err) return (
-      <div style={{fontFamily:'monospace',padding:'2rem',color:'#9a1a1a',background:'#faf7f2',minHeight:'100vh'}}>
-        <h2>SloanMelia Error</h2>
-        <p><strong>{this.state.err.message}</strong></p>
-        <pre style={{fontSize:'0.75rem',whiteSpace:'pre-wrap'}}>{this.state.err.stack}</pre>
-        <button onClick={()=>this.setState({err:null})} style={{marginTop:'1rem',padding:'0.5rem 1rem',cursor:'pointer'}}>Retry</button>
-      </div>
-    );
-    return this.props.children;
-  }
-}
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<ErrorBoundary><App/></ErrorBoundary>);
+root.render(<App/>);
 </script>
 </body>
 </html>
