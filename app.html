@@ -546,7 +546,7 @@ function HomeModule({ onNav, user }) {
     <div>
       <div className="page-header">
         <div className="page-title serif">Welcome back, <em style={{color:'var(--gold)'}}>Sloan</em> 👋</div>
-        <div className="page-sub">Class of 2026 · Alton High School · Future Dr. Smith</div>
+        <div className="page-sub">Class of 2026 · Alton High School · GPA 3.84 Unweighted · 4.21 Weighted · Future Dr. Smith</div>
       </div>
       <div className="page-content">
 
@@ -1708,7 +1708,7 @@ function CoachModule({ user, coachUrl, toast }) {
     const liveGpa = calcGPA(gradeData||[]);
     const gpaStr = liveGpa !== null
       ? `Sloan's current cumulative GPA: ${liveGpa.toFixed(3)} (calculated from ${(gradeData||[]).length} courses in GPA Tracker)`
-      : "Sloan's GPA: 3.84 (manually recorded — no courses entered in GPA tracker yet)";
+      : "Sloan's GPA: 3.84 Unweighted / 4.21 Weighted (manually recorded — no courses entered in GPA tracker yet)";
     const courseList = gradeData && gradeData.length > 0
       ? 'Recent courses: ' + gradeData.slice(-5).map(g=>`${g.course_name} (${g.semester}: ${g.grade_letter||'N/A'})`).join(', ')
       : '';
@@ -1772,7 +1772,7 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers })
   const { messages, vaultContext } = await req.json()
   const systemPrompt = \`You are Sloan Smith's personal college application coach embedded in sloanmelia.com.
-SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 | Goal: PhD in Forensic Psychology
+SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 Unweighted / 4.21 Weighted | Goal: PhD in Forensic Psychology
 SENIOR YEAR: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2
 KEY ACTIVITY: Patient Enrichment Program — FOUNDER. Annual hospital donation drive. This is her CENTERPIECE story.
 Others: Mu Alpha Theta (Math Honor Society), Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring
