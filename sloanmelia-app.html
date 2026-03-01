@@ -451,7 +451,7 @@ function Sidebar({ page, onNav, user, onSignOut }) {
 
 // ── HOME MODULE ────────────────────────────────────────────────────────────────
 function HomeModule({ onNav, user }) {
-  const [stats, setStats] = useState({docs:0, schools:0, achievements:0, sessions:0});
+  const [stats, setStats] = useState({docs:0, schools:0, achievements:0, sessions:0, libComplete:0, libInProgress:0});
   const graduation = new Date('2026-05-15');
   const days = Math.max(0, Math.ceil((graduation - new Date())/(1000*60*60*24)));
 
@@ -464,8 +464,14 @@ function HomeModule({ onNav, user }) {
       sb.from('college_applications').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('achievements').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('coach_sessions').select('id',{count:'exact'}).eq('user_id',uid),
-    ]).then(([d,c,a,s])=>{
-      setStats({docs:d.count||0, schools:c.count||0, achievements:a.count||0, sessions:s.count||0});
+      sb.from('library_progress').select('status').eq('user_id',uid),
+    ]).then(([d,c,a,s,lp])=>{
+      const prog = lp.data||[];
+      setStats({
+        docs:d.count||0, schools:c.count||0, achievements:a.count||0, sessions:s.count||0,
+        libComplete: prog.filter(p=>p.status==='complete').length,
+        libInProgress: prog.filter(p=>p.status==='in_progress').length,
+      });
     }).catch(()=>{});
   },[user]);
 
@@ -481,6 +487,8 @@ function HomeModule({ onNav, user }) {
           <div className="stat-card"><span className="stat-num">{stats.schools}</span><span className="stat-lbl">Schools Tracked</span></div>
           <div className="stat-card"><span className="stat-num">{stats.achievements}</span><span className="stat-lbl">Achievements Logged</span></div>
           <div className="stat-card" style={{borderTopColor:'var(--teal)'}}><span className="stat-num">{stats.sessions}</span><span className="stat-lbl">Coach Sessions Saved</span></div>
+          <div className="stat-card" style={{borderTopColor:'#2a7a4a'}}><span className="stat-num">{stats.libComplete}</span><span className="stat-lbl">Library Complete</span></div>
+          <div className="stat-card" style={{borderTopColor:'#f5c842'}}><span className="stat-num">{stats.libInProgress}</span><span className="stat-lbl">Library In Progress</span></div>
           <div className="stat-card" style={{borderTopColor:'var(--gold)'}}><span className="stat-num">{days}</span><span className="stat-lbl">Days to Graduation</span></div>
         </div>
 
@@ -638,21 +646,96 @@ const YEAR_BADGE = {
   '⚡ Research Tools':    'badge-gold',
 };
 
-function LibraryModule({ onNav }) {
-  const [search, setSearch] = useState('');
+// ── STATUS CONFIG ──────────────────────────────────────────────────────────────
+const STATUS_CFG = {
+  not_started: { label:'Not Started', dot:'⬜', color:'var(--faint)',  text:'var(--dim)'  },
+  in_progress: { label:'In Progress', dot:'🟡', color:'#f5c842',      text:'#9a7b0a'     },
+  complete:    { label:'Complete',    dot:'✅', color:'var(--teal)',   text:'var(--teal)' },
+};
+
+function LibraryModule({ onNav, user }) {
+  const [search, setSearch]         = useState('');
   const [yearFilter, setYearFilter] = useState('All');
-  const [selected, setSelected] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [selected, setSelected]     = useState(null);
+  const [progress, setProgress]     = useState({});   // { resourceId: status }
+  const [notes, setNotes]           = useState({});   // { resourceId: text }
+  const [notesDraft, setNotesDraft] = useState('');
+  const [notesLoading, setNotesLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  // Load all progress + notes on mount
+  useEffect(()=>{
+    if(!user?.id) return;
+    const sb = getSupabase();
+    Promise.all([
+      sb.from('library_progress').select('resource_id,status').eq('user_id',user.id),
+      sb.from('library_notes').select('resource_id,notes').eq('user_id',user.id),
+    ]).then(([{data:prog},{data:nts}])=>{
+      const p = {};
+      (prog||[]).forEach(r=>{ p[r.resource_id] = r.status; });
+      const n = {};
+      (nts||[]).forEach(r=>{ n[r.resource_id] = r.notes; });
+      setProgress(p);
+      setNotes(n);
+      setDataLoaded(true);
+    }).catch(()=>setDataLoaded(true));
+  },[user]);
+
+  // When modal opens, seed notes draft
+  useEffect(()=>{
+    if(selected) setNotesDraft(notes[selected.id] || '');
+  },[selected]);
+
+  const setStatus = async (t, status) => {
+    if(!user?.id) return;
+    const sb = getSupabase();
+    const now = new Date().toISOString();
+    const patch = {
+      user_id: user.id, resource_id: t.id,
+      resource_title: t.title, resource_year: t.year,
+      status,
+      started_at:   status==='not_started' ? null : (progress[t.id] ? undefined : now),
+      completed_at: status==='complete'    ? now  : null,
+      updated_at: now,
+    };
+    await getSupabase().from('library_progress').upsert(patch,{onConflict:'user_id,resource_id'});
+    setProgress(p=>({...p,[t.id]:status}));
+    toast(status==='complete'?`✅ "${t.title}" marked complete!`:status==='in_progress'?`🟡 "${t.title}" — in progress`:`⬜ "${t.title}" reset`,'success');
+  };
+
+  const saveNotes = async () => {
+    if(!user?.id||!selected) return;
+    setNotesLoading(true);
+    const now = new Date().toISOString();
+    await getSupabase().from('library_notes').upsert({
+      user_id:user.id, resource_id:selected.id,
+      resource_title:selected.title, notes:notesDraft, updated_at:now
+    },{onConflict:'user_id,resource_id'});
+    setNotes(n=>({...n,[selected.id]:notesDraft}));
+    setNotesLoading(false);
+    toast('📝 Notes saved — Coach will see these!','success');
+  };
+
+  // Computed stats
+  const completedCount  = Object.values(progress).filter(s=>s==='complete').length;
+  const inProgressCount = Object.values(progress).filter(s=>s==='in_progress').length;
+  const withNotesCount  = Object.keys(notes).filter(id=>notes[id]?.trim()).length;
+  const pct = Math.round((completedCount / STUDY_TOPICS.length) * 100);
 
   const filtered = STUDY_TOPICS.filter(t => {
     const matchSearch = !search || t.title.toLowerCase().includes(search.toLowerCase()) || t.desc.toLowerCase().includes(search.toLowerCase()) || t.src.toLowerCase().includes(search.toLowerCase());
-    const matchYear = yearFilter === 'All' || t.year === yearFilter;
-    return matchSearch && matchYear;
+    const matchYear   = yearFilter === 'All' || t.year === yearFilter;
+    const tStatus     = progress[t.id] || 'not_started';
+    const matchStatus = statusFilter === 'All' || tStatus === statusFilter;
+    return matchSearch && matchYear && matchStatus;
   });
 
   const counts = {};
-  YEARS.forEach(y => { counts[y] = y === 'All' ? STUDY_TOPICS.length : STUDY_TOPICS.filter(t=>t.year===y).length; });
+  YEARS.forEach(y => { counts[y] = y==='All' ? STUDY_TOPICS.length : STUDY_TOPICS.filter(t=>t.year===y).length; });
 
   const srcInfo = t => SRC[t.src] || SRC.Poster;
+  const getStatus = t => progress[t.id] || 'not_started';
 
   return (
     <div>
@@ -662,62 +745,107 @@ function LibraryModule({ onNav }) {
       </div>
       <div className="page-content">
 
+        {/* Progress Overview Bar */}
+        <div className="card" style={{marginBottom:'1.2rem',padding:'1rem 1.2rem'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'0.6rem',flexWrap:'wrap',gap:'0.5rem'}}>
+            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.6rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'var(--dim)'}}>Your Learning Journey</span>
+            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.6rem',color:'var(--gold)'}}>
+              {completedCount} complete · {inProgressCount} in progress · {withNotesCount} with notes
+            </span>
+          </div>
+          {/* Progress bar */}
+          <div style={{background:'var(--faint)',borderRadius:'4px',height:'8px',marginBottom:'0.5rem',overflow:'hidden'}}>
+            <div style={{height:'100%',borderRadius:'4px',background:'linear-gradient(90deg,var(--teal),var(--gold))',width:`${Math.max(pct,1)}%`,transition:'width 0.4s ease'}}/>
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between'}}>
+            <span style={{fontSize:'0.72rem',color:'var(--dim)'}}>Freshman Year →</span>
+            <span style={{fontSize:'0.72rem',fontWeight:600,color:'var(--gold)'}}>{pct}% Complete</span>
+            <span style={{fontSize:'0.72rem',color:'var(--dim)'}}>← Doctorate</span>
+          </div>
+          {withNotesCount > 0 && (
+            <div style={{marginTop:'0.5rem',fontSize:'0.72rem',color:'var(--teal)'}}>
+              📝 {withNotesCount} resource{withNotesCount!==1?'s':''} with your notes — Coach can reference these in every session
+            </div>
+          )}
+        </div>
+
         {/* Search */}
-        <div style={{marginBottom:'1rem'}}>
+        <div style={{marginBottom:'0.8rem'}}>
           <input className="input" placeholder="Search any topic, course, or resource..." value={search} onChange={e=>setSearch(e.target.value)}/>
         </div>
 
-        {/* Year Filter Tabs — scrollable */}
-        <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginBottom:'1.2rem'}}>
-          {YEARS.map(y=>(
-            <button key={y} onClick={()=>setYearFilter(y)} style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',padding:'0.35rem 0.8rem',border:`1px solid ${yearFilter===y?YEAR_COLOR[y]||'var(--ink)':'var(--faint)'}`,background:yearFilter===y?'var(--ink)':'transparent',color:yearFilter===y?'#fff':'var(--dim)',cursor:'pointer',transition:'all 0.15s'}}>
-              {y} <span style={{opacity:0.6}}>({counts[y]||STUDY_TOPICS.length})</span>
+        {/* Status Filter Pills */}
+        <div style={{display:'flex',gap:'0.4rem',marginBottom:'0.8rem',flexWrap:'wrap'}}>
+          {[['All','All Resources'],['in_progress','🟡 In Progress'],['complete','✅ Complete'],['not_started','⬜ Not Started']].map(([v,lbl])=>(
+            <button key={v} onClick={()=>setStatusFilter(v)} style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.08em',textTransform:'uppercase',padding:'0.3rem 0.7rem',border:`1px solid ${statusFilter===v?'var(--gold)':'var(--faint)'}`,background:statusFilter===v?'var(--gold)':'transparent',color:statusFilter===v?'var(--bg)':'var(--dim)',cursor:'pointer',transition:'all 0.15s',borderRadius:'2px'}}>
+              {lbl}
             </button>
           ))}
         </div>
 
-        {/* Stats bar */}
+        {/* Year Filter Tabs */}
+        <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginBottom:'1.2rem'}}>
+          {YEARS.map(y=>(
+            <button key={y} onClick={()=>setYearFilter(y)} style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.08em',textTransform:'uppercase',padding:'0.32rem 0.75rem',border:`1px solid ${yearFilter===y?YEAR_COLOR[y]||'var(--ink)':'var(--faint)'}`,background:yearFilter===y?'var(--ink)':'transparent',color:yearFilter===y?'#fff':'var(--dim)',cursor:'pointer',transition:'all 0.15s'}}>
+              {y} <span style={{opacity:0.5}}>({counts[y]||STUDY_TOPICS.length})</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Year context blurb */}
         {yearFilter !== 'All' && (
-          <div className="info-box" style={{marginBottom:'1rem',padding:'0.7rem 1rem'}}>
+          <div className="info-box" style={{marginBottom:'1rem',padding:'0.6rem 1rem',fontSize:'0.82rem'}}>
             <strong style={{color:YEAR_COLOR[yearFilter]||'var(--gold)'}}>{yearFilter}</strong>
-            {yearFilter==='📌 Reference Posters' && ' — SloanMelia built-in forensic psychology reference cards. Click Study → to explore key concepts.'}
+            {yearFilter==='📌 Reference Posters' && ' — SloanMelia built-in forensic psychology reference cards. Add your own notes so Coach can reference them.'}
             {yearFilter==='🌱 Freshman' && ' — Wide roots. General education foundation. Every textbook is free via OpenStax or LibreTexts.'}
             {yearFilter==='🌿 Sophomore' && ' — The trunk thickens. Core psychology courses required at every program in the country.'}
             {yearFilter==='🌳 Junior' && ' — The path narrows toward forensics. Upper-division specialization begins.'}
             {yearFilter==='🎓 Senior' && ' — Pre-graduate preparation. Clinical assessment, ethics, and research design.'}
-            {yearFilter==="🔬 Master's" && " — Graduate specialization. Forensic assessment, risk instruments, mental health law, and expert testimony."}
+            {yearFilter==="🔬 Master's" && ' — Graduate specialization. Forensic assessment, risk instruments, mental health law, and expert testimony.'}
             {yearFilter==='🏛️ Doctoral' && ' — Research and dissertation level. The living edge of the field. Original contribution to knowledge.'}
-            {yearFilter==='⚡ Research Tools' && ' — Free platforms and tools that separate a good student from a future pioneer. Set these up now, use them for life.'}
+            {yearFilter==='⚡ Research Tools' && ' — Free platforms that separate a good student from a future pioneer. Set these up now, use them for life.'}
           </div>
         )}
 
         {/* Results count */}
-        <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.6rem',letterSpacing:'0.1em',color:'var(--dim)',marginBottom:'0.8rem',textTransform:'uppercase'}}>
-          {filtered.length} resource{filtered.length!==1?'s':''} {search?`matching "${search}"`:''}
+        <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.58rem',letterSpacing:'0.1em',color:'var(--dim)',marginBottom:'0.8rem',textTransform:'uppercase'}}>
+          {filtered.length} resource{filtered.length!==1?'s':''}{search?` matching "${search}"`:''}
         </div>
 
         {/* Cards grid */}
         {filtered.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">🔍</div>
-            <div className="empty-text">No resources match your search</div>
-            <button className="btn btn-ghost" onClick={()=>{setSearch('');setYearFilter('All');}}>Clear filters</button>
+            <div className="empty-text">No resources match your filters</div>
+            <button className="btn btn-ghost" onClick={()=>{setSearch('');setYearFilter('All');setStatusFilter('All');}}>Clear all filters</button>
           </div>
         ) : (
           <div className="grid3">
             {filtered.map(t => {
               const si = srcInfo(t);
+              const st = getStatus(t);
+              const sc = STATUS_CFG[st];
+              const hasNote = !!(notes[t.id]?.trim());
               return (
-                <div key={t.id} className="card" style={{borderTop:`3px solid ${YEAR_COLOR[t.year]||'var(--ink)'}`,cursor:'pointer',display:'flex',flexDirection:'column'}} onClick={()=>setSelected(t)}>
-                  <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginBottom:'0.5rem'}}>
-                    <span className={`badge ${YEAR_BADGE[t.year]||'badge-gray'}`} style={{fontSize:'0.48rem'}}>{t.year}</span>
-                    <span className={`badge ${si.badge}`} style={{fontSize:'0.48rem'}}>{si.label}</span>
+                <div key={t.id} className="card" style={{borderTop:`3px solid ${YEAR_COLOR[t.year]||'var(--ink)'}`,cursor:'pointer',display:'flex',flexDirection:'column',position:'relative'}} onClick={()=>setSelected(t)}>
+                  {/* Status dot top-right */}
+                  <div style={{position:'absolute',top:'0.6rem',right:'0.7rem',fontSize:'0.85rem',title:sc.label}}>{sc.dot}</div>
+
+                  <div style={{display:'flex',gap:'0.35rem',flexWrap:'wrap',marginBottom:'0.5rem',paddingRight:'1.5rem'}}>
+                    <span className={`badge ${YEAR_BADGE[t.year]||'badge-gray'}`} style={{fontSize:'0.44rem'}}>{t.year}</span>
+                    <span className={`badge ${si.badge}`} style={{fontSize:'0.44rem'}}>{si.label}</span>
+                    {hasNote && <span className="badge badge-teal" style={{fontSize:'0.44rem'}}>📝 Notes</span>}
                   </div>
-                  <div className="card-title" style={{fontSize:'0.92rem',marginBottom:'0.25rem'}}>{t.title}</div>
-                  <div style={{fontSize:'0.79rem',color:'var(--dim)',lineHeight:1.5,flex:1}}>{t.desc}</div>
-                  <div style={{display:'flex',gap:'0.4rem',marginTop:'0.8rem',flexWrap:'wrap'}}>
-                    <button className="btn btn-ghost btn-sm" style={{paddingLeft:0,fontSize:'0.55rem'}} onClick={e=>{e.stopPropagation();setSelected(t);}}>Study →</button>
-                    {t.url && <button className="btn btn-outline btn-sm" style={{fontSize:'0.55rem'}} onClick={e=>{e.stopPropagation();window.open(t.url,'_blank');}}>Open Free ↗</button>}
+                  <div className="card-title" style={{fontSize:'0.9rem',marginBottom:'0.22rem'}}>{t.title}</div>
+                  <div style={{fontSize:'0.78rem',color:'var(--dim)',lineHeight:1.5,flex:1}}>{t.desc}</div>
+                  <div style={{display:'flex',gap:'0.35rem',marginTop:'0.8rem',flexWrap:'wrap',alignItems:'center'}}>
+                    <button className="btn btn-ghost btn-sm" style={{paddingLeft:0,fontSize:'0.52rem'}} onClick={e=>{e.stopPropagation();setSelected(t);}}>Study →</button>
+                    {t.url && <button className="btn btn-outline btn-sm" style={{fontSize:'0.52rem'}} onClick={e=>{e.stopPropagation();window.open(t.url,'_blank');}}>Open Free ↗</button>}
+                    {/* Quick status cycle */}
+                    <button style={{marginLeft:'auto',fontSize:'0.75rem',background:'transparent',border:'none',cursor:'pointer',padding:'0.1rem 0.3rem'}} title={`Mark: ${st==='not_started'?'In Progress':st==='in_progress'?'Complete':'Not Started'}`}
+                      onClick={e=>{e.stopPropagation(); setStatus(t, st==='not_started'?'in_progress':st==='in_progress'?'complete':'not_started');}}>
+                      {sc.dot}
+                    </button>
                   </div>
                 </div>
               );
@@ -726,30 +854,66 @@ function LibraryModule({ onNav }) {
         )}
       </div>
 
-      {/* Detail Modal */}
+      {/* ── DETAIL MODAL ── */}
       <Modal open={!!selected} onClose={()=>setSelected(null)} title={selected?.title} wide>
         {selected && (()=>{
           const si = srcInfo(selected);
+          const st = getStatus(selected);
+          const sc = STATUS_CFG[st];
           return (
             <>
+              {/* Badges row */}
               <div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap',marginBottom:'1rem'}}>
                 <span className={`badge ${YEAR_BADGE[selected.year]||'badge-gray'}`}>{selected.year}</span>
                 <span className={`badge ${si.badge}`}>{si.label}</span>
+                <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.08em',padding:'0.2rem 0.5rem',border:`1px solid ${sc.color}`,color:sc.text}}>{sc.dot} {sc.label}</span>
               </div>
+
               <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem',lineHeight:1.65}}>{selected.desc}</p>
+
+              {/* Key Concepts */}
               <div className="section-label">Key Concepts</div>
               <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
                 {selected.concepts.map((c,i)=><li key={i} style={{marginBottom:'0.4rem',fontSize:'0.88rem'}}>{c}</li>)}
               </ul>
+
+              {/* Free Resource Link */}
               {selected.url && (
-                <div className="info-box" style={{marginBottom:'1rem'}}>
-                  <strong>Free Resource</strong>
-                  <a href={selected.url} target="_blank" rel="noreferrer" style={{color:'var(--gold)',wordBreak:'break-all'}}>{selected.url}</a>
+                <div className="info-box" style={{marginBottom:'1.2rem'}}>
+                  <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:'0.3rem',color:'var(--dim)'}}>Free Resource</div>
+                  <a href={selected.url} target="_blank" rel="noreferrer" style={{color:'var(--gold)',fontSize:'0.82rem',wordBreak:'break-all'}}>{selected.url}</a>
                 </div>
               )}
-              <div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap'}}>
+
+              {/* Status Selector */}
+              <div className="section-label">Your Progress</div>
+              <div style={{display:'flex',gap:'0.5rem',marginBottom:'1.2rem',flexWrap:'wrap'}}>
+                {Object.entries(STATUS_CFG).map(([key,cfg])=>(
+                  <button key={key} onClick={()=>setStatus(selected,key)} style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.08em',padding:'0.4rem 0.9rem',border:`2px solid ${st===key?cfg.color:'var(--faint)'}`,background:st===key?'var(--ink)':'transparent',color:st===key?'#fff':'var(--dim)',cursor:'pointer',transition:'all 0.15s'}}>
+                    {cfg.dot} {cfg.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Study Notes */}
+              <div className="section-label">Your Study Notes</div>
+              <div style={{fontSize:'0.78rem',color:'var(--dim)',marginBottom:'0.5rem'}}>
+                These notes are shared with your AI Coach — the more detail you add, the smarter Coach becomes about what you know.
+              </div>
+              <textarea
+                className="input"
+                rows={5}
+                placeholder={`Write anything about ${selected.title}:\n• Key things you learned\n• Questions you still have\n• How it connects to forensic psychology\n• Chapters you've covered\n• Terms you want Coach to explain`}
+                value={notesDraft}
+                onChange={e=>setNotesDraft(e.target.value)}
+                style={{width:'100%',resize:'vertical',fontFamily:'inherit',fontSize:'0.85rem',lineHeight:1.65,marginBottom:'0.7rem'}}
+              />
+              <div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap',alignItems:'center'}}>
+                <button className="btn btn-primary" onClick={saveNotes} disabled={notesLoading}>
+                  {notesLoading ? 'Saving…' : '💾 Save Notes to Coach'}
+                </button>
                 {selected.url && <a href={selected.url} target="_blank" rel="noreferrer" className="btn btn-gold" style={{textDecoration:'none'}}>Open Free Resource ↗</a>}
-                <button className="btn btn-primary" onClick={()=>{setSelected(null);onNav('coach');}}>🤖 Ask Coach About This</button>
+                <button className="btn btn-ghost" style={{marginLeft:'auto'}} onClick={()=>{setSelected(null);onNav('coach');}}>🤖 Ask Coach About This</button>
               </div>
             </>
           );
@@ -1475,10 +1639,12 @@ function CoachModule({ user, coachUrl, toast }) {
 
   const getVaultContext = async () => {
     const sb = getSupabase();
-    const [{ data:docs },{ data:achs },{ data:recentSessions }] = await Promise.all([
+    const [{ data:docs },{ data:achs },{ data:recentSessions },{ data:libNotes },{ data:libProg }] = await Promise.all([
       sb.from('documents').select('name,category,content_notes').eq('user_id',user.id),
       sb.from('achievements').select('title,role,impact').eq('user_id',user.id),
       sb.from('coach_sessions').select('title,summary').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(3),
+      sb.from('library_notes').select('resource_title,resource_year,notes').eq('user_id',user.id).not('notes','eq',''),
+      sb.from('library_progress').select('resource_title,resource_year,status').eq('user_id',user.id),
     ]);
     const docStr = docs?.length 
       ? 'Uploaded documents:\n' + docs.map(d=>`- ${d.name} (${d.category})${d.content_notes?':\n  '+d.content_notes:''}`).join('\n')
@@ -1487,7 +1653,15 @@ function CoachModule({ user, coachUrl, toast }) {
     const sessStr = recentSessions?.filter(s=>s.summary).length 
       ? '\nRecent coaching history:\n' + recentSessions.filter(s=>s.summary).map(s=>`- ${s.title}: ${s.summary}`).join('\n')
       : '';
-    return docStr + achStr + sessStr;
+    const completed = (libProg||[]).filter(p=>p.status==='complete').map(p=>p.resource_title);
+    const inProgress = (libProg||[]).filter(p=>p.status==='in_progress').map(p=>p.resource_title);
+    const libProgStr = (completed.length||inProgress.length)
+      ? `\n\nStudent academic library progress:\nCompleted: ${completed.length ? completed.join(', ') : 'none yet'}\nCurrently studying: ${inProgress.length ? inProgress.join(', ') : 'none'}`
+      : '';
+    const libNotesStr = libNotes?.length
+      ? '\n\nStudent study notes from the Academic Library (use these to personalize coaching):\n' + libNotes.map(n=>`- [${n.resource_year}] ${n.resource_title}:\n  "${n.notes}"`).join('\n')
+      : '';
+    return docStr + achStr + sessStr + libProgStr + libNotesStr;
   };
 
   const callCoach = async (msgs) => {
