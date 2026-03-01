@@ -453,6 +453,10 @@ function Sidebar({ page, onNav, user, onSignOut }) {
         ))}
       </nav>
       <div className="sidebar-footer">
+        <a href="https://sloanmelia.com" target="_blank" rel="noopener noreferrer" style={{display:'flex',alignItems:'center',gap:'0.8rem',padding:'0.6rem 0',color:'rgba(255,255,255,0.4)',textDecoration:'none',fontSize:'0.6rem',fontFamily:"'DM Mono',monospace",letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:'0.4rem'}} onMouseOver={e=>e.currentTarget.style.color='rgba(255,255,255,0.75)'} onMouseOut={e=>e.currentTarget.style.color='rgba(255,255,255,0.4)'}>
+          <span style={{fontSize:'1rem',width:'20px',textAlign:'center'}}>🌐</span>
+          <span>My Profile</span>
+        </a>
         <div className="sidebar-user">{user?.email}</div>
         <button className="btn btn-ghost w100" style={{color:'rgba(255,255,255,0.35)',textAlign:'left',paddingLeft:0}} onClick={onSignOut}>Sign Out</button>
       </div>
