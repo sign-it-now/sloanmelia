@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light">
 <title>Sloan Smith — sloanmelia.com</title>
 <meta property="og:title" content="Sloan Smith — Class of 2026">
-<meta property="og:description" content="Senior at Alton High School · 3.84 Unweighted / 4.21 Weighted GPA · Forensic Psychology · Future Dr. Smith">
+<meta property="og:description" content="Senior at Alton High School · 3.58 Unweighted / 3.82 Weighted GPA · Forensic Psychology · Future Dr. Smith">
 <meta property="og:image" content="https://sloanmelia.com/sloan-profile.jpg">
 <meta property="og:image:width" content="1017">
 <meta property="og:image:height" content="1143">
@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="SloanMelia">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sloan Smith — Class of 2026">
-<meta name="twitter:description" content="Senior at Alton High School · 3.84 Unweighted / 4.21 Weighted GPA · Forensic Psychology · Future Dr. Smith">
+<meta name="twitter:description" content="Senior at Alton High School · 3.58 Unweighted / 3.82 Weighted GPA · Forensic Psychology · Future Dr. Smith">
 <meta name="twitter:image" content="https://sloanmelia.com/sloan-profile.jpg">
 <script>
   // If Supabase auth token lands here via magic link, forward to dashboard
@@ -630,6 +630,7 @@
         set('profile-gpa-weighted', gpaW);    // academic stats weighted
         set('profile-gpa-academic', gpaUW);   // academic stats unweighted
         set('profile-gpa-bio',      gpaUW);   // bio paragraph (unweighted in prose)
+        const bioW = document.getElementById('profile-gpa-bio-weighted'); if(bioW) bioW.textContent = gpaW + ' weighted';
         // AP count from real data
         const apCount = (grades||[]).filter(g=>g.is_ap).length;
         if(apCount > 0) set('profile-ap-count', String(apCount));
@@ -668,7 +669,7 @@
     </h1>
     <p class="hero-tagline" id="profile-tagline">Aspiring Forensic Psychologist &amp; Community Builder</p>
     <p class="hero-bio" id="profile-bio">
-      I'm a senior at Alton High School with a <strong id="profile-gpa-bio">3.84</strong> cumulative unweighted GPA (<strong>4.21 weighted</strong>), a passion for understanding the human mind, and a clear mission: to earn my PhD in Forensic Psychology and apply science in service of justice and healing. Outside the classroom, I'm building things — programs, communities, and a body of work that reflects who I am and where I'm going.
+      I'm a senior at Alton High School with a <strong id="profile-gpa-bio">3.58</strong> cumulative unweighted GPA (<strong id="profile-gpa-bio-weighted">3.82 weighted</strong>), a passion for understanding the human mind, and a clear mission: to earn my PhD in Forensic Psychology and apply science in service of justice and healing. Outside the classroom, I'm building things — programs, communities, and a body of work that reflects who I am and where I'm going.
     </p>
     <div class="hero-cta-row">
       <a href="#contact" class="btn-primary">Get In Touch</a>
@@ -684,8 +685,8 @@
     <div class="hero-photo-overlay"></div>
     <div class="hero-stat-bar">
       <div class="hero-stat">
-        <span class="s-num" id="profile-gpa">3.84</span>
-        <span class="s-label">Unweighted GPA</span>
+        <span class="s-num" id="profile-gpa">3.82</span>
+        <span class="s-label">Weighted GPA</span>
       </div>
       <div class="hero-stat">
         <span class="s-num">4</span>
@@ -705,11 +706,11 @@
   <h2 class="section-title">The Numbers &amp; The<br><em>Coursework Behind Them</em></h2>
   <div class="stats-row">
     <div class="stat-cell">
-      <span class="big" id="profile-gpa-weighted">4.21</span>
+      <span class="big" id="profile-gpa-weighted">3.82</span>
       <span class="label">Weighted GPA <span style="font-size:0.55em;display:block;opacity:0.6;">AP+1.0 · Honors+0.5</span></span>
     </div>
     <div class="stat-cell">
-      <span class="big" id="profile-gpa-academic">3.84</span>
+      <span class="big" id="profile-gpa-academic">3.58</span>
       <span class="label">Unweighted GPA <span style="font-size:0.55em;display:block;opacity:0.6;">4.0 Scale</span></span>
     </div>
     <div class="stat-cell">
