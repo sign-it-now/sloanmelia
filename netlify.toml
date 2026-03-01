@@ -1,3 +1,18 @@
+# ── SECURITY HEADERS ─────────────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Content Security Policy — allows our known CDNs, blocks everything else
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none';"
+    # Block clickjacking
+    X-Frame-Options = "DENY"
+    # Stop MIME sniffing
+    X-Content-Type-Options = "nosniff"
+    # Force HTTPS referrer
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Limit browser features
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
 # Public profile — the page colleges and recruiters see
 [[redirects]]
   from = "/"

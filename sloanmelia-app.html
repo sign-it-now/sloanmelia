@@ -6,8 +6,8 @@
 <meta name="color-scheme" content="light">
 <title>SloanMelia — Sloan Smith Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
@@ -199,10 +199,17 @@ textarea.input{resize:vertical;min-height:80px;}
 ::-webkit-scrollbar-thumb{background:var(--dim);}
 
 /* RESPONSIVE */
+/* HAMBURGER BUTTON */
+.hamburger{display:none;position:fixed;top:0.8rem;left:0.8rem;z-index:200;width:38px;height:38px;background:var(--ink);border:none;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px;padding:8px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);transition:all 0.2s;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(14,12,9,0.5);z-index:99;}
+
 @media(max-width:768px){
+  .hamburger{display:flex;}
   .sidebar{transform:translateX(-100%);transition:transform 0.25s;}
   .sidebar.open{transform:translateX(0);}
-  .main-area{margin-left:0;}
+  .sidebar-overlay.open{display:block;}
+  .main-area{margin-left:0;padding-top:3rem;}
   .login-screen{grid-template-columns:1fr;}
   .login-left{display:none;}
   .grid2{grid-template-columns:1fr;}
@@ -582,9 +589,9 @@ const NAV_ITEMS = [
   { id:'coach', icon:'🤖', label:'Coach', special:true },
 ];
 
-function Sidebar({ page, onNav, user, onSignOut }) {
+function Sidebar({ page, onNav, user, onSignOut, open }) {
   return (
-    <div className="sidebar">
+    <div className={`sidebar${open?' open':''}`}>
       <div className="sidebar-logo">
         <div className="monogram">SM</div>
         <div className="app-name">SloanMelia</div>
@@ -1877,6 +1884,9 @@ function App() {
     sb.auth.getSession().then(({data:{session}})=>{ if(session?.user) setUser(session.user); setAuthLoading(false); });
   };
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const closeSidebar = () => setSidebarOpen(false);
+
   const signOut = async () => {
     await getSupabase().auth.signOut();
     setUser(null);
@@ -1891,7 +1901,11 @@ function App() {
   return (
     <div style={{display:'flex'}}>
       <ToastContainer toasts={toasts}/>
-      <Sidebar page={page} onNav={setPage} user={user} onSignOut={signOut}/>
+      <button className="hamburger" onClick={()=>setSidebarOpen(o=>!o)} aria-label="Menu">
+        <span/><span/><span/>
+      </button>
+      <div className={`sidebar-overlay${sidebarOpen?' open':''}`} onClick={closeSidebar}/>
+      <Sidebar page={page} onNav={(p)=>{setPage(p);closeSidebar();}} user={user} onSignOut={signOut} open={sidebarOpen}/>
       <div className="main-area" style={{flex:1}}>
         {page==='home'         && <HomeModule {...moduleProps} onNav={setPage}/>}
         {page==='library'      && <LibraryModule {...moduleProps} onNav={setPage}/>}
