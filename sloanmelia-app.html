@@ -479,7 +479,7 @@ function HomeModule({ onNav, user }) {
     <div>
       <div className="page-header">
         <div className="page-title serif">Welcome back, <em style={{color:'var(--gold)'}}>Sloan</em> 👋</div>
-        <div className="page-sub">Class of 2026 · Alton High School · GPA 3.684 · Future Dr. Smith</div>
+        <div className="page-sub">Class of 2026 · Alton High School · GPA 3.84 Unweighted · 4.21 Weighted · Future Dr. Smith</div>
       </div>
       <div className="page-content">
         <div className="stats-row">
@@ -1154,7 +1154,7 @@ function VaultModule({ user, toast, onNav }) {
             <div className="card" style={{borderTop:'3px solid var(--teal)'}}>
               <div className="section-label">Permanent Profile Data</div>
               {[
-                ['Name','Sloan Smith'],['School','Alton High School, Alton IL'],['Graduating','May 2026'],['GPA','3.684'],['Goal','PhD in Forensic Psychology'],
+                ['Name','Sloan Smith'],['School','Alton High School, Alton IL'],['Graduating','May 2026'],['GPA','3.84 (Unweighted) · 4.21 (Weighted)'],['Goal','PhD in Forensic Psychology'],
                 ['Senior Courses','AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2'],
                 ['Key Activity','Patient Enrichment Program — Founder. Annual hospital donation drive. Her centerpiece story.'],
                 ['Other Activities','Mu Alpha Theta, Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring'],
@@ -1188,7 +1188,7 @@ function VaultModule({ user, toast, onNav }) {
           Type any important info from this document that you want the Coach to know. For a transcript: list your courses, grades, GPA. For a rec letter: who wrote it and what they said. For a resume: your key bullet points. The Coach reads these notes when helping you.
         </div>
         <label className="label">Document Notes (Coach-Readable)</label>
-        <textarea className="input" style={{minHeight:200}} value={notesText} onChange={e=>setNotesText(e.target.value)} placeholder="Example for a transcript:&#10;GPA: 3.684&#10;Senior year courses: AP Psychology (A), AP Statistics (B+), AP English Honors (A-), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2&#10;Weighted GPA: 3.9&#10;Class rank: Top 15%"/>
+        <textarea className="input" style={{minHeight:200}} value={notesText} onChange={e=>setNotesText(e.target.value)} placeholder="Example for a transcript:&#10;GPA: 3.84&#10;Senior year courses: AP Psychology (A), AP Statistics (B+), AP English Honors (A-), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2&#10;Weighted GPA: 4.21&#10;Class rank: Top 15%"/>
         <div style={{display:'flex',gap:'0.5rem',marginTop:'1rem'}}>
           <button className="btn btn-gold" onClick={saveNotes} disabled={savingNotes}>{savingNotes?'Saving...':'Save Notes'}</button>
           <button className="btn btn-ghost" onClick={()=>setNotesDoc(null)}>Cancel</button>
@@ -1734,7 +1734,7 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers })
   const { messages, vaultContext } = await req.json()
   const systemPrompt = \`You are Sloan Smith's personal college application coach embedded in sloanmelia.com.
-SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.684 | Goal: PhD in Forensic Psychology
+SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 Unweighted / 4.21 Weighted | Goal: PhD in Forensic Psychology
 SENIOR YEAR: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2
 KEY ACTIVITY: Patient Enrichment Program — FOUNDER. Annual hospital donation drive. This is her CENTERPIECE story.
 Others: Mu Alpha Theta (Math Honor Society), Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring
