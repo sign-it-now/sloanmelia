@@ -6,9 +6,9 @@
 <meta name="color-scheme" content="light">
 <title>SloanMelia — Sloan Smith Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
@@ -217,7 +217,142 @@ textarea.input{resize:vertical;min-height:80px;}
 <body>
 <div id="root"></div>
 
-<script type="text/babel">
+<script>
+// ── PURE DATA — no Babel needed ──────────────────────────────
+// SOURCE CONFIG
+const SRC = {
+  OpenStax:   {label:'OpenStax',       badge:'badge-teal',  color:'var(--teal)'},
+  LibreTexts: {label:'LibreTexts',     badge:'badge-blue',  color:'var(--blue)'},
+  NOBA:       {label:'NOBA Project',   badge:'badge-purple',color:'var(--purple)'},
+  Frontiers:  {label:'Frontiers OA',   badge:'badge-green', color:'var(--green)'},
+  SSRN:       {label:'SSRN Free',      badge:'badge-ink',   color:'var(--ink)'},
+  APA:        {label:'APA Official',   badge:'badge-gold',  color:'var(--gold)'},
+  Tool:       {label:'Free Tool',      badge:'badge-gold',  color:'#c8922a'},
+  Poster:     {label:'SloanMelia Ref', badge:'badge-teal',  color:'var(--teal)'},
+};
+
+// YEAR LEVELS
+const YEARS = ['All','📌 Reference Posters','🌱 Freshman','🌿 Sophomore','🌳 Junior','🎓 Senior','🔬 Master\'s','🏛️ Doctoral','⚡ Research Tools'];
+const YEAR_COLOR = {
+  '📌 Reference Posters':'var(--teal)',
+  '🌱 Freshman':         'var(--green)',
+  '🌿 Sophomore':        '#2a7a4a',
+  '🌳 Junior':           'var(--teal)',
+  '🎓 Senior':           'var(--gold)',
+  '🔬 Master\'s':        'var(--blue)',
+  '🏛️ Doctoral':         'var(--purple)',
+  '⚡ Research Tools':   '#c8922a',
+};
+
+const STUDY_TOPICS = [
+// ── REFERENCE POSTERS (16 built-in SloanMelia cards) ──────────────────────────
+  {id:1, year:'📌 Reference Posters', title:'Brain & Neuroscience', src:'Poster', url:'', desc:'The biological foundation of behavior, emotion, and criminal mind.',concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
+  {id:2, year:'📌 Reference Posters', title:'DSM-5 Diagnostic Reference', src:'Poster', url:'', desc:'Mental disorder classification system used in forensic evaluations.',concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
+  {id:3, year:'📌 Reference Posters', title:'Theorists Timeline', src:'Poster', url:'', desc:'From Freud to modern forensic psychology pioneers.',concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
+  {id:4, year:'📌 Reference Posters', title:'Research Methods & Statistics', src:'Poster', url:'', desc:'Scientific foundation of psychological research.',concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
+  {id:5, year:'📌 Reference Posters', title:'Defense Mechanisms', src:'Poster', url:'', desc:'Psychological defenses relevant to criminal behavior analysis.',concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
+  {id:6, year:'📌 Reference Posters', title:'Human Development', src:'Poster', url:'', desc:'Lifespan development theories critical to forensic assessment.',concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
+  {id:7, year:'📌 Reference Posters', title:'Cognitive Biases', src:'Poster', url:'', desc:'How thinking errors affect judgment, perception, and testimony.',concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
+  {id:8, year:'📌 Reference Posters', title:'APA Ethics Code', src:'Poster', url:'https://www.apa.org/ethics/code', desc:'Professional ethical obligations guiding all psychologists.',concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
+  {id:9, year:'📌 Reference Posters', title:'Biology & Physiology', src:'Poster', url:'', desc:'Body systems that support psychological function.',concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
+  {id:10,year:'📌 Reference Posters', title:'Sociology & Social Theory', src:'Poster', url:'', desc:'Social forces shaping criminal behavior and justice.',concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
+  {id:11,year:'📌 Reference Posters', title:'Philosophy of Mind', src:'Poster', url:'https://openstax.org/details/books/introduction-philosophy', desc:'Consciousness, free will, and moral responsibility.',concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
+  {id:12,year:'📌 Reference Posters', title:'Pharmacology Basics', src:'Poster', url:'', desc:'Psychoactive substances and their behavioral effects.',concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
+  {id:13,year:'📌 Reference Posters', title:'Law & Psychology Interface', src:'Poster', url:'https://ssrn.com/en/index.cfm/psy/', desc:'How psychological science enters the legal system.',concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
+  {id:14,year:'📌 Reference Posters', title:'Communication & Testimony', src:'Poster', url:'', desc:'Expert witness skills and forensic report writing.',concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
+  {id:15,year:'📌 Reference Posters', title:'Academic Writing', src:'Poster', url:'https://socialsci.libretexts.org', desc:'Research paper and report writing standards for psychology.',concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
+  {id:16,year:'📌 Reference Posters', title:'Program Administration', src:'Poster', url:'', desc:'Clinical and forensic program management fundamentals.',concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
+
+// ── FRESHMAN YEAR ─────────────────────────────────────────────────────────────
+  {id:17,year:'🌱 Freshman',title:'Introduction to Psychology',src:'OpenStax',url:'https://openstax.org/details/books/psychology-2e',desc:'The gateway course. Brain, behavior, development, disorders, and DSM-5 overview. Foundation for everything forensic.',concepts:['Biological bases of behavior','States of consciousness','Learning theory','Memory and cognition','Psychological disorders overview','Social psychology basics']},
+  {id:18,year:'🌱 Freshman',title:'Introduction to Sociology',src:'OpenStax',url:'https://openstax.org/details/books/introduction-sociology-3e',desc:'Social systems, crime, inequality, and the forces that shape human behavior. Essential criminology foundation.',concepts:["Durkheim's social facts",'Social stratification','Deviance and crime theory','Race, class, and gender','Social institutions','Socialization and identity']},
+  {id:19,year:'🌱 Freshman',title:'Introduction to Statistics',src:'OpenStax',url:'https://openstax.org/details/books/introductory-statistics',desc:'The math language of psychology research. Every PhD defense uses statistics. Start here.',concepts:['Descriptive statistics','Probability foundations','Hypothesis testing','Confidence intervals','Chi-square and t-tests','Data visualization']},
+  {id:20,year:'🌱 Freshman',title:'College Algebra',src:'OpenStax',url:'https://openstax.org/details/books/college-algebra-2e',desc:'The mathematical scaffolding beneath statistics, research design, and quantitative reasoning.',concepts:['Linear equations and functions','Polynomial and rational functions','Exponential and logarithmic functions','Systems of equations','Sequences and series','Matrix basics']},
+  {id:21,year:'🌱 Freshman',title:'Introduction to Biology',src:'OpenStax',url:'https://openstax.org/details/books/concepts-biology',desc:'Cell biology, genetics, evolution, and body systems. Gateway to neuroscience and psychobiology.',concepts:['Cell structure and function','DNA, genes, and heredity','Evolution by natural selection','Nervous system basics','Hormones and endocrine system','Genetics and behavior']},
+  {id:22,year:'🌱 Freshman',title:'Introduction to Philosophy',src:'OpenStax',url:'https://openstax.org/details/books/introduction-philosophy',desc:'Free will, moral responsibility, and consciousness — the philosophical spine of forensic psychology.',concepts:['Logic and argumentation','Free will vs. determinism','Moral responsibility','Consciousness and mind','Ethics foundations','Epistemology: how we know what we know']},
+  {id:23,year:'🌱 Freshman',title:'U.S. History',src:'OpenStax',url:'https://openstax.org/details/books/us-history',desc:'The legal, social, and political context in which American criminal justice evolved. Essential background for mental health law.',concepts:['Constitutional foundations','Civil rights movements','Criminal justice history','Social reform movements','Federal vs. state law','Policy and legislation evolution']},
+  {id:24,year:'🌱 Freshman',title:'English Composition & Academic Writing',src:'LibreTexts',url:'https://human.libretexts.org/Bookshelves/Composition',desc:'APA papers, dissertation chapters, and expert witness reports all require excellent writing. This is where it begins.',concepts:['Thesis and argument development','Evidence and citation','APA formatting basics','Research paper structure','Revision strategies','Academic voice and tone']},
+  {id:25,year:'🌱 Freshman',title:'Introduction to Anthropology',src:'OpenStax',url:'https://openstax.org/details/books/introduction-anthropology',desc:'Human diversity, culture, and behavior across societies. Builds cultural competency essential for forensic practice.',concepts:['Four fields of anthropology','Cultural relativism','Human evolution','Language and communication','Social organization','Diversity and identity']},
+
+// ── SOPHOMORE YEAR ────────────────────────────────────────────────────────────
+  {id:26,year:'🌿 Sophomore',title:'Research Methods in Psychology',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Research_Methods_in_Psychology',desc:'The scientific method applied to human behavior. Required for every graduate program in the country.',concepts:['Experimental design','Correlational research','Survey methods','Ethical research standards','Reliability and validity','IRB and participant protection']},
+  {id:27,year:'🌿 Sophomore',title:'Lifespan Developmental Psychology',src:'OpenStax',url:'https://openstax.org/details/books/lifespan-development',desc:"Erikson, Piaget, Vygotsky, ACEs, adolescent brain — explains criminal behavior patterns across a person's entire life.",concepts:["Erikson's psychosocial stages","Piaget's cognitive development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain and risk-taking','Aging and neurological change']},
+  {id:28,year:'🌿 Sophomore',title:'Abnormal Psychology',src:'NOBA',url:'https://nobaproject.com/textbooks/introduction-to-psychology-the-full-noba-collection',desc:'The DSM-5 in clinical depth. Turns reference-poster knowledge into real understanding of diagnosis and treatment.',concepts:['Anxiety and mood disorders','Psychotic spectrum disorders','Personality disorders in depth','Trauma-related disorders','Neurodevelopmental disorders','Differential diagnosis basics']},
+  {id:29,year:'🌿 Sophomore',title:'Behavioral Neuroscience',src:'OpenStax',url:'https://openstax.org/details/books/introduction-behavioral-neuroscience',desc:'Brain-behavior relationships, neuroimaging, psychopathy neuroscience. The biological lens for all forensic work.',concepts:['Neuron structure and function','Nervous system organization','Sensation and perception','Stress and the brain','Sleep and biological rhythms','Psychopathology and the brain']},
+  {id:30,year:'🌿 Sophomore',title:'Anatomy & Physiology',src:'OpenStax',url:'https://openstax.org/details/books/anatomy-and-physiology-2e',desc:'Body systems, nervous system deep-dive, hormones, and pharmacology foundations required for advanced courses.',concepts:['Nervous system anatomy','Endocrine system and hormones','Cardiovascular system','Immune system basics','Sensory systems','Reproductive system basics']},
+  {id:31,year:'🌿 Sophomore',title:'Introduction to Criminal Justice',src:'LibreTexts',url:'https://crimj.libretexts.org/Bookshelves/Introduction_to_Criminal_Justice',desc:'The system Sloan will spend her career working inside. Courts, corrections, law enforcement, policy.',concepts:['History of criminal justice','Police and law enforcement','Court system and prosecution','Corrections and incarceration','Juvenile justice system','Criminal justice policy']},
+  {id:32,year:'🌿 Sophomore',title:'Social Psychology',src:'NOBA',url:'https://nobaproject.com/modules/social-psychology',desc:'Conformity, obedience, group dynamics, prejudice. The psychological forces operating in criminal and courtroom behavior.',concepts:['Attitude formation and change','Social influence and conformity','Obedience to authority (Milgram)','Group dynamics and groupthink','Prejudice and stereotyping','Prosocial behavior and altruism']},
+  {id:33,year:'🌿 Sophomore',title:'Introduction to Criminology',src:'LibreTexts',url:'https://crimj.libretexts.org/Bookshelves/Criminology',desc:'Why people commit crime. Strain theory, labeling theory, rational choice — the theoretical backbone of forensic practice.',concepts:['Classical and positivist criminology','Strain and anomie theories','Labeling and social reaction','Rational choice theory','Biological theories of crime','Feminist criminology']},
+
+// ── JUNIOR YEAR ───────────────────────────────────────────────────────────────
+  {id:34,year:'🌳 Junior',title:'Forensic Psychology: Introduction',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Forensic_Psychology',desc:'The first dedicated forensic course. Competency, criminal responsibility, risk assessment at survey level.',concepts:['History of forensic psychology','Competency to stand trial','Criminal responsibility assessment','Civil forensic applications','Juvenile forensic evaluation','Expert witness foundations']},
+  {id:35,year:'🌳 Junior',title:'Cognitive Psychology',src:'NOBA',url:'https://nobaproject.com/modules/cognitive-psychology',desc:'Memory, attention, decision-making, eyewitness reliability — directly applicable to court testimony and evidence evaluation.',concepts:['Memory encoding and retrieval','Eyewitness memory fallibility','Attention and perception','Executive function','Language and thought','Decision-making and judgment']},
+  {id:36,year:'🌳 Junior',title:'Personality Theories',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Personality_Psychology',desc:'Why people are who they are. The theoretical foundation for criminal profiling and offender assessment.',concepts:['Psychoanalytic theories','Trait theories (Big Five)','Humanistic psychology','Behavioral and social learning','Personality disorders','PCL-R and dark triad traits']},
+  {id:37,year:'🌳 Junior',title:'Psychopharmacology',src:'LibreTexts',url:'https://med.libretexts.org/Bookshelves/Pharmacology_and_Neuroscience',desc:'How substances alter psychology and behavior. Critical for substance disorder cases, medication compliance, and toxicology.',concepts:['Pharmacokinetics basics','CNS depressants and stimulants','Antipsychotic medications','Antidepressants and mood stabilizers','Substance use disorders','Drug-induced psychosis']},
+  {id:38,year:'🌳 Junior',title:'Advanced Statistics for Behavioral Sciences',src:'OpenStax',url:'https://openstax.org/details/books/introductory-statistics',desc:'ANOVA, regression, effect size — the quantitative skills required for graduate school admission and research.',concepts:['Analysis of Variance (ANOVA)','Multiple regression','Factor analysis','Non-parametric tests','Effect size and power','Statistical software (JASP/SPSS)']},
+  {id:39,year:'🌳 Junior',title:'Learning & Behavior',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Behavioral_Psychology',desc:'Classical and operant conditioning, behavioral modification. Foundation for correctional psychology interventions.',concepts:['Classical conditioning (Pavlov)','Operant conditioning (Skinner)','Reinforcement schedules','Observational learning','Behavioral modification','Token economies in corrections']},
+  {id:40,year:'🌳 Junior',title:'Law & Psychology: Advanced',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'Miranda rights, interrogation psychology, Daubert standards, expert witness admissibility. Free peer-reviewed papers on SSRN.',concepts:['Miranda rights and false confessions','Interrogation psychology','Daubert and Frye standards','Expert testimony admissibility','Jury psychology and decision-making','Trial consultant roles']},
+  {id:41,year:'🌳 Junior',title:'Multicultural Psychology',src:'OpenStax',url:'https://openstax.org/details/books/introduction-anthropology',desc:'Cultural competency in forensic practice. Intersectionality in the justice system. Required for ethical forensic work.',concepts:['Cultural humility and competence','Intersectionality of identities','Race and the justice system','Culturally valid assessment','Bias in psychological testing','Advocacy and social justice']},
+
+// ── SENIOR YEAR ───────────────────────────────────────────────────────────────
+  {id:42,year:'🎓 Senior',title:'Psychological Testing & Assessment',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Psychological_Testing_and_Assessment',desc:'Intelligence tests, personality inventories, projective tests, malingering detection. Foundation for forensic evaluations.',concepts:['Reliability and validity in testing','Intelligence testing (WAIS)','Personality inventories (MMPI-2-RF)','Neuropsychological screening','Malingering and response bias','Forensic report writing']},
+  {id:43,year:'🎓 Senior',title:'APA Ethics Code (Full Text)',src:'APA',url:'https://www.apa.org/ethics/code',desc:"APA's complete ethical code — free and required reading. Every forensic psychologist lives by this document.",concepts:['General principles (5 core)','Informed consent standards','Confidentiality and privilege','Multiple relationships','Assessment ethics','Forensic activities standards']},
+  {id:44,year:'🎓 Senior',title:'Advanced Psychopathology',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychiatry',desc:'DSM-5 in clinical depth, case conceptualization, differential diagnosis in forensic contexts. Open access journal.',concepts:['Complex differential diagnosis','Personality pathology in forensic settings','Psychosis and criminal behavior','Trauma and dissociation','Malingering vs. genuine disorder','Neurodevelopmental disorders in justice']},
+  {id:45,year:'🎓 Senior',title:'Psychopathology & Criminal Behavior',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'The bridge between clinical diagnosis and criminal behavior. Free working papers from leading researchers.',concepts:['Antisocial personality disorder','Psychopathy and recidivism','Mental illness and violence myth','Substance disorders and crime','Competency and criminal responsibility','Risk assessment instruments']},
+  {id:46,year:'🎓 Senior',title:'Research Design & Thesis Preparation',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Research_Methods_in_Psychology',desc:'How to design studies that become dissertation chapters. Research questions, IRB, methodology selection.',concepts:['Literature review methodology','Research question formulation','IRB application process','Qualitative vs. quantitative methods','Mixed methods design','Academic writing and APA 7th ed.']},
+  {id:47,year:'🎓 Senior',title:'Abnormal Psychology: Special Populations',src:'NOBA',url:'https://nobaproject.com/modules/disorders-of-childhood',desc:'Children, adolescents, elderly, and incarcerated populations in psychological assessment and treatment.',concepts:['Childhood and adolescent disorders','Geriatric psychopathology','Intellectual and developmental disabilities','Forensic assessment of special populations','Cultural considerations','Trauma in special populations']},
+
+// ── MASTER'S LEVEL ────────────────────────────────────────────────────────────
+  {id:48,year:"🔬 Master's",title:'Forensic Assessment & Evaluation',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'PCL-R, HCR-20, MMPI-2-RF, STATIC-99 in forensic contexts. Free peer-reviewed working papers.',concepts:['Competency to stand trial (CAST-MR)','Criminal responsibility (MSE)','PCL-R psychopathy assessment','Violence risk: HCR-20, VRAG','Sex offender risk: STATIC-99','Neuropsychological battery in forensics']},
+  {id:49,year:"🔬 Master's",title:'Advanced Psychopathology Graduate',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychiatry',desc:'Current clinical research on disorders seen in forensic populations. Open access, new papers published weekly.',concepts:['Severe mental illness in forensic settings','Personality disorders in offender populations','Trauma spectrum in justice-involved','Neurodevelopmental disorders and culpability','Substance use co-occurring disorders','Treatment-resistant conditions']},
+  {id:50,year:"🔬 Master's",title:'Risk Assessment & Violence Prediction',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'Actuarial vs. structured professional judgment. SVP evaluations. The science and limits of predicting danger.',concepts:['Historical-Clinical-Risk (HCR-20 V3)','Violence Risk Appraisal Guide (VRAG)','Static vs. dynamic risk factors','Sex offender risk instruments','Protective factors (SAPROF)','Base rates and decision-making']},
+  {id:51,year:"🔬 Master's",title:'Mental Health Law',src:'SSRN',url:'https://papers.ssrn.com/sol3/topten/topTenResults.cfm?groupingId=2659941&netorjrnl=jrnl',desc:'Case law, competency standards, civil commitment, NGRI. The legal scaffolding of forensic practice.',concepts:['Competency to stand trial: Dusky standard','NGRI: M\'Naghten and ALI tests','Civil commitment standards','Outpatient commitment laws','HIPAA and privileged communication','ADA and disability in court']},
+  {id:52,year:"🔬 Master's",title:'Juvenile Forensic Psychology',src:'Frontiers',url:'https://www.frontiersin.org/journals/child-and-adolescent-psychiatry',desc:'Adolescent brain science, juvenile justice system, developmental considerations in criminal responsibility.',concepts:['Adolescent brain immaturity (Roper v. Simmons)','Juvenile competency standards','Transfer to adult court assessment','Restorative justice for youth','Risk assessment for juveniles (YLS/CMI)','Trauma-informed juvenile justice']},
+  {id:53,year:"🔬 Master's",title:'Trauma & Crisis Intervention',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychology',desc:'PTSD, complex trauma, victim psychology, crisis evaluation. Open access research from Frontiers in Psychology.',concepts:['PTSD diagnostic criteria','Complex trauma and C-PTSD','Trauma-informed care principles','Crisis intervention models','Victim assessment and support','Secondary traumatic stress in practitioners']},
+  {id:54,year:"🔬 Master's",title:'Expert Witness Testimony & Report Writing',src:'APA',url:'https://www.apa.org/about/division/div41',desc:'How to write a report a judge will actually read. How to survive cross-examination. APA Division 41 guidelines.',concepts:['Forensic report structure and standards','Objectivity vs. advocacy','Direct examination techniques','Cross-examination preparation','Daubert challenges','Communicating science to laypersons']},
+  {id:55,year:"🔬 Master's",title:'Correctional Psychology',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychology',desc:'Treatment in prison settings, recidivism reduction, rehabilitation research. What actually works behind bars.',concepts:['Risk-Need-Responsivity model','Cognitive behavioral treatment (CBT)','Therapeutic communities','Reentry and recidivism','Special housing units (SHU) psychology','Correctional staff mental health']},
+  {id:56,year:"🔬 Master's",title:'Advanced Research Methods (Graduate)',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Research_Methods_in_Psychology',desc:'Multivariate analysis, structural equation modeling, meta-analysis. The quantitative tools of original research.',concepts:['Multiple regression and ANCOVA','Factor analysis','Structural equation modeling (SEM)','Meta-analysis methodology','Mixed methods integration','Grant proposal writing']},
+
+// ── DOCTORAL LEVEL ────────────────────────────────────────────────────────────
+  {id:57,year:'🏛️ Doctoral',title:'Dissertation Research Design',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Research_Methods_in_Psychology',desc:'Designing original studies that advance the field. Research questions, IRB, literature review, methodology.',concepts:['Forming an original research question','Systematic literature review','IRB and human subjects protection','Dissertation proposal structure','Methodology: quant vs. qual vs. mixed','Defending a research design']},
+  {id:58,year:'🏛️ Doctoral',title:'Advanced Quantitative Methods',src:'Tool',url:'https://jasp-stats.org',desc:'Bayesian statistics, multivariate analysis, JASP software (free). The actual computational tools of dissertation research.',concepts:['Bayesian vs. frequentist statistics','JASP: free SPSS alternative','Multilevel modeling','Longitudinal data analysis','Structural equation modeling','Open science and reproducibility']},
+  {id:59,year:'🏛️ Doctoral',title:'Neuropsychological Assessment',src:'Frontiers',url:'https://www.frontiersin.org/journals/human-neuroscience',desc:'Brain-behavior relationships in forensic populations. TBI and criminal responsibility. Open access journal.',concepts:['Neuropsychological battery selection','Traumatic brain injury assessment','Malingering detection (TOMM, VSVT)','TBI and criminal responsibility','Dementia and competency','Neuroimaging in legal proceedings']},
+  {id:60,year:'🏛️ Doctoral',title:'Police Psychology',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'Pre-employment evaluation, fitness for duty, officer-involved shootings, PTSD in law enforcement.',concepts:['Pre-employment psychological evaluation','Fitness for duty evaluation','Stress and PTSD in officers','Crisis negotiation psychology','Use of force decision-making','Organizational psychology in police']},
+  {id:61,year:'🏛️ Doctoral',title:'Forensic Seminar: Cutting-Edge Research',src:'SSRN',url:'https://psyarxiv.com',desc:'PsyArXiv preprints — where new forensic psychology research appears 12-18 months before journal publication.',concepts:['Current research in forensic assessment','Emerging risk instruments','Deception detection research','False confession research','Eyewitness reform research','AI and forensic psychology']},
+  {id:62,year:'🏛️ Doctoral',title:'Teaching Psychology at the University Level',src:'APA',url:'https://www.apa.org/about/division/div2',desc:'Pedagogy, course design, and academic career development for future forensic psychology professors.',concepts:['Course design and learning objectives','Evidence-based teaching methods','Student assessment strategies','Academic publishing and research','Academic job market','Mentoring and advising students']},
+  {id:63,year:'🏛️ Doctoral',title:'Consultation & Supervision',src:'APA',url:'https://www.apa.org/about/division/div41',desc:'Supervising trainees, consulting with attorneys and courts, organizational consultation in justice settings.',concepts:['Ethical supervision models','Consultation with legal professionals','Organizational consultation','Supervision documentation','Peer consultation and collegial review','Professional development and self-care']},
+
+// ── RESEARCH TOOLS ────────────────────────────────────────────────────────────
+  {id:64,year:'⚡ Research Tools',title:'PsyArXiv — Psychology Preprints',src:'Tool',url:'https://psyarxiv.com',desc:'Where forensic psychology research appears 12-18 months before peer-reviewed publication. The bleeding edge of the field. Free.',concepts:['Search "forensic psychology" for latest work','Filter by date to see what\'s newest','Download PDFs of any preprint free','Follow researchers in your area','Comment and engage with authors','Understand the research pipeline']},
+  {id:65,year:'⚡ Research Tools',title:'PubPsych — Free Research Database',src:'Tool',url:'https://www.pubpsych.eu',desc:'Large freely accessible psychological reference database — journal articles, books, research data, and test instruments. Filter by open access.',concepts:['Search all areas of psychology','Filter results to open access only','Access test instruments and measures','Find book chapters and reviews','Multi-language coverage','Links to full-text when available']},
+  {id:66,year:'⚡ Research Tools',title:'Frontiers in Psychology — Open Access Journal',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychology',desc:'Major open access journal — 28 sections including forensic, clinical, neuroscience, and quantitative methods. Set up email alerts.',concepts:['Set email alerts for "forensic psychology"','28 subsections covering all specialties','100% free to read all articles','Download PDFs of any article','Filter by article type (review vs. research)','Find recent meta-analyses in your area']},
+  {id:67,year:'⚡ Research Tools',title:'Google Scholar — Smart Search Setup',src:'Tool',url:'https://scholar.google.com',desc:'Set up weekly email alerts for "forensic psychology" and "forensic assessment." Delivers new papers directly to your inbox.',concepts:['Create alerts for key search terms','Search "cite:" to find all papers citing one','Use "since 2023" to find recent work','Find free PDF versions of any paper','Build your own library in My Library','Follow top researchers in forensics']},
+  {id:68,year:'⚡ Research Tools',title:'SSRN — Psychology Working Papers',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'Social Science Research Network: law professors and forensic psychologists post free papers before formal publication.',concepts:['Browse forensic psychology section','Download working papers for free','Law-psychology interface papers','Pre-publication research access','Author profiles and contact info','Legal scholarship on mental health law']},
+  {id:69,year:'⚡ Research Tools',title:'NOBA Project — Free Psychology Modules',src:'NOBA',url:'https://nobaproject.com',desc:'Peer-reviewed, modular psychology textbook written by world-class professors. Fills every gap OpenStax misses. Completely free.',concepts:['Modular: pick any topic you need','Written by leading university professors','Companion to textbook learning','Covers clinical, social, developmental','Downloadable PDFs of each module','Used in 500+ university courses']},
+  {id:70,year:'⚡ Research Tools',title:'JASP — Free Statistical Software',src:'Tool',url:'https://jasp-stats.org',desc:'Free, open-source statistics software that rivals SPSS. The tool forensic psychology researchers actually use. Learn it now.',concepts:['Download free for Mac and PC','Bayesian and frequentist analyses','Built-in APA-format output','Factor analysis and SEM','ANOVA, regression, t-tests','Learning resources and tutorials built in']},
+  {id:71,year:'⚡ Research Tools',title:'Zotero — Free Citation Manager',src:'Tool',url:'https://www.zotero.org',desc:'Captures articles from any database and organizes them into a searchable personal library. Indispensable for dissertation research.',concepts:['Browser extension captures papers instantly','Auto-generates APA citations','Organize into folders by topic','Syncs across all your devices','Group libraries for collaboration','Integrates with Word for bibliography']},
+  {id:72,year:'⚡ Research Tools',title:'APA Division 41 — Psychology & Law',src:'APA',url:'https://ap-ls.org',desc:'American Psychology-Law Society: free guidelines, ethical standards, and professional resources for practicing forensic psychologists.',concepts:['Free access to AP-LS newsletters','Graduate student resources and awards','Fellowship and grant opportunities','Annual conference and networking','Forensic specialty guidelines (free PDF)','Early career psychologist programs']},
+  {id:73,year:'⚡ Research Tools',title:'LibreTexts Psychology Collection',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology',desc:'Over 100 free, openly licensed psychology textbooks covering every subfield from intro to advanced graduate level.',concepts:['Browse all psychology textbooks free','Download any book as PDF','Search across all books simultaneously','Annotation tools built in','Instructor ancillaries available','Covers all years freshman to doctoral']},
+  {id:74,year:'⚡ Research Tools',title:'OpenStax Full Library',src:'OpenStax',url:'https://openstax.org/subjects',desc:'50+ peer-reviewed free college textbooks from Rice University. The gold standard of open educational resources.',concepts:['Psychology 2e and Introductory Psych','Sociology, Statistics, Anatomy & Physiology','Lifespan Development (2024 edition)','Behavioral Neuroscience (new)','Download PDF, read online, or order print','Instructor resources: slides and test banks']},
+];
+
+// YEAR level styling helpers
+const YEAR_BADGE = {
+  '📌 Reference Posters': 'badge-teal',
+  '🌱 Freshman':          'badge-green',
+  '🌿 Sophomore':         'badge-green',
+  '🌳 Junior':            'badge-teal',
+  '🎓 Senior':            'badge-gold',
+  "🔬 Master's":          'badge-blue',
+  '🏛️ Doctoral':          'badge-purple',
+  '⚡ Research Tools':    'badge-gold',
+};
+
+
+</script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef, useCallback } = React;
 const { useState, useEffect, useRef, useCallback } = React;
 
 // ── SUPABASE CLIENT (lazy initialized) ──────────────────────────────────────
@@ -451,7 +586,7 @@ function Sidebar({ page, onNav, user, onSignOut }) {
 
 // ── HOME MODULE ────────────────────────────────────────────────────────────────
 function HomeModule({ onNav, user }) {
-  const [stats, setStats] = useState({docs:0, schools:0, achievements:0, sessions:0, libComplete:0, libInProgress:0});
+  const [stats, setStats] = useState({docs:0, schools:0, achievements:0, sessions:0});
   const graduation = new Date('2026-05-15');
   const days = Math.max(0, Math.ceil((graduation - new Date())/(1000*60*60*24)));
 
@@ -464,14 +599,8 @@ function HomeModule({ onNav, user }) {
       sb.from('college_applications').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('achievements').select('id',{count:'exact'}).eq('user_id',uid),
       sb.from('coach_sessions').select('id',{count:'exact'}).eq('user_id',uid),
-      sb.from('library_progress').select('status').eq('user_id',uid),
-    ]).then(([d,c,a,s,lp])=>{
-      const prog = lp.data||[];
-      setStats({
-        docs:d.count||0, schools:c.count||0, achievements:a.count||0, sessions:s.count||0,
-        libComplete: prog.filter(p=>p.status==='complete').length,
-        libInProgress: prog.filter(p=>p.status==='in_progress').length,
-      });
+    ]).then(([d,c,a,s])=>{
+      setStats({docs:d.count||0, schools:c.count||0, achievements:a.count||0, sessions:s.count||0});
     }).catch(()=>{});
   },[user]);
 
@@ -487,8 +616,6 @@ function HomeModule({ onNav, user }) {
           <div className="stat-card"><span className="stat-num">{stats.schools}</span><span className="stat-lbl">Schools Tracked</span></div>
           <div className="stat-card"><span className="stat-num">{stats.achievements}</span><span className="stat-lbl">Achievements Logged</span></div>
           <div className="stat-card" style={{borderTopColor:'var(--teal)'}}><span className="stat-num">{stats.sessions}</span><span className="stat-lbl">Coach Sessions Saved</span></div>
-          <div className="stat-card" style={{borderTopColor:'#2a7a4a'}}><span className="stat-num">{stats.libComplete}</span><span className="stat-lbl">Library Complete</span></div>
-          <div className="stat-card" style={{borderTopColor:'#f5c842'}}><span className="stat-num">{stats.libInProgress}</span><span className="stat-lbl">Library In Progress</span></div>
           <div className="stat-card" style={{borderTopColor:'var(--gold)'}}><span className="stat-num">{days}</span><span className="stat-lbl">Days to Graduation</span></div>
         </div>
 
@@ -517,225 +644,21 @@ function HomeModule({ onNav, user }) {
 }
 
 // ── STUDY LIBRARY ─────────────────────────────────────────────────────────────
-// SOURCE CONFIG
-const SRC = {
-  OpenStax:   {label:'OpenStax',       badge:'badge-teal',  color:'var(--teal)'},
-  LibreTexts: {label:'LibreTexts',     badge:'badge-blue',  color:'var(--blue)'},
-  NOBA:       {label:'NOBA Project',   badge:'badge-purple',color:'var(--purple)'},
-  Frontiers:  {label:'Frontiers OA',   badge:'badge-green', color:'var(--green)'},
-  SSRN:       {label:'SSRN Free',      badge:'badge-ink',   color:'var(--ink)'},
-  APA:        {label:'APA Official',   badge:'badge-gold',  color:'var(--gold)'},
-  Tool:       {label:'Free Tool',      badge:'badge-gold',  color:'#c8922a'},
-  Poster:     {label:'SloanMelia Ref', badge:'badge-teal',  color:'var(--teal)'},
-};
-
-// YEAR LEVELS
-const YEARS = ['All','📌 Reference Posters','🌱 Freshman','🌿 Sophomore','🌳 Junior','🎓 Senior','🔬 Master\'s','🏛️ Doctoral','⚡ Research Tools'];
-const YEAR_COLOR = {
-  '📌 Reference Posters':'var(--teal)',
-  '🌱 Freshman':         'var(--green)',
-  '🌿 Sophomore':        '#2a7a4a',
-  '🌳 Junior':           'var(--teal)',
-  '🎓 Senior':           'var(--gold)',
-  '🔬 Master\'s':        'var(--blue)',
-  '🏛️ Doctoral':         'var(--purple)',
-  '⚡ Research Tools':   '#c8922a',
-};
-
-const STUDY_TOPICS = [
-// ── REFERENCE POSTERS (16 built-in SloanMelia cards) ──────────────────────────
-  {id:1, year:'📌 Reference Posters', title:'Brain & Neuroscience', src:'Poster', url:'', desc:'The biological foundation of behavior, emotion, and criminal mind.',concepts:['Limbic system and emotional regulation','Prefrontal cortex and impulse control','Neuroplasticity and trauma','Brain imaging in forensic contexts','Psychopathy and brain differences','Neurotransmitters and behavior']},
-  {id:2, year:'📌 Reference Posters', title:'DSM-5 Diagnostic Reference', src:'Poster', url:'', desc:'Mental disorder classification system used in forensic evaluations.',concepts:['Multiaxial assessment replaced by specifiers','Personality disorder clusters A/B/C','Psychotic disorder spectrum','Trauma and stressor-related disorders','Substance use disorder criteria','Malingering vs genuine disorder']},
-  {id:3, year:'📌 Reference Posters', title:'Theorists Timeline', src:'Poster', url:'', desc:'From Freud to modern forensic psychology pioneers.',concepts:['Freud: unconscious and defense mechanisms','Skinner: behavioral reinforcement','Bandura: social learning theory','Kohlberg: moral development stages','Hare: psychopathy assessment (PCL-R)','Seligman: learned helplessness']},
-  {id:4, year:'📌 Reference Posters', title:'Research Methods & Statistics', src:'Poster', url:'', desc:'Scientific foundation of psychological research.',concepts:['Experimental vs correlational design','Validity: internal and external','Reliability: test-retest, inter-rater','Statistical significance (p-value)','Effect size and practical significance','Ethical research principles (APA)']},
-  {id:5, year:'📌 Reference Posters', title:'Defense Mechanisms', src:'Poster', url:'', desc:'Psychological defenses relevant to criminal behavior analysis.',concepts:['Repression: unconscious blocking','Rationalization: justifying actions','Projection: attributing to others','Denial: refusing to acknowledge','Displacement: redirecting emotion','Sublimation: channeling productively']},
-  {id:6, year:'📌 Reference Posters', title:'Human Development', src:'Poster', url:'', desc:'Lifespan development theories critical to forensic assessment.',concepts:["Erikson's 8 psychosocial stages","Piaget's cognitive stages","Vygotsky's zone of proximal development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain development']},
-  {id:7, year:'📌 Reference Posters', title:'Cognitive Biases', src:'Poster', url:'', desc:'How thinking errors affect judgment, perception, and testimony.',concepts:['Confirmation bias in investigation','Hindsight bias in evaluation','Availability heuristic','Anchoring effect in assessment','Eyewitness memory fallibility','Implicit bias in the justice system']},
-  {id:8, year:'📌 Reference Posters', title:'APA Ethics Code', src:'Poster', url:'https://www.apa.org/ethics/code', desc:'Professional ethical obligations guiding all psychologists.',concepts:['Informed consent requirements','Confidentiality and its limits','Dual relationship avoidance','Competence boundaries','Accurate test reporting','Mandatory reporting obligations']},
-  {id:9, year:'📌 Reference Posters', title:'Biology & Physiology', src:'Poster', url:'', desc:'Body systems that support psychological function.',concepts:['Autonomic nervous system responses','HPA axis and stress response','Sleep and mental health connection','Nutrition and brain function','Genetic influences on behavior','Immune-brain interactions']},
-  {id:10,year:'📌 Reference Posters', title:'Sociology & Social Theory', src:'Poster', url:'', desc:'Social forces shaping criminal behavior and justice.',concepts:["Durkheim's anomie theory","Merton's strain theory",'Labeling theory and stigma','Social control theory','Intersectionality in justice','Recidivism and social factors']},
-  {id:11,year:'📌 Reference Posters', title:'Philosophy of Mind', src:'Poster', url:'https://openstax.org/details/books/introduction-philosophy', desc:'Consciousness, free will, and moral responsibility.',concepts:['Determinism vs free will debate','Consciousness and self-awareness','Personal identity over time','Moral responsibility standards','The mind-body problem','Competency and culpability standards']},
-  {id:12,year:'📌 Reference Posters', title:'Pharmacology Basics', src:'Poster', url:'', desc:'Psychoactive substances and their behavioral effects.',concepts:['CNS stimulants and depressants','Antipsychotic mechanisms','Antidepressant classes (SSRIs etc.)','Substance dependence physiology','Drug-induced psychosis','Medication compliance in forensic settings']},
-  {id:13,year:'📌 Reference Posters', title:'Law & Psychology Interface', src:'Poster', url:'https://ssrn.com/en/index.cfm/psy/', desc:'How psychological science enters the legal system.',concepts:['Competency to stand trial standards','Criminal responsibility (mens rea)','Insanity defense standards','Risk assessment instruments','Expert witness role and limits','Miranda rights and interrogation psychology']},
-  {id:14,year:'📌 Reference Posters', title:'Communication & Testimony', src:'Poster', url:'', desc:'Expert witness skills and forensic report writing.',concepts:['Report structure and objectivity','Cross-examination preparation','Translating jargon for juries','Daubert/Frye admissibility standards','Ethical boundaries in testimony','Non-verbal communication awareness']},
-  {id:15,year:'📌 Reference Posters', title:'Academic Writing', src:'Poster', url:'https://socialsci.libretexts.org', desc:'Research paper and report writing standards for psychology.',concepts:['APA 7th edition formatting','Thesis statement construction','Literature review methodology','Citation and plagiarism rules','Abstract writing','Statistical results reporting']},
-  {id:16,year:'📌 Reference Posters', title:'Program Administration', src:'Poster', url:'', desc:'Clinical and forensic program management fundamentals.',concepts:['HIPAA and confidentiality rules','Supervision and consultation ethics','Case documentation standards','Crisis intervention protocols','Team communication frameworks','Forensic unit security protocols']},
-
-// ── FRESHMAN YEAR ─────────────────────────────────────────────────────────────
-  {id:17,year:'🌱 Freshman',title:'Introduction to Psychology',src:'OpenStax',url:'https://openstax.org/details/books/psychology-2e',desc:'The gateway course. Brain, behavior, development, disorders, and DSM-5 overview. Foundation for everything forensic.',concepts:['Biological bases of behavior','States of consciousness','Learning theory','Memory and cognition','Psychological disorders overview','Social psychology basics']},
-  {id:18,year:'🌱 Freshman',title:'Introduction to Sociology',src:'OpenStax',url:'https://openstax.org/details/books/introduction-sociology-3e',desc:'Social systems, crime, inequality, and the forces that shape human behavior. Essential criminology foundation.',concepts:["Durkheim's social facts",'Social stratification','Deviance and crime theory','Race, class, and gender','Social institutions','Socialization and identity']},
-  {id:19,year:'🌱 Freshman',title:'Introduction to Statistics',src:'OpenStax',url:'https://openstax.org/details/books/introductory-statistics',desc:'The math language of psychology research. Every PhD defense uses statistics. Start here.',concepts:['Descriptive statistics','Probability foundations','Hypothesis testing','Confidence intervals','Chi-square and t-tests','Data visualization']},
-  {id:20,year:'🌱 Freshman',title:'College Algebra',src:'OpenStax',url:'https://openstax.org/details/books/college-algebra-2e',desc:'The mathematical scaffolding beneath statistics, research design, and quantitative reasoning.',concepts:['Linear equations and functions','Polynomial and rational functions','Exponential and logarithmic functions','Systems of equations','Sequences and series','Matrix basics']},
-  {id:21,year:'🌱 Freshman',title:'Introduction to Biology',src:'OpenStax',url:'https://openstax.org/details/books/concepts-biology',desc:'Cell biology, genetics, evolution, and body systems. Gateway to neuroscience and psychobiology.',concepts:['Cell structure and function','DNA, genes, and heredity','Evolution by natural selection','Nervous system basics','Hormones and endocrine system','Genetics and behavior']},
-  {id:22,year:'🌱 Freshman',title:'Introduction to Philosophy',src:'OpenStax',url:'https://openstax.org/details/books/introduction-philosophy',desc:'Free will, moral responsibility, and consciousness — the philosophical spine of forensic psychology.',concepts:['Logic and argumentation','Free will vs. determinism','Moral responsibility','Consciousness and mind','Ethics foundations','Epistemology: how we know what we know']},
-  {id:23,year:'🌱 Freshman',title:'U.S. History',src:'OpenStax',url:'https://openstax.org/details/books/us-history',desc:'The legal, social, and political context in which American criminal justice evolved. Essential background for mental health law.',concepts:['Constitutional foundations','Civil rights movements','Criminal justice history','Social reform movements','Federal vs. state law','Policy and legislation evolution']},
-  {id:24,year:'🌱 Freshman',title:'English Composition & Academic Writing',src:'LibreTexts',url:'https://human.libretexts.org/Bookshelves/Composition',desc:'APA papers, dissertation chapters, and expert witness reports all require excellent writing. This is where it begins.',concepts:['Thesis and argument development','Evidence and citation','APA formatting basics','Research paper structure','Revision strategies','Academic voice and tone']},
-  {id:25,year:'🌱 Freshman',title:'Introduction to Anthropology',src:'OpenStax',url:'https://openstax.org/details/books/introduction-anthropology',desc:'Human diversity, culture, and behavior across societies. Builds cultural competency essential for forensic practice.',concepts:['Four fields of anthropology','Cultural relativism','Human evolution','Language and communication','Social organization','Diversity and identity']},
-
-// ── SOPHOMORE YEAR ────────────────────────────────────────────────────────────
-  {id:26,year:'🌿 Sophomore',title:'Research Methods in Psychology',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Research_Methods_in_Psychology',desc:'The scientific method applied to human behavior. Required for every graduate program in the country.',concepts:['Experimental design','Correlational research','Survey methods','Ethical research standards','Reliability and validity','IRB and participant protection']},
-  {id:27,year:'🌿 Sophomore',title:'Lifespan Developmental Psychology',src:'OpenStax',url:'https://openstax.org/details/books/lifespan-development',desc:"Erikson, Piaget, Vygotsky, ACEs, adolescent brain — explains criminal behavior patterns across a person's entire life.",concepts:["Erikson's psychosocial stages","Piaget's cognitive development",'Attachment theory (Bowlby)','Adverse childhood experiences (ACEs)','Adolescent brain and risk-taking','Aging and neurological change']},
-  {id:28,year:'🌿 Sophomore',title:'Abnormal Psychology',src:'NOBA',url:'https://nobaproject.com/textbooks/introduction-to-psychology-the-full-noba-collection',desc:'The DSM-5 in clinical depth. Turns reference-poster knowledge into real understanding of diagnosis and treatment.',concepts:['Anxiety and mood disorders','Psychotic spectrum disorders','Personality disorders in depth','Trauma-related disorders','Neurodevelopmental disorders','Differential diagnosis basics']},
-  {id:29,year:'🌿 Sophomore',title:'Behavioral Neuroscience',src:'OpenStax',url:'https://openstax.org/details/books/introduction-behavioral-neuroscience',desc:'Brain-behavior relationships, neuroimaging, psychopathy neuroscience. The biological lens for all forensic work.',concepts:['Neuron structure and function','Nervous system organization','Sensation and perception','Stress and the brain','Sleep and biological rhythms','Psychopathology and the brain']},
-  {id:30,year:'🌿 Sophomore',title:'Anatomy & Physiology',src:'OpenStax',url:'https://openstax.org/details/books/anatomy-and-physiology-2e',desc:'Body systems, nervous system deep-dive, hormones, and pharmacology foundations required for advanced courses.',concepts:['Nervous system anatomy','Endocrine system and hormones','Cardiovascular system','Immune system basics','Sensory systems','Reproductive system basics']},
-  {id:31,year:'🌿 Sophomore',title:'Introduction to Criminal Justice',src:'LibreTexts',url:'https://crimj.libretexts.org/Bookshelves/Introduction_to_Criminal_Justice',desc:'The system Sloan will spend her career working inside. Courts, corrections, law enforcement, policy.',concepts:['History of criminal justice','Police and law enforcement','Court system and prosecution','Corrections and incarceration','Juvenile justice system','Criminal justice policy']},
-  {id:32,year:'🌿 Sophomore',title:'Social Psychology',src:'NOBA',url:'https://nobaproject.com/modules/social-psychology',desc:'Conformity, obedience, group dynamics, prejudice. The psychological forces operating in criminal and courtroom behavior.',concepts:['Attitude formation and change','Social influence and conformity','Obedience to authority (Milgram)','Group dynamics and groupthink','Prejudice and stereotyping','Prosocial behavior and altruism']},
-  {id:33,year:'🌿 Sophomore',title:'Introduction to Criminology',src:'LibreTexts',url:'https://crimj.libretexts.org/Bookshelves/Criminology',desc:'Why people commit crime. Strain theory, labeling theory, rational choice — the theoretical backbone of forensic practice.',concepts:['Classical and positivist criminology','Strain and anomie theories','Labeling and social reaction','Rational choice theory','Biological theories of crime','Feminist criminology']},
-
-// ── JUNIOR YEAR ───────────────────────────────────────────────────────────────
-  {id:34,year:'🌳 Junior',title:'Forensic Psychology: Introduction',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Forensic_Psychology',desc:'The first dedicated forensic course. Competency, criminal responsibility, risk assessment at survey level.',concepts:['History of forensic psychology','Competency to stand trial','Criminal responsibility assessment','Civil forensic applications','Juvenile forensic evaluation','Expert witness foundations']},
-  {id:35,year:'🌳 Junior',title:'Cognitive Psychology',src:'NOBA',url:'https://nobaproject.com/modules/cognitive-psychology',desc:'Memory, attention, decision-making, eyewitness reliability — directly applicable to court testimony and evidence evaluation.',concepts:['Memory encoding and retrieval','Eyewitness memory fallibility','Attention and perception','Executive function','Language and thought','Decision-making and judgment']},
-  {id:36,year:'🌳 Junior',title:'Personality Theories',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Personality_Psychology',desc:'Why people are who they are. The theoretical foundation for criminal profiling and offender assessment.',concepts:['Psychoanalytic theories','Trait theories (Big Five)','Humanistic psychology','Behavioral and social learning','Personality disorders','PCL-R and dark triad traits']},
-  {id:37,year:'🌳 Junior',title:'Psychopharmacology',src:'LibreTexts',url:'https://med.libretexts.org/Bookshelves/Pharmacology_and_Neuroscience',desc:'How substances alter psychology and behavior. Critical for substance disorder cases, medication compliance, and toxicology.',concepts:['Pharmacokinetics basics','CNS depressants and stimulants','Antipsychotic medications','Antidepressants and mood stabilizers','Substance use disorders','Drug-induced psychosis']},
-  {id:38,year:'🌳 Junior',title:'Advanced Statistics for Behavioral Sciences',src:'OpenStax',url:'https://openstax.org/details/books/introductory-statistics',desc:'ANOVA, regression, effect size — the quantitative skills required for graduate school admission and research.',concepts:['Analysis of Variance (ANOVA)','Multiple regression','Factor analysis','Non-parametric tests','Effect size and power','Statistical software (JASP/SPSS)']},
-  {id:39,year:'🌳 Junior',title:'Learning & Behavior',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Behavioral_Psychology',desc:'Classical and operant conditioning, behavioral modification. Foundation for correctional psychology interventions.',concepts:['Classical conditioning (Pavlov)','Operant conditioning (Skinner)','Reinforcement schedules','Observational learning','Behavioral modification','Token economies in corrections']},
-  {id:40,year:'🌳 Junior',title:'Law & Psychology: Advanced',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'Miranda rights, interrogation psychology, Daubert standards, expert witness admissibility. Free peer-reviewed papers on SSRN.',concepts:['Miranda rights and false confessions','Interrogation psychology','Daubert and Frye standards','Expert testimony admissibility','Jury psychology and decision-making','Trial consultant roles']},
-  {id:41,year:'🌳 Junior',title:'Multicultural Psychology',src:'OpenStax',url:'https://openstax.org/details/books/introduction-anthropology',desc:'Cultural competency in forensic practice. Intersectionality in the justice system. Required for ethical forensic work.',concepts:['Cultural humility and competence','Intersectionality of identities','Race and the justice system','Culturally valid assessment','Bias in psychological testing','Advocacy and social justice']},
-
-// ── SENIOR YEAR ───────────────────────────────────────────────────────────────
-  {id:42,year:'🎓 Senior',title:'Psychological Testing & Assessment',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Psychological_Testing_and_Assessment',desc:'Intelligence tests, personality inventories, projective tests, malingering detection. Foundation for forensic evaluations.',concepts:['Reliability and validity in testing','Intelligence testing (WAIS)','Personality inventories (MMPI-2-RF)','Neuropsychological screening','Malingering and response bias','Forensic report writing']},
-  {id:43,year:'🎓 Senior',title:'APA Ethics Code (Full Text)',src:'APA',url:'https://www.apa.org/ethics/code',desc:"APA's complete ethical code — free and required reading. Every forensic psychologist lives by this document.",concepts:['General principles (5 core)','Informed consent standards','Confidentiality and privilege','Multiple relationships','Assessment ethics','Forensic activities standards']},
-  {id:44,year:'🎓 Senior',title:'Advanced Psychopathology',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychiatry',desc:'DSM-5 in clinical depth, case conceptualization, differential diagnosis in forensic contexts. Open access journal.',concepts:['Complex differential diagnosis','Personality pathology in forensic settings','Psychosis and criminal behavior','Trauma and dissociation','Malingering vs. genuine disorder','Neurodevelopmental disorders in justice']},
-  {id:45,year:'🎓 Senior',title:'Psychopathology & Criminal Behavior',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'The bridge between clinical diagnosis and criminal behavior. Free working papers from leading researchers.',concepts:['Antisocial personality disorder','Psychopathy and recidivism','Mental illness and violence myth','Substance disorders and crime','Competency and criminal responsibility','Risk assessment instruments']},
-  {id:46,year:'🎓 Senior',title:'Research Design & Thesis Preparation',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Research_Methods_in_Psychology',desc:'How to design studies that become dissertation chapters. Research questions, IRB, methodology selection.',concepts:['Literature review methodology','Research question formulation','IRB application process','Qualitative vs. quantitative methods','Mixed methods design','Academic writing and APA 7th ed.']},
-  {id:47,year:'🎓 Senior',title:'Abnormal Psychology: Special Populations',src:'NOBA',url:'https://nobaproject.com/modules/disorders-of-childhood',desc:'Children, adolescents, elderly, and incarcerated populations in psychological assessment and treatment.',concepts:['Childhood and adolescent disorders','Geriatric psychopathology','Intellectual and developmental disabilities','Forensic assessment of special populations','Cultural considerations','Trauma in special populations']},
-
-// ── MASTER'S LEVEL ────────────────────────────────────────────────────────────
-  {id:48,year:"🔬 Master's",title:'Forensic Assessment & Evaluation',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'PCL-R, HCR-20, MMPI-2-RF, STATIC-99 in forensic contexts. Free peer-reviewed working papers.',concepts:['Competency to stand trial (CAST-MR)','Criminal responsibility (MSE)','PCL-R psychopathy assessment','Violence risk: HCR-20, VRAG','Sex offender risk: STATIC-99','Neuropsychological battery in forensics']},
-  {id:49,year:"🔬 Master's",title:'Advanced Psychopathology Graduate',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychiatry',desc:'Current clinical research on disorders seen in forensic populations. Open access, new papers published weekly.',concepts:['Severe mental illness in forensic settings','Personality disorders in offender populations','Trauma spectrum in justice-involved','Neurodevelopmental disorders and culpability','Substance use co-occurring disorders','Treatment-resistant conditions']},
-  {id:50,year:"🔬 Master's",title:'Risk Assessment & Violence Prediction',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'Actuarial vs. structured professional judgment. SVP evaluations. The science and limits of predicting danger.',concepts:['Historical-Clinical-Risk (HCR-20 V3)','Violence Risk Appraisal Guide (VRAG)','Static vs. dynamic risk factors','Sex offender risk instruments','Protective factors (SAPROF)','Base rates and decision-making']},
-  {id:51,year:"🔬 Master's",title:'Mental Health Law',src:'SSRN',url:'https://papers.ssrn.com/sol3/topten/topTenResults.cfm?groupingId=2659941&netorjrnl=jrnl',desc:'Case law, competency standards, civil commitment, NGRI. The legal scaffolding of forensic practice.',concepts:['Competency to stand trial: Dusky standard','NGRI: M\'Naghten and ALI tests','Civil commitment standards','Outpatient commitment laws','HIPAA and privileged communication','ADA and disability in court']},
-  {id:52,year:"🔬 Master's",title:'Juvenile Forensic Psychology',src:'Frontiers',url:'https://www.frontiersin.org/journals/child-and-adolescent-psychiatry',desc:'Adolescent brain science, juvenile justice system, developmental considerations in criminal responsibility.',concepts:['Adolescent brain immaturity (Roper v. Simmons)','Juvenile competency standards','Transfer to adult court assessment','Restorative justice for youth','Risk assessment for juveniles (YLS/CMI)','Trauma-informed juvenile justice']},
-  {id:53,year:"🔬 Master's",title:'Trauma & Crisis Intervention',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychology',desc:'PTSD, complex trauma, victim psychology, crisis evaluation. Open access research from Frontiers in Psychology.',concepts:['PTSD diagnostic criteria','Complex trauma and C-PTSD','Trauma-informed care principles','Crisis intervention models','Victim assessment and support','Secondary traumatic stress in practitioners']},
-  {id:54,year:"🔬 Master's",title:'Expert Witness Testimony & Report Writing',src:'APA',url:'https://www.apa.org/about/division/div41',desc:'How to write a report a judge will actually read. How to survive cross-examination. APA Division 41 guidelines.',concepts:['Forensic report structure and standards','Objectivity vs. advocacy','Direct examination techniques','Cross-examination preparation','Daubert challenges','Communicating science to laypersons']},
-  {id:55,year:"🔬 Master's",title:'Correctional Psychology',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychology',desc:'Treatment in prison settings, recidivism reduction, rehabilitation research. What actually works behind bars.',concepts:['Risk-Need-Responsivity model','Cognitive behavioral treatment (CBT)','Therapeutic communities','Reentry and recidivism','Special housing units (SHU) psychology','Correctional staff mental health']},
-  {id:56,year:"🔬 Master's",title:'Advanced Research Methods (Graduate)',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Research_Methods_in_Psychology',desc:'Multivariate analysis, structural equation modeling, meta-analysis. The quantitative tools of original research.',concepts:['Multiple regression and ANCOVA','Factor analysis','Structural equation modeling (SEM)','Meta-analysis methodology','Mixed methods integration','Grant proposal writing']},
-
-// ── DOCTORAL LEVEL ────────────────────────────────────────────────────────────
-  {id:57,year:'🏛️ Doctoral',title:'Dissertation Research Design',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology/Research_Methods_in_Psychology',desc:'Designing original studies that advance the field. Research questions, IRB, literature review, methodology.',concepts:['Forming an original research question','Systematic literature review','IRB and human subjects protection','Dissertation proposal structure','Methodology: quant vs. qual vs. mixed','Defending a research design']},
-  {id:58,year:'🏛️ Doctoral',title:'Advanced Quantitative Methods',src:'Tool',url:'https://jasp-stats.org',desc:'Bayesian statistics, multivariate analysis, JASP software (free). The actual computational tools of dissertation research.',concepts:['Bayesian vs. frequentist statistics','JASP: free SPSS alternative','Multilevel modeling','Longitudinal data analysis','Structural equation modeling','Open science and reproducibility']},
-  {id:59,year:'🏛️ Doctoral',title:'Neuropsychological Assessment',src:'Frontiers',url:'https://www.frontiersin.org/journals/human-neuroscience',desc:'Brain-behavior relationships in forensic populations. TBI and criminal responsibility. Open access journal.',concepts:['Neuropsychological battery selection','Traumatic brain injury assessment','Malingering detection (TOMM, VSVT)','TBI and criminal responsibility','Dementia and competency','Neuroimaging in legal proceedings']},
-  {id:60,year:'🏛️ Doctoral',title:'Police Psychology',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'Pre-employment evaluation, fitness for duty, officer-involved shootings, PTSD in law enforcement.',concepts:['Pre-employment psychological evaluation','Fitness for duty evaluation','Stress and PTSD in officers','Crisis negotiation psychology','Use of force decision-making','Organizational psychology in police']},
-  {id:61,year:'🏛️ Doctoral',title:'Forensic Seminar: Cutting-Edge Research',src:'SSRN',url:'https://psyarxiv.com',desc:'PsyArXiv preprints — where new forensic psychology research appears 12-18 months before journal publication.',concepts:['Current research in forensic assessment','Emerging risk instruments','Deception detection research','False confession research','Eyewitness reform research','AI and forensic psychology']},
-  {id:62,year:'🏛️ Doctoral',title:'Teaching Psychology at the University Level',src:'APA',url:'https://www.apa.org/about/division/div2',desc:'Pedagogy, course design, and academic career development for future forensic psychology professors.',concepts:['Course design and learning objectives','Evidence-based teaching methods','Student assessment strategies','Academic publishing and research','Academic job market','Mentoring and advising students']},
-  {id:63,year:'🏛️ Doctoral',title:'Consultation & Supervision',src:'APA',url:'https://www.apa.org/about/division/div41',desc:'Supervising trainees, consulting with attorneys and courts, organizational consultation in justice settings.',concepts:['Ethical supervision models','Consultation with legal professionals','Organizational consultation','Supervision documentation','Peer consultation and collegial review','Professional development and self-care']},
-
-// ── RESEARCH TOOLS ────────────────────────────────────────────────────────────
-  {id:64,year:'⚡ Research Tools',title:'PsyArXiv — Psychology Preprints',src:'Tool',url:'https://psyarxiv.com',desc:'Where forensic psychology research appears 12-18 months before peer-reviewed publication. The bleeding edge of the field. Free.',concepts:['Search "forensic psychology" for latest work','Filter by date to see what\'s newest','Download PDFs of any preprint free','Follow researchers in your area','Comment and engage with authors','Understand the research pipeline']},
-  {id:65,year:'⚡ Research Tools',title:'PubPsych — Free Research Database',src:'Tool',url:'https://www.pubpsych.eu',desc:'Large freely accessible psychological reference database — journal articles, books, research data, and test instruments. Filter by open access.',concepts:['Search all areas of psychology','Filter results to open access only','Access test instruments and measures','Find book chapters and reviews','Multi-language coverage','Links to full-text when available']},
-  {id:66,year:'⚡ Research Tools',title:'Frontiers in Psychology — Open Access Journal',src:'Frontiers',url:'https://www.frontiersin.org/journals/psychology',desc:'Major open access journal — 28 sections including forensic, clinical, neuroscience, and quantitative methods. Set up email alerts.',concepts:['Set email alerts for "forensic psychology"','28 subsections covering all specialties','100% free to read all articles','Download PDFs of any article','Filter by article type (review vs. research)','Find recent meta-analyses in your area']},
-  {id:67,year:'⚡ Research Tools',title:'Google Scholar — Smart Search Setup',src:'Tool',url:'https://scholar.google.com',desc:'Set up weekly email alerts for "forensic psychology" and "forensic assessment." Delivers new papers directly to your inbox.',concepts:['Create alerts for key search terms','Search "cite:" to find all papers citing one','Use "since 2023" to find recent work','Find free PDF versions of any paper','Build your own library in My Library','Follow top researchers in forensics']},
-  {id:68,year:'⚡ Research Tools',title:'SSRN — Psychology Working Papers',src:'SSRN',url:'https://ssrn.com/en/index.cfm/psy/',desc:'Social Science Research Network: law professors and forensic psychologists post free papers before formal publication.',concepts:['Browse forensic psychology section','Download working papers for free','Law-psychology interface papers','Pre-publication research access','Author profiles and contact info','Legal scholarship on mental health law']},
-  {id:69,year:'⚡ Research Tools',title:'NOBA Project — Free Psychology Modules',src:'NOBA',url:'https://nobaproject.com',desc:'Peer-reviewed, modular psychology textbook written by world-class professors. Fills every gap OpenStax misses. Completely free.',concepts:['Modular: pick any topic you need','Written by leading university professors','Companion to textbook learning','Covers clinical, social, developmental','Downloadable PDFs of each module','Used in 500+ university courses']},
-  {id:70,year:'⚡ Research Tools',title:'JASP — Free Statistical Software',src:'Tool',url:'https://jasp-stats.org',desc:'Free, open-source statistics software that rivals SPSS. The tool forensic psychology researchers actually use. Learn it now.',concepts:['Download free for Mac and PC','Bayesian and frequentist analyses','Built-in APA-format output','Factor analysis and SEM','ANOVA, regression, t-tests','Learning resources and tutorials built in']},
-  {id:71,year:'⚡ Research Tools',title:'Zotero — Free Citation Manager',src:'Tool',url:'https://www.zotero.org',desc:'Captures articles from any database and organizes them into a searchable personal library. Indispensable for dissertation research.',concepts:['Browser extension captures papers instantly','Auto-generates APA citations','Organize into folders by topic','Syncs across all your devices','Group libraries for collaboration','Integrates with Word for bibliography']},
-  {id:72,year:'⚡ Research Tools',title:'APA Division 41 — Psychology & Law',src:'APA',url:'https://ap-ls.org',desc:'American Psychology-Law Society: free guidelines, ethical standards, and professional resources for practicing forensic psychologists.',concepts:['Free access to AP-LS newsletters','Graduate student resources and awards','Fellowship and grant opportunities','Annual conference and networking','Forensic specialty guidelines (free PDF)','Early career psychologist programs']},
-  {id:73,year:'⚡ Research Tools',title:'LibreTexts Psychology Collection',src:'LibreTexts',url:'https://socialsci.libretexts.org/Bookshelves/Psychology',desc:'Over 100 free, openly licensed psychology textbooks covering every subfield from intro to advanced graduate level.',concepts:['Browse all psychology textbooks free','Download any book as PDF','Search across all books simultaneously','Annotation tools built in','Instructor ancillaries available','Covers all years freshman to doctoral']},
-  {id:74,year:'⚡ Research Tools',title:'OpenStax Full Library',src:'OpenStax',url:'https://openstax.org/subjects',desc:'50+ peer-reviewed free college textbooks from Rice University. The gold standard of open educational resources.',concepts:['Psychology 2e and Introductory Psych','Sociology, Statistics, Anatomy & Physiology','Lifespan Development (2024 edition)','Behavioral Neuroscience (new)','Download PDF, read online, or order print','Instructor resources: slides and test banks']},
-];
-
-// YEAR level styling helpers
-const YEAR_BADGE = {
-  '📌 Reference Posters': 'badge-teal',
-  '🌱 Freshman':          'badge-green',
-  '🌿 Sophomore':         'badge-green',
-  '🌳 Junior':            'badge-teal',
-  '🎓 Senior':            'badge-gold',
-  "🔬 Master's":          'badge-blue',
-  '🏛️ Doctoral':          'badge-purple',
-  '⚡ Research Tools':    'badge-gold',
-};
-
-// ── STATUS CONFIG ──────────────────────────────────────────────────────────────
-const STATUS_CFG = {
-  not_started: { label:'Not Started', dot:'⬜', color:'var(--faint)',  text:'var(--dim)'  },
-  in_progress: { label:'In Progress', dot:'🟡', color:'#f5c842',      text:'#9a7b0a'     },
-  complete:    { label:'Complete',    dot:'✅', color:'var(--teal)',   text:'var(--teal)' },
-};
-
-function LibraryModule({ onNav, user }) {
-  const [search, setSearch]         = useState('');
+function LibraryModule({ onNav }) {
+  const [search, setSearch] = useState('');
   const [yearFilter, setYearFilter] = useState('All');
-  const [statusFilter, setStatusFilter] = useState('All');
-  const [selected, setSelected]     = useState(null);
-  const [progress, setProgress]     = useState({});   // { resourceId: status }
-  const [notes, setNotes]           = useState({});   // { resourceId: text }
-  const [notesDraft, setNotesDraft] = useState('');
-  const [notesLoading, setNotesLoading] = useState(false);
-  const [dataLoaded, setDataLoaded] = useState(false);
-
-  // Load all progress + notes on mount
-  useEffect(()=>{
-    if(!user?.id) return;
-    const sb = getSupabase();
-    Promise.all([
-      sb.from('library_progress').select('resource_id,status').eq('user_id',user.id),
-      sb.from('library_notes').select('resource_id,notes').eq('user_id',user.id),
-    ]).then(([{data:prog},{data:nts}])=>{
-      const p = {};
-      (prog||[]).forEach(r=>{ p[r.resource_id] = r.status; });
-      const n = {};
-      (nts||[]).forEach(r=>{ n[r.resource_id] = r.notes; });
-      setProgress(p);
-      setNotes(n);
-      setDataLoaded(true);
-    }).catch(()=>setDataLoaded(true));
-  },[user]);
-
-  // When modal opens, seed notes draft
-  useEffect(()=>{
-    if(selected) setNotesDraft(notes[selected.id] || '');
-  },[selected]);
-
-  const setStatus = async (t, status) => {
-    if(!user?.id) return;
-    const sb = getSupabase();
-    const now = new Date().toISOString();
-    const patch = {
-      user_id: user.id, resource_id: t.id,
-      resource_title: t.title, resource_year: t.year,
-      status,
-      started_at:   status==='not_started' ? null : (progress[t.id] ? undefined : now),
-      completed_at: status==='complete'    ? now  : null,
-      updated_at: now,
-    };
-    await getSupabase().from('library_progress').upsert(patch,{onConflict:'user_id,resource_id'});
-    setProgress(p=>({...p,[t.id]:status}));
-    toast(status==='complete'?`✅ "${t.title}" marked complete!`:status==='in_progress'?`🟡 "${t.title}" — in progress`:`⬜ "${t.title}" reset`,'success');
-  };
-
-  const saveNotes = async () => {
-    if(!user?.id||!selected) return;
-    setNotesLoading(true);
-    const now = new Date().toISOString();
-    await getSupabase().from('library_notes').upsert({
-      user_id:user.id, resource_id:selected.id,
-      resource_title:selected.title, notes:notesDraft, updated_at:now
-    },{onConflict:'user_id,resource_id'});
-    setNotes(n=>({...n,[selected.id]:notesDraft}));
-    setNotesLoading(false);
-    toast('📝 Notes saved — Coach will see these!','success');
-  };
-
-  // Computed stats
-  const completedCount  = Object.values(progress).filter(s=>s==='complete').length;
-  const inProgressCount = Object.values(progress).filter(s=>s==='in_progress').length;
-  const withNotesCount  = Object.keys(notes).filter(id=>notes[id]?.trim()).length;
-  const pct = Math.round((completedCount / STUDY_TOPICS.length) * 100);
+  const [selected, setSelected] = useState(null);
 
   const filtered = STUDY_TOPICS.filter(t => {
     const matchSearch = !search || t.title.toLowerCase().includes(search.toLowerCase()) || t.desc.toLowerCase().includes(search.toLowerCase()) || t.src.toLowerCase().includes(search.toLowerCase());
-    const matchYear   = yearFilter === 'All' || t.year === yearFilter;
-    const tStatus     = progress[t.id] || 'not_started';
-    const matchStatus = statusFilter === 'All' || tStatus === statusFilter;
-    return matchSearch && matchYear && matchStatus;
+    const matchYear = yearFilter === 'All' || t.year === yearFilter;
+    return matchSearch && matchYear;
   });
 
   const counts = {};
-  YEARS.forEach(y => { counts[y] = y==='All' ? STUDY_TOPICS.length : STUDY_TOPICS.filter(t=>t.year===y).length; });
+  YEARS.forEach(y => { counts[y] = y === 'All' ? STUDY_TOPICS.length : STUDY_TOPICS.filter(t=>t.year===y).length; });
 
   const srcInfo = t => SRC[t.src] || SRC.Poster;
-  const getStatus = t => progress[t.id] || 'not_started';
 
   return (
     <div>
@@ -745,107 +668,62 @@ function LibraryModule({ onNav, user }) {
       </div>
       <div className="page-content">
 
-        {/* Progress Overview Bar */}
-        <div className="card" style={{marginBottom:'1.2rem',padding:'1rem 1.2rem'}}>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'0.6rem',flexWrap:'wrap',gap:'0.5rem'}}>
-            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.6rem',letterSpacing:'0.1em',textTransform:'uppercase',color:'var(--dim)'}}>Your Learning Journey</span>
-            <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.6rem',color:'var(--gold)'}}>
-              {completedCount} complete · {inProgressCount} in progress · {withNotesCount} with notes
-            </span>
-          </div>
-          {/* Progress bar */}
-          <div style={{background:'var(--faint)',borderRadius:'4px',height:'8px',marginBottom:'0.5rem',overflow:'hidden'}}>
-            <div style={{height:'100%',borderRadius:'4px',background:'linear-gradient(90deg,var(--teal),var(--gold))',width:`${Math.max(pct,1)}%`,transition:'width 0.4s ease'}}/>
-          </div>
-          <div style={{display:'flex',justifyContent:'space-between'}}>
-            <span style={{fontSize:'0.72rem',color:'var(--dim)'}}>Freshman Year →</span>
-            <span style={{fontSize:'0.72rem',fontWeight:600,color:'var(--gold)'}}>{pct}% Complete</span>
-            <span style={{fontSize:'0.72rem',color:'var(--dim)'}}>← Doctorate</span>
-          </div>
-          {withNotesCount > 0 && (
-            <div style={{marginTop:'0.5rem',fontSize:'0.72rem',color:'var(--teal)'}}>
-              📝 {withNotesCount} resource{withNotesCount!==1?'s':''} with your notes — Coach can reference these in every session
-            </div>
-          )}
-        </div>
-
         {/* Search */}
-        <div style={{marginBottom:'0.8rem'}}>
+        <div style={{marginBottom:'1rem'}}>
           <input className="input" placeholder="Search any topic, course, or resource..." value={search} onChange={e=>setSearch(e.target.value)}/>
         </div>
 
-        {/* Status Filter Pills */}
-        <div style={{display:'flex',gap:'0.4rem',marginBottom:'0.8rem',flexWrap:'wrap'}}>
-          {[['All','All Resources'],['in_progress','🟡 In Progress'],['complete','✅ Complete'],['not_started','⬜ Not Started']].map(([v,lbl])=>(
-            <button key={v} onClick={()=>setStatusFilter(v)} style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.08em',textTransform:'uppercase',padding:'0.3rem 0.7rem',border:`1px solid ${statusFilter===v?'var(--gold)':'var(--faint)'}`,background:statusFilter===v?'var(--gold)':'transparent',color:statusFilter===v?'var(--bg)':'var(--dim)',cursor:'pointer',transition:'all 0.15s',borderRadius:'2px'}}>
-              {lbl}
-            </button>
-          ))}
-        </div>
-
-        {/* Year Filter Tabs */}
+        {/* Year Filter Tabs — scrollable */}
         <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginBottom:'1.2rem'}}>
           {YEARS.map(y=>(
-            <button key={y} onClick={()=>setYearFilter(y)} style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.08em',textTransform:'uppercase',padding:'0.32rem 0.75rem',border:`1px solid ${yearFilter===y?YEAR_COLOR[y]||'var(--ink)':'var(--faint)'}`,background:yearFilter===y?'var(--ink)':'transparent',color:yearFilter===y?'#fff':'var(--dim)',cursor:'pointer',transition:'all 0.15s'}}>
-              {y} <span style={{opacity:0.5}}>({counts[y]||STUDY_TOPICS.length})</span>
+            <button key={y} onClick={()=>setYearFilter(y)} style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',padding:'0.35rem 0.8rem',border:`1px solid ${yearFilter===y?YEAR_COLOR[y]||'var(--ink)':'var(--faint)'}`,background:yearFilter===y?'var(--ink)':'transparent',color:yearFilter===y?'#fff':'var(--dim)',cursor:'pointer',transition:'all 0.15s'}}>
+              {y} <span style={{opacity:0.6}}>({counts[y]||STUDY_TOPICS.length})</span>
             </button>
           ))}
         </div>
 
-        {/* Year context blurb */}
+        {/* Stats bar */}
         {yearFilter !== 'All' && (
-          <div className="info-box" style={{marginBottom:'1rem',padding:'0.6rem 1rem',fontSize:'0.82rem'}}>
+          <div className="info-box" style={{marginBottom:'1rem',padding:'0.7rem 1rem'}}>
             <strong style={{color:YEAR_COLOR[yearFilter]||'var(--gold)'}}>{yearFilter}</strong>
-            {yearFilter==='📌 Reference Posters' && ' — SloanMelia built-in forensic psychology reference cards. Add your own notes so Coach can reference them.'}
+            {yearFilter==='📌 Reference Posters' && ' — SloanMelia built-in forensic psychology reference cards. Click Study → to explore key concepts.'}
             {yearFilter==='🌱 Freshman' && ' — Wide roots. General education foundation. Every textbook is free via OpenStax or LibreTexts.'}
             {yearFilter==='🌿 Sophomore' && ' — The trunk thickens. Core psychology courses required at every program in the country.'}
             {yearFilter==='🌳 Junior' && ' — The path narrows toward forensics. Upper-division specialization begins.'}
             {yearFilter==='🎓 Senior' && ' — Pre-graduate preparation. Clinical assessment, ethics, and research design.'}
-            {yearFilter==="🔬 Master's" && ' — Graduate specialization. Forensic assessment, risk instruments, mental health law, and expert testimony.'}
+            {yearFilter==="🔬 Master's" && " — Graduate specialization. Forensic assessment, risk instruments, mental health law, and expert testimony."}
             {yearFilter==='🏛️ Doctoral' && ' — Research and dissertation level. The living edge of the field. Original contribution to knowledge.'}
-            {yearFilter==='⚡ Research Tools' && ' — Free platforms that separate a good student from a future pioneer. Set these up now, use them for life.'}
+            {yearFilter==='⚡ Research Tools' && ' — Free platforms and tools that separate a good student from a future pioneer. Set these up now, use them for life.'}
           </div>
         )}
 
         {/* Results count */}
-        <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.58rem',letterSpacing:'0.1em',color:'var(--dim)',marginBottom:'0.8rem',textTransform:'uppercase'}}>
-          {filtered.length} resource{filtered.length!==1?'s':''}{search?` matching "${search}"`:''}
+        <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.6rem',letterSpacing:'0.1em',color:'var(--dim)',marginBottom:'0.8rem',textTransform:'uppercase'}}>
+          {filtered.length} resource{filtered.length!==1?'s':''} {search?`matching "${search}"`:''}
         </div>
 
         {/* Cards grid */}
         {filtered.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">🔍</div>
-            <div className="empty-text">No resources match your filters</div>
-            <button className="btn btn-ghost" onClick={()=>{setSearch('');setYearFilter('All');setStatusFilter('All');}}>Clear all filters</button>
+            <div className="empty-text">No resources match your search</div>
+            <button className="btn btn-ghost" onClick={()=>{setSearch('');setYearFilter('All');}}>Clear filters</button>
           </div>
         ) : (
           <div className="grid3">
             {filtered.map(t => {
               const si = srcInfo(t);
-              const st = getStatus(t);
-              const sc = STATUS_CFG[st];
-              const hasNote = !!(notes[t.id]?.trim());
               return (
-                <div key={t.id} className="card" style={{borderTop:`3px solid ${YEAR_COLOR[t.year]||'var(--ink)'}`,cursor:'pointer',display:'flex',flexDirection:'column',position:'relative'}} onClick={()=>setSelected(t)}>
-                  {/* Status dot top-right */}
-                  <div style={{position:'absolute',top:'0.6rem',right:'0.7rem',fontSize:'0.85rem',title:sc.label}}>{sc.dot}</div>
-
-                  <div style={{display:'flex',gap:'0.35rem',flexWrap:'wrap',marginBottom:'0.5rem',paddingRight:'1.5rem'}}>
-                    <span className={`badge ${YEAR_BADGE[t.year]||'badge-gray'}`} style={{fontSize:'0.44rem'}}>{t.year}</span>
-                    <span className={`badge ${si.badge}`} style={{fontSize:'0.44rem'}}>{si.label}</span>
-                    {hasNote && <span className="badge badge-teal" style={{fontSize:'0.44rem'}}>📝 Notes</span>}
+                <div key={t.id} className="card" style={{borderTop:`3px solid ${YEAR_COLOR[t.year]||'var(--ink)'}`,cursor:'pointer',display:'flex',flexDirection:'column'}} onClick={()=>setSelected(t)}>
+                  <div style={{display:'flex',gap:'0.4rem',flexWrap:'wrap',marginBottom:'0.5rem'}}>
+                    <span className={`badge ${YEAR_BADGE[t.year]||'badge-gray'}`} style={{fontSize:'0.48rem'}}>{t.year}</span>
+                    <span className={`badge ${si.badge}`} style={{fontSize:'0.48rem'}}>{si.label}</span>
                   </div>
-                  <div className="card-title" style={{fontSize:'0.9rem',marginBottom:'0.22rem'}}>{t.title}</div>
-                  <div style={{fontSize:'0.78rem',color:'var(--dim)',lineHeight:1.5,flex:1}}>{t.desc}</div>
-                  <div style={{display:'flex',gap:'0.35rem',marginTop:'0.8rem',flexWrap:'wrap',alignItems:'center'}}>
-                    <button className="btn btn-ghost btn-sm" style={{paddingLeft:0,fontSize:'0.52rem'}} onClick={e=>{e.stopPropagation();setSelected(t);}}>Study →</button>
-                    {t.url && <button className="btn btn-outline btn-sm" style={{fontSize:'0.52rem'}} onClick={e=>{e.stopPropagation();window.open(t.url,'_blank');}}>Open Free ↗</button>}
-                    {/* Quick status cycle */}
-                    <button style={{marginLeft:'auto',fontSize:'0.75rem',background:'transparent',border:'none',cursor:'pointer',padding:'0.1rem 0.3rem'}} title={`Mark: ${st==='not_started'?'In Progress':st==='in_progress'?'Complete':'Not Started'}`}
-                      onClick={e=>{e.stopPropagation(); setStatus(t, st==='not_started'?'in_progress':st==='in_progress'?'complete':'not_started');}}>
-                      {sc.dot}
-                    </button>
+                  <div className="card-title" style={{fontSize:'0.92rem',marginBottom:'0.25rem'}}>{t.title}</div>
+                  <div style={{fontSize:'0.79rem',color:'var(--dim)',lineHeight:1.5,flex:1}}>{t.desc}</div>
+                  <div style={{display:'flex',gap:'0.4rem',marginTop:'0.8rem',flexWrap:'wrap'}}>
+                    <button className="btn btn-ghost btn-sm" style={{paddingLeft:0,fontSize:'0.55rem'}} onClick={e=>{e.stopPropagation();setSelected(t);}}>Study →</button>
+                    {t.url && <button className="btn btn-outline btn-sm" style={{fontSize:'0.55rem'}} onClick={e=>{e.stopPropagation();window.open(t.url,'_blank');}}>Open Free ↗</button>}
                   </div>
                 </div>
               );
@@ -854,66 +732,30 @@ function LibraryModule({ onNav, user }) {
         )}
       </div>
 
-      {/* ── DETAIL MODAL ── */}
+      {/* Detail Modal */}
       <Modal open={!!selected} onClose={()=>setSelected(null)} title={selected?.title} wide>
         {selected && (()=>{
           const si = srcInfo(selected);
-          const st = getStatus(selected);
-          const sc = STATUS_CFG[st];
           return (
             <>
-              {/* Badges row */}
               <div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap',marginBottom:'1rem'}}>
                 <span className={`badge ${YEAR_BADGE[selected.year]||'badge-gray'}`}>{selected.year}</span>
                 <span className={`badge ${si.badge}`}>{si.label}</span>
-                <span style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.08em',padding:'0.2rem 0.5rem',border:`1px solid ${sc.color}`,color:sc.text}}>{sc.dot} {sc.label}</span>
               </div>
-
               <p style={{fontSize:'0.9rem',color:'var(--dim)',marginBottom:'1.2rem',lineHeight:1.65}}>{selected.desc}</p>
-
-              {/* Key Concepts */}
               <div className="section-label">Key Concepts</div>
               <ul style={{paddingLeft:'1.2rem',marginBottom:'1.5rem'}}>
                 {selected.concepts.map((c,i)=><li key={i} style={{marginBottom:'0.4rem',fontSize:'0.88rem'}}>{c}</li>)}
               </ul>
-
-              {/* Free Resource Link */}
               {selected.url && (
-                <div className="info-box" style={{marginBottom:'1.2rem'}}>
-                  <div style={{fontFamily:'DM Mono,monospace',fontSize:'0.55rem',letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:'0.3rem',color:'var(--dim)'}}>Free Resource</div>
-                  <a href={selected.url} target="_blank" rel="noreferrer" style={{color:'var(--gold)',fontSize:'0.82rem',wordBreak:'break-all'}}>{selected.url}</a>
+                <div className="info-box" style={{marginBottom:'1rem'}}>
+                  <strong>Free Resource</strong>
+                  <a href={selected.url} target="_blank" rel="noreferrer" style={{color:'var(--gold)',wordBreak:'break-all'}}>{selected.url}</a>
                 </div>
               )}
-
-              {/* Status Selector */}
-              <div className="section-label">Your Progress</div>
-              <div style={{display:'flex',gap:'0.5rem',marginBottom:'1.2rem',flexWrap:'wrap'}}>
-                {Object.entries(STATUS_CFG).map(([key,cfg])=>(
-                  <button key={key} onClick={()=>setStatus(selected,key)} style={{fontFamily:'DM Mono,monospace',fontSize:'0.52rem',letterSpacing:'0.08em',padding:'0.4rem 0.9rem',border:`2px solid ${st===key?cfg.color:'var(--faint)'}`,background:st===key?'var(--ink)':'transparent',color:st===key?'#fff':'var(--dim)',cursor:'pointer',transition:'all 0.15s'}}>
-                    {cfg.dot} {cfg.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Study Notes */}
-              <div className="section-label">Your Study Notes</div>
-              <div style={{fontSize:'0.78rem',color:'var(--dim)',marginBottom:'0.5rem'}}>
-                These notes are shared with your AI Coach — the more detail you add, the smarter Coach becomes about what you know.
-              </div>
-              <textarea
-                className="input"
-                rows={5}
-                placeholder={`Write anything about ${selected.title}:\n• Key things you learned\n• Questions you still have\n• How it connects to forensic psychology\n• Chapters you've covered\n• Terms you want Coach to explain`}
-                value={notesDraft}
-                onChange={e=>setNotesDraft(e.target.value)}
-                style={{width:'100%',resize:'vertical',fontFamily:'inherit',fontSize:'0.85rem',lineHeight:1.65,marginBottom:'0.7rem'}}
-              />
-              <div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap',alignItems:'center'}}>
-                <button className="btn btn-primary" onClick={saveNotes} disabled={notesLoading}>
-                  {notesLoading ? 'Saving…' : '💾 Save Notes to Coach'}
-                </button>
+              <div style={{display:'flex',gap:'0.5rem',flexWrap:'wrap'}}>
                 {selected.url && <a href={selected.url} target="_blank" rel="noreferrer" className="btn btn-gold" style={{textDecoration:'none'}}>Open Free Resource ↗</a>}
-                <button className="btn btn-ghost" style={{marginLeft:'auto'}} onClick={()=>{setSelected(null);onNav('coach');}}>🤖 Ask Coach About This</button>
+                <button className="btn btn-primary" onClick={()=>{setSelected(null);onNav('coach');}}>🤖 Ask Coach About This</button>
               </div>
             </>
           );
@@ -922,7 +764,10 @@ function LibraryModule({ onNav, user }) {
     </div>
   );
 }
+</script>
 
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef, useCallback } = React;
 // ── DOCUMENT VAULT ────────────────────────────────────────────────────────────
 const DOC_CATS = ['Transcript','Recommendation Letter','Resume','Test Scores','Certificate','Financial Aid','Other'];
 const CAT_BADGE = {Transcript:'badge-teal','Recommendation Letter':'badge-gold',Resume:'badge-ink','Test Scores':'badge-purple',Certificate:'badge-green','Financial Aid':'badge-blue',Other:'badge-gray'};
@@ -1154,7 +999,7 @@ function VaultModule({ user, toast, onNav }) {
             <div className="card" style={{borderTop:'3px solid var(--teal)'}}>
               <div className="section-label">Permanent Profile Data</div>
               {[
-                ['Name','Sloan Smith'],['School','Alton High School, Alton IL'],['Graduating','May 2026'],['GPA','3.84 (Unweighted) · 4.21 (Weighted)'],['Goal','PhD in Forensic Psychology'],
+                ['Name','Sloan Smith'],['School','Alton High School, Alton IL'],['Graduating','May 2026'],['GPA','3.684'],['Goal','PhD in Forensic Psychology'],
                 ['Senior Courses','AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2'],
                 ['Key Activity','Patient Enrichment Program — Founder. Annual hospital donation drive. Her centerpiece story.'],
                 ['Other Activities','Mu Alpha Theta, Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring'],
@@ -1188,7 +1033,7 @@ function VaultModule({ user, toast, onNav }) {
           Type any important info from this document that you want the Coach to know. For a transcript: list your courses, grades, GPA. For a rec letter: who wrote it and what they said. For a resume: your key bullet points. The Coach reads these notes when helping you.
         </div>
         <label className="label">Document Notes (Coach-Readable)</label>
-        <textarea className="input" style={{minHeight:200}} value={notesText} onChange={e=>setNotesText(e.target.value)} placeholder="Example for a transcript:&#10;GPA: 3.84&#10;Senior year courses: AP Psychology (A), AP Statistics (B+), AP English Honors (A-), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2&#10;Weighted GPA: 4.21&#10;Class rank: Top 15%"/>
+        <textarea className="input" style={{minHeight:200}} value={notesText} onChange={e=>setNotesText(e.target.value)} placeholder="Example for a transcript:&#10;GPA: 3.684&#10;Senior year courses: AP Psychology (A), AP Statistics (B+), AP English Honors (A-), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2&#10;Weighted GPA: 3.9&#10;Class rank: Top 15%"/>
         <div style={{display:'flex',gap:'0.5rem',marginTop:'1rem'}}>
           <button className="btn btn-gold" onClick={saveNotes} disabled={savingNotes}>{savingNotes?'Saving...':'Save Notes'}</button>
           <button className="btn btn-ghost" onClick={()=>setNotesDoc(null)}>Cancel</button>
@@ -1415,7 +1260,10 @@ function AchievementsModule({ user, toast, coachUrl }) {
     </div>
   );
 }
+</script>
 
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef, useCallback } = React;
 // ── FINANCIAL AID ─────────────────────────────────────────────────────────────
 const SCHOLARSHIPS_SEED = [
   {name:'Illinois MAP Grant',amount_min:0,amount_max:5968,status:'researching',url:'https://www.isac.org',requirements:'Illinois resident, financial need, FAFSA required by state deadline'},
@@ -1639,12 +1487,10 @@ function CoachModule({ user, coachUrl, toast }) {
 
   const getVaultContext = async () => {
     const sb = getSupabase();
-    const [{ data:docs },{ data:achs },{ data:recentSessions },{ data:libNotes },{ data:libProg }] = await Promise.all([
+    const [{ data:docs },{ data:achs },{ data:recentSessions }] = await Promise.all([
       sb.from('documents').select('name,category,content_notes').eq('user_id',user.id),
       sb.from('achievements').select('title,role,impact').eq('user_id',user.id),
       sb.from('coach_sessions').select('title,summary').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(3),
-      sb.from('library_notes').select('resource_title,resource_year,notes').eq('user_id',user.id).not('notes','eq',''),
-      sb.from('library_progress').select('resource_title,resource_year,status').eq('user_id',user.id),
     ]);
     const docStr = docs?.length 
       ? 'Uploaded documents:\n' + docs.map(d=>`- ${d.name} (${d.category})${d.content_notes?':\n  '+d.content_notes:''}`).join('\n')
@@ -1653,15 +1499,7 @@ function CoachModule({ user, coachUrl, toast }) {
     const sessStr = recentSessions?.filter(s=>s.summary).length 
       ? '\nRecent coaching history:\n' + recentSessions.filter(s=>s.summary).map(s=>`- ${s.title}: ${s.summary}`).join('\n')
       : '';
-    const completed = (libProg||[]).filter(p=>p.status==='complete').map(p=>p.resource_title);
-    const inProgress = (libProg||[]).filter(p=>p.status==='in_progress').map(p=>p.resource_title);
-    const libProgStr = (completed.length||inProgress.length)
-      ? `\n\nStudent academic library progress:\nCompleted: ${completed.length ? completed.join(', ') : 'none yet'}\nCurrently studying: ${inProgress.length ? inProgress.join(', ') : 'none'}`
-      : '';
-    const libNotesStr = libNotes?.length
-      ? '\n\nStudent study notes from the Academic Library (use these to personalize coaching):\n' + libNotes.map(n=>`- [${n.resource_year}] ${n.resource_title}:\n  "${n.notes}"`).join('\n')
-      : '';
-    return docStr + achStr + sessStr + libProgStr + libNotesStr;
+    return docStr + achStr + sessStr;
   };
 
   const callCoach = async (msgs) => {
@@ -1734,7 +1572,7 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers })
   const { messages, vaultContext } = await req.json()
   const systemPrompt = \`You are Sloan Smith's personal college application coach embedded in sloanmelia.com.
-SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.84 Unweighted / 4.21 Weighted | Goal: PhD in Forensic Psychology
+SLOAN'S PROFILE: Name: Sloan Smith | School: Alton High School, Alton IL | Graduating: May 2026 | GPA: 3.684 | Goal: PhD in Forensic Psychology
 SENIOR YEAR: AP Psychology, AP Statistics, AP English (H), Human Body Systems PLTW 2, Biomedical Internship, Sociology, Spanish 2
 KEY ACTIVITY: Patient Enrichment Program — FOUNDER. Annual hospital donation drive. This is her CENTERPIECE story.
 Others: Mu Alpha Theta (Math Honor Society), Link Crew (Peer Mentor), Salvation Army volunteer, Church nursery, Math tutoring
@@ -1930,5 +1768,3 @@ function App() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App/>);
 </script>
-</body>
-</html>
