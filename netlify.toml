@@ -23,37 +23,37 @@
 # Dashboard — private login area
 [[redirects]]
   from = "/app"
-  to = "/sloanmelia-app.html"
+  to = "/app.html"
   status = 200
   force = true
 
 [[redirects]]
   from = "/dashboard"
-  to = "/sloanmelia-app.html"
+  to = "/app.html"
   status = 302
 
 [[redirects]]
   from = "/dashboard.html"
-  to = "/sloanmelia-app.html"
+  to = "/app.html"
   status = 302
   force = true
 
 [[redirects]]
   from = "/study-library.html"
-  to = "/sloanmelia-app.html"
+  to = "/app.html"
   status = 302
 
 [[redirects]]
   from = "/studylibrary.html"
-  to = "/sloanmelia-app.html"
+  to = "/app.html"
   status = 302
 
 [[redirects]]
   from = "/studylibrary"
-  to = "/sloanmelia-app.html"
+  to = "/app.html"
   status = 302
 
 [[redirects]]
   from = "/study-library"
-  to = "/sloanmelia-app.html"
+  to = "/app.html"
   status = 302
